@@ -12,7 +12,17 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      dispatch(setUser(user));
+      if (user) {
+        dispatch(
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName ?? null,
+          }),
+        );
+      } else {
+        dispatch(setUser(null));
+      }
     });
 
     return () => unsubscribe();
