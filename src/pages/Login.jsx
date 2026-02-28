@@ -305,6 +305,18 @@ export default function Login() {
                   )}
                 </button>
 
+                <div className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                  <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                    <Lock size={13} className="text-green-600" />
+                  </div>
+                  <p className="text-xs text-gray-500 leading-snug">
+                    Kata sandi dienkripsi oleh{" "}
+                    <span className="font-semibold text-gray-700">
+                      Firebase Authentication
+                    </span>
+                  </p>
+                </div>
+
                 <p className="text-center text-xs text-gray-400 mt-1">
                   Belum punya akun?{" "}
                   <button
@@ -344,7 +356,7 @@ export default function Login() {
                     />
                     <input
                       type="text"
-                      placeholder="Nama di komunitas"
+                      placeholder="Nama kamu di komunitas"
                       value={registerName}
                       onChange={(e) => setRegisterName(e.target.value)}
                       required
@@ -425,6 +437,18 @@ export default function Login() {
                     </>
                   )}
                 </button>
+
+                <div className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                  <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                    <Lock size={13} className="text-green-600" />
+                  </div>
+                  <p className="text-xs text-gray-500 leading-snug">
+                    Kata sandi dienkripsi oleh{" "}
+                    <span className="font-semibold text-gray-700">
+                      Firebase Authentication
+                    </span>
+                  </p>
+                </div>
 
                 <p className="text-center text-xs text-gray-400 mt-1">
                   Sudah punya akun?{" "}
