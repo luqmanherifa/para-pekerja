@@ -3,11 +3,86 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
-import { LogOut } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import {
+  ClipboardCheck,
+  Briefcase,
+  MessageSquareQuote,
+  Scale,
+  Star,
+} from "lucide-react";
+
+const COMING_SOON_SECTIONS = [
+  {
+    id: "absensi",
+    icon: ClipboardCheck,
+    label: "Fitur 2",
+    title: "Absensi & Slip Gaji Imajiner",
+    desc: "Absen sekali sehari, pilih mood kerja, dan dapatkan slip gaji absurd. Lihat statistik mood komunitas dan vote slip yang paling relate.",
+    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
+    textMain: "text-gray-900",
+    textSub: "text-yellow-900",
+    iconBg: "bg-yellow-600",
+    iconColor: "text-white",
+    badge: "bg-yellow-600 text-yellow-100",
+  },
+  {
+    id: "kerjaan",
+    icon: Briefcase,
+    label: "Fitur 3",
+    title: "Kerjaan 5 Juta",
+    desc: "Kirim pekerjaan absurd kamu dan biarkan komunitas menilainya. Layak 5 Juta atau Gaji Ditahan — kamu yang memutuskan.",
+    bg: "bg-gradient-to-br from-green-600 to-green-700",
+    textMain: "text-white",
+    textSub: "text-green-100",
+    iconBg: "bg-green-800",
+    iconColor: "text-white",
+    badge: "bg-green-800 text-green-200",
+  },
+  {
+    id: "quote-battle",
+    icon: MessageSquareQuote,
+    label: "Fitur 4",
+    title: "Quote Battle",
+    desc: "Pilih komedian, pilih episode, dan kirim quote terbaik versi kamu. Komunitas yang vote mana yang paling berkesan.",
+    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
+    textMain: "text-gray-900",
+    textSub: "text-yellow-900",
+    iconBg: "bg-yellow-600",
+    iconColor: "text-white",
+    badge: "bg-yellow-600 text-yellow-100",
+  },
+  {
+    id: "siapa-paling-benar",
+    icon: Scale,
+    label: "Fitur 5",
+    title: "Siapa Paling Benar?",
+    desc: "Rangkum opini masing-masing komedian dalam satu episode. Komunitas vote siapa yang paling masuk akal — atau paling chaos.",
+    bg: "bg-gradient-to-br from-green-600 to-green-700",
+    textMain: "text-white",
+    textSub: "text-green-100",
+    iconBg: "bg-green-800",
+    iconColor: "text-white",
+    badge: "bg-green-800 text-green-200",
+  },
+  {
+    id: "guest-ranking",
+    icon: Star,
+    label: "Fitur 6",
+    title: "Peringkat Tamu",
+    desc: "Vote performa tamu terbaik dan tambahkan momen favoritmu. Siapa tamu terbaik versi para pekerja? Kamu yang menentukan.",
+    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
+    textMain: "text-gray-900",
+    textSub: "text-yellow-900",
+    iconBg: "bg-yellow-600",
+    iconColor: "text-white",
+    badge: "bg-yellow-600 text-yellow-100",
+  },
+];
 
 export default function Home() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -16,46 +91,54 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-8 py-4 flex items-center justify-between">
-          <span className="font-bold text-green-600 text-base tracking-tight">
-            Para Pekerja
-          </span>
-
-          <div className="flex items-center gap-6">
-            <span className="text-xs text-gray-400">{user?.email}</span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 text-sm border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg transition-colors duration-150"
-            >
-              <LogOut size={14} />
-              Keluar
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar onLogout={handleLogout} />
 
       <HeroSection />
 
-      <div
-        id="absensi"
-        className="max-w-5xl mx-auto px-8 py-16 border-b border-gray-100"
-      >
-        <p className="text-xs font-semibold text-gray-300 uppercase tracking-widest">
-          Segera hadir
-        </p>
-        <h2 className="text-xl font-extrabold text-gray-200 mt-1">
-          Absensi & Slip Gaji Imajiner
-        </h2>
-      </div>
-      <div id="kerjaan" className="max-w-5xl mx-auto px-8 py-16">
-        <p className="text-xs font-semibold text-gray-300 uppercase tracking-widest">
-          Segera hadir
-        </p>
-        <h2 className="text-xl font-extrabold text-gray-200 mt-1">
-          Kerjaan 5 Juta
-        </h2>
-      </div>
+      {COMING_SOON_SECTIONS.map((section) => {
+        const Icon = section.icon;
+        return (
+          <section
+            key={section.id}
+            id={section.id}
+            className={`w-full ${section.bg}`}
+          >
+            <div className="max-w-5xl mx-auto px-8 py-20 flex items-center justify-between gap-12">
+              <div className="flex-1">
+                <div
+                  className={`inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5 ${section.badge}`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${section.iconBg}`}
+                  />
+                  {section.label} · Segera Hadir
+                </div>
+                <h2
+                  className={`text-3xl font-extrabold leading-tight mb-3 ${section.textMain}`}
+                >
+                  {section.title}
+                </h2>
+                <p
+                  className={`text-sm leading-relaxed max-w-md ${section.textSub}`}
+                >
+                  {section.desc}
+                </p>
+              </div>
+              <div
+                className={`w-24 h-24 rounded-3xl flex items-center justify-center shrink-0 ${section.iconBg}`}
+              >
+                <Icon
+                  size={40}
+                  className={section.iconColor}
+                  strokeWidth={1.5}
+                />
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      <Footer />
     </div>
   );
 }
