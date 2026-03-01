@@ -26,9 +26,7 @@ export default function Home() {
 
       <HeroSection />
 
-      <div className="border-t-4 border-yellow-400">
-        <AttendanceSection />
-      </div>
+      <AttendanceSection />
 
       <JobsSection />
 
