@@ -10,28 +10,28 @@ import { db } from "../firebase/config";
 import { Users, Zap, ClipboardCheck, Briefcase } from "lucide-react";
 
 export default function HeroSection() {
-  const [totalPekerja, setTotalPekerja] = useState(0);
-  const [aktifHariIni, setAktifHariIni] = useState(0);
+  const [totalMembers, setTotalMembers] = useState(0);
+  const [activeToday, setActiveToday] = useState(0);
 
   useEffect(() => {
     const unsubTotal = onSnapshot(collection(db, "users"), (snap) => {
-      setTotalPekerja(snap.size);
+      setTotalMembers(snap.size);
     });
 
     const since = Timestamp.fromDate(
       new Date(Date.now() - 24 * 60 * 60 * 1000),
     );
-    const qAktif = query(
+    const activeQuery = query(
       collection(db, "users"),
       where("lastActiveAt", ">=", since),
     );
-    const unsubAktif = onSnapshot(qAktif, (snap) => {
-      setAktifHariIni(snap.size);
+    const unsubActive = onSnapshot(activeQuery, (snap) => {
+      setActiveToday(snap.size);
     });
 
     return () => {
       unsubTotal();
-      unsubAktif();
+      unsubActive();
     };
   }, []);
 
@@ -89,7 +89,7 @@ export default function HeroSection() {
                 </div>
               </div>
               <p className="text-4xl font-extrabold text-white tracking-tight">
-                {totalPekerja.toLocaleString("id-ID")}
+                {totalMembers.toLocaleString("id-ID")}
               </p>
               <p className="text-xs text-green-200 mt-1">anggota terdaftar</p>
             </div>
@@ -107,7 +107,7 @@ export default function HeroSection() {
                 </div>
               </div>
               <p className="text-4xl font-extrabold text-yellow-400 tracking-tight">
-                {aktifHariIni.toLocaleString("id-ID")}
+                {activeToday.toLocaleString("id-ID")}
               </p>
               <p className="text-xs text-yellow-300 mt-1">
                 pekerja dalam 24 jam terakhir

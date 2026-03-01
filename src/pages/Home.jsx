@@ -3,8 +3,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
-import AbsensiSection from "../components/AbsensiSection";
-import KerjaanSection from "../components/KerjaanSection";
+import AttendanceSection from "../components/AttendanceSection";
+import JobsSection from "../components/JobsSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { MessageSquareQuote, Scale, Star } from "lucide-react";
@@ -69,10 +69,10 @@ export default function Home() {
       <HeroSection />
 
       <div className="border-t-4 border-yellow-400">
-        <AbsensiSection />
+        <AttendanceSection />
       </div>
 
-      <KerjaanSection />
+      <JobsSection />
 
       {COMING_SOON_SECTIONS.map((section) => {
         const Icon = section.icon;

@@ -21,6 +21,8 @@ export default function Footer() {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <footer className="w-full bg-gradient-to-br from-green-800 to-green-900">
       <div className="max-w-5xl mx-auto px-8 pt-16 pb-10">
@@ -90,7 +92,7 @@ export default function Footer() {
             platform · Bukan produk resmi ABG Siniar
           </p>
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={scrollToTop}
             className="flex items-center gap-1.5 text-xs text-green-400 hover:text-yellow-400 font-semibold transition-colors duration-150"
           >
             <ArrowUp size={13} />

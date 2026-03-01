@@ -33,10 +33,10 @@ import {
   Ghost,
 } from "lucide-react";
 
-const getToday = () =>
+const getTodayDate = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
 
-const formatRp = (n) => `Rp ${(n ?? 0).toLocaleString("id-ID")}`;
+const formatRupiah = (n) => `Rp ${(n ?? 0).toLocaleString("id-ID")}`;
 
 const MOODS = [
   {
@@ -121,9 +121,9 @@ const MOODS = [
   },
 ];
 
-const getMood = (id) => MOODS.find((m) => m.id === id) ?? MOODS[0];
+const getMoodById = (id) => MOODS.find((m) => m.id === id) ?? MOODS[0];
 
-const GHOSTS = [
+const GHOST_ATTENDEES = [
   { id: "g1", displayName: "Arif Brata", mood: "productive" },
   { id: "g2", displayName: "Bintang Emon", mood: "chill" },
   { id: "g3", displayName: "Gilang Bhaskara", mood: "focus" },
@@ -134,7 +134,7 @@ const GHOSTS = [
   { id: "g8", displayName: "Bintang Emon", mood: "autopilot" },
 ];
 
-const SLIP_DATA = {
+const PAYSLIP_DATA = {
   productive: {
     items: [
       { label: "Bonus Semangat Pagi", amount: 250000 },
@@ -217,14 +217,14 @@ const SLIP_DATA = {
   },
 };
 
-const buildSlip = (moodId) => {
+const buildPayslip = (moodId) => {
   const base = 5000000;
-  const data = SLIP_DATA[moodId] ?? SLIP_DATA.productive;
-  const total = base + data.items.reduce((s, i) => s + i.amount, 0);
+  const data = PAYSLIP_DATA[moodId] ?? PAYSLIP_DATA.productive;
+  const total = base + data.items.reduce((sum, item) => sum + item.amount, 0);
   return { base, items: data.items, total, hrNote: data.hrNote };
 };
 
-const AMBIENT = {
+const AMBIENT_TEXT = {
   productive: "Kantor hari ini sedang bersemangat.",
   chill: "Suasana santai tapi tetap jalan hari ini.",
   low_energy: "Kantor hari ini sedang tidak baik-baik saja.",
@@ -237,7 +237,7 @@ const AMBIENT = {
 };
 
 function LoginNudgeModal({ moodId, onClose }) {
-  const mood = getMood(moodId);
+  const mood = getMoodById(moodId);
   const Icon = mood.icon;
 
   useEffect(() => {
@@ -294,7 +294,7 @@ function LoginNudgeModal({ moodId, onClose }) {
 
         <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
           <Link
-            to="/masuk"
+            to="/login"
             className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
           >
             Masuk & Absen Sekarang
@@ -311,8 +311,8 @@ function LoginNudgeModal({ moodId, onClose }) {
   );
 }
 
-function SlipModal({ slip, moodId, onClose }) {
-  const mood = getMood(moodId);
+function PayslipModal({ payslip, moodId, onClose }) {
+  const mood = getMoodById(moodId);
   const Icon = mood.icon;
 
   useEffect(() => {
@@ -383,10 +383,10 @@ function SlipModal({ slip, moodId, onClose }) {
           <div className="flex justify-between items-center py-3.5 border-b border-dashed border-gray-200">
             <span className="text-sm text-gray-500">Gaji Pokok</span>
             <span className="text-sm font-bold text-gray-900">
-              {formatRp(slip.base)}
+              {formatRupiah(payslip.base)}
             </span>
           </div>
-          {slip.items.map((item, i) => (
+          {payslip.items.map((item, i) => (
             <div
               key={i}
               className="flex justify-between items-start py-3 border-b border-dashed border-gray-100 gap-4"
@@ -408,7 +408,7 @@ function SlipModal({ slip, moodId, onClose }) {
               Catatan HR
             </p>
             <p className="text-xs text-amber-800 leading-relaxed italic">
-              "{slip.hrNote}"
+              "{payslip.hrNote}"
             </p>
           </div>
 
@@ -417,7 +417,7 @@ function SlipModal({ slip, moodId, onClose }) {
               Total Diterima
             </span>
             <span className="text-2xl font-extrabold text-green-600">
-              {formatRp(slip.total)}
+              {formatRupiah(payslip.total)}
             </span>
           </div>
         </div>
@@ -436,7 +436,7 @@ function SlipModal({ slip, moodId, onClose }) {
 }
 
 function AttendeeCard({ attendee, isGhost }) {
-  const mood = getMood(attendee.mood);
+  const mood = getMoodById(attendee.mood);
   const Icon = mood.icon;
   return (
     <div
@@ -471,15 +471,15 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
         const isSelected = selectedMood === mood.id;
         const isDone = phase === "done";
 
-        let cls;
+        let className;
         if (isDone && isSelected) {
-          cls = mood.active + " opacity-100 cursor-default";
+          className = mood.active + " opacity-100 cursor-default";
         } else if (isDone) {
-          cls = mood.pill + " opacity-30 cursor-default";
+          className = mood.pill + " opacity-30 cursor-default";
         } else if (isSelected) {
-          cls = mood.active;
+          className = mood.active;
         } else {
-          cls = mood.pill + " cursor-pointer";
+          className = mood.pill + " cursor-pointer";
         }
 
         return (
@@ -487,7 +487,7 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
             key={mood.id}
             onClick={() => !isDone && onMoodClick(mood.id)}
             disabled={isDone}
-            className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-sm font-semibold transition-all duration-150 text-left ${cls}`}
+            className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-sm font-semibold transition-all duration-150 text-left ${className}`}
           >
             <Icon size={16} strokeWidth={2} className="shrink-0" />
             <span className="leading-tight">{mood.label}</span>
@@ -498,22 +498,22 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
   );
 }
 
-export default function AbsensiSection() {
+export default function AttendanceSection() {
   const user = useSelector((s) => s.auth.user);
-  const today = getToday();
+  const today = getTodayDate();
 
   const [phase, setPhase] = useState("loading");
   const [selectedMood, setSelectedMood] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [mySlip, setMySlip] = useState(null);
+  const [myPayslip, setMyPayslip] = useState(null);
   const [myMood, setMyMood] = useState(null);
-  const [showSlipModal, setShowSlipModal] = useState(false);
+  const [showPayslipModal, setShowPayslipModal] = useState(false);
   const [loginNudgeMood, setLoginNudgeMood] = useState(null);
 
   const [attendees, setAttendees] = useState([]);
   const [dailyStats, setDailyStats] = useState({});
   const [totalToday, setTotalToday] = useState(0);
-  const [featuredSlips, setFeaturedSlips] = useState([]);
+  const [featuredPayslips, setFeaturedPayslips] = useState([]);
   const [dominantMood, setDominantMood] = useState(null);
 
   useEffect(() => {
@@ -523,10 +523,10 @@ export default function AbsensiSection() {
     }
     getDoc(doc(db, "absensi", `${user.uid}_${today}`)).then((snap) => {
       if (snap.exists()) {
-        const d = snap.data();
-        setMyMood(d.mood);
-        setMySlip(d.slip);
-        setSelectedMood(d.mood);
+        const data = snap.data();
+        setMyMood(data.mood);
+        setMyPayslip(data.slip);
+        setSelectedMood(data.mood);
         setPhase("done");
       } else {
         setPhase("pick_mood");
@@ -549,17 +549,19 @@ export default function AbsensiSection() {
   useEffect(() => {
     return onSnapshot(doc(db, "daily_stats", today), (snap) => {
       if (!snap.exists()) return;
-      const d = snap.data();
-      setDailyStats(d.moods ?? {});
-      setTotalToday(d.total ?? 0);
-      const top = Object.entries(d.moods ?? {}).sort((a, b) => b[1] - a[1])[0];
+      const data = snap.data();
+      setDailyStats(data.moods ?? {});
+      setTotalToday(data.total ?? 0);
+      const top = Object.entries(data.moods ?? {}).sort(
+        (a, b) => b[1] - a[1],
+      )[0];
       if (top) setDominantMood(top[0]);
     });
   }, [today]);
 
   useEffect(() => {
     return onSnapshot(doc(db, "daily_featured", today), (snap) => {
-      if (snap.exists()) setFeaturedSlips(snap.data().slips ?? []);
+      if (snap.exists()) setFeaturedPayslips(snap.data().slips ?? []);
     });
   }, [today]);
 
@@ -567,8 +569,8 @@ export default function AbsensiSection() {
     if (!user || !selectedMood || submitting) return;
     setSubmitting(true);
     try {
-      const slip = buildSlip(selectedMood);
-      const absenRef = doc(db, "absensi", `${user.uid}_${today}`);
+      const payslip = buildPayslip(selectedMood);
+      const attendanceRef = doc(db, "absensi", `${user.uid}_${today}`);
       const statsRef = doc(db, "daily_stats", today);
       const featuredRef = doc(db, "daily_featured", today);
 
@@ -578,12 +580,12 @@ export default function AbsensiSection() {
           tx.get(featuredRef),
         ]);
 
-        tx.set(absenRef, {
+        tx.set(attendanceRef, {
           uid: user.uid,
           displayName:
             user.displayName || user.email?.split("@")[0] || "Pekerja",
           mood: selectedMood,
-          slip,
+          slip: payslip,
           date: today,
           createdAt: serverTimestamp(),
           voteCount: 0,
@@ -607,8 +609,8 @@ export default function AbsensiSection() {
           displayName:
             user.displayName || user.email?.split("@")[0] || "Pekerja",
           mood: selectedMood,
-          hrNote: slip.hrNote,
-          total: slip.total,
+          hrNote: payslip.hrNote,
+          total: payslip.total,
           voteCount: 0,
           voters: [],
         };
@@ -622,9 +624,9 @@ export default function AbsensiSection() {
       });
 
       setMyMood(selectedMood);
-      setMySlip(slip);
+      setMyPayslip(payslip);
       setPhase("done");
-      setShowSlipModal(true);
+      setShowPayslipModal(true);
     } catch (err) {
       console.error(err);
     } finally {
@@ -638,7 +640,7 @@ export default function AbsensiSection() {
       try {
         await runTransaction(db, async (tx) => {
           const featuredRef = doc(db, "daily_featured", today);
-          const absenRef = doc(db, "absensi", slipId);
+          const attendanceRef = doc(db, "absensi", slipId);
           const snap = await tx.get(featuredRef);
           if (!snap.exists()) return;
           const updated = (snap.data().slips ?? []).map((s) =>
@@ -651,7 +653,7 @@ export default function AbsensiSection() {
               : s,
           );
           tx.update(featuredRef, { slips: updated });
-          tx.update(absenRef, {
+          tx.update(attendanceRef, {
             voteCount: increment(1),
             voters: arrayUnion(user.uid),
           });
@@ -672,16 +674,16 @@ export default function AbsensiSection() {
   };
 
   const isGhost = attendees.length === 0;
-  const displayAttendees = isGhost ? GHOSTS : attendees;
-  const ambientText = AMBIENT[dominantMood] ?? AMBIENT.default;
+  const displayAttendees = isGhost ? GHOST_ATTENDEES : attendees;
+  const ambientText = AMBIENT_TEXT[dominantMood] ?? AMBIENT_TEXT.default;
 
   return (
     <>
-      {showSlipModal && mySlip && (
-        <SlipModal
-          slip={mySlip}
+      {showPayslipModal && myPayslip && (
+        <PayslipModal
+          payslip={myPayslip}
           moodId={myMood}
-          onClose={() => setShowSlipModal(false)}
+          onClose={() => setShowPayslipModal(false)}
         />
       )}
       {loginNudgeMood && (
@@ -788,7 +790,7 @@ export default function AbsensiSection() {
                   )}
                   {phase === "done" &&
                     (() => {
-                      const mood = getMood(myMood);
+                      const mood = getMoodById(myMood);
                       const Icon = mood.icon;
                       return (
                         <div className="flex items-center gap-4 w-full">
@@ -810,7 +812,7 @@ export default function AbsensiSection() {
                               Gaji hari ini
                             </p>
                             <p className="text-lg font-extrabold text-green-600">
-                              {formatRp(mySlip?.total)}
+                              {formatRupiah(myPayslip?.total)}
                             </p>
                           </div>
                         </div>
@@ -867,7 +869,7 @@ export default function AbsensiSection() {
                   )}
                   {phase === "done" && (
                     <button
-                      onClick={() => setShowSlipModal(true)}
+                      onClick={() => setShowPayslipModal(true)}
                       className="flex items-center justify-center gap-2 w-full border-2 border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-500 font-bold text-sm py-4 rounded-2xl transition-colors"
                     >
                       <FileText size={15} />
@@ -886,7 +888,7 @@ export default function AbsensiSection() {
                 <div className="space-y-4">
                   {MOODS.map((m) => {
                     const count = dailyStats[m.id] ?? 0;
-                    const pct =
+                    const percentage =
                       totalToday > 0
                         ? Math.round((count / totalToday) * 100)
                         : 0;
@@ -904,7 +906,7 @@ export default function AbsensiSection() {
                         <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-700 ${m.bar}`}
-                            style={{ width: `${pct}%` }}
+                            style={{ width: `${percentage}%` }}
                           />
                         </div>
                         <span className="text-xs font-bold text-gray-400 w-5 text-right tabular-nums">
@@ -926,7 +928,7 @@ export default function AbsensiSection() {
                   Slip Paling Relate
                 </p>
 
-                {featuredSlips.length === 0 ? (
+                {featuredPayslips.length === 0 ? (
                   <div className="space-y-3">
                     {[...Array(3)].map((_, i) => (
                       <div
@@ -947,12 +949,12 @@ export default function AbsensiSection() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {featuredSlips.map((slip) => {
-                      const mood = getMood(slip.mood);
+                    {featuredPayslips.map((slip) => {
+                      const mood = getMoodById(slip.mood);
                       const Icon = mood.icon;
                       const hasVoted = slip.voters?.includes(user?.uid);
                       const isOwn = slip.uid === user?.uid;
-                      const cantVote = isOwn || hasVoted || !user;
+                      const cannotVote = isOwn || hasVoted || !user;
 
                       return (
                         <div
@@ -969,12 +971,12 @@ export default function AbsensiSection() {
                               {slip.displayName}
                             </p>
                             <p className="text-xs font-semibold text-green-600 mt-0.5">
-                              {formatRp(slip.total)}
+                              {formatRupiah(slip.total)}
                             </p>
                           </div>
                           <button
-                            onClick={() => !cantVote && handleVote(slip.id)}
-                            disabled={cantVote}
+                            onClick={() => !cannotVote && handleVote(slip.id)}
+                            disabled={cannotVote}
                             title={
                               isOwn
                                 ? "Tidak bisa vote slip sendiri"
@@ -987,7 +989,7 @@ export default function AbsensiSection() {
                             className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl border text-xs font-bold transition-all shrink-0 ${
                               hasVoted
                                 ? "bg-green-50 border-green-300 text-green-600"
-                                : cantVote
+                                : cannotVote
                                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
                                   : "border-gray-200 text-gray-400 hover:border-green-400 hover:text-green-600 hover:bg-green-50"
                             }`}

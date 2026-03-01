@@ -36,7 +36,7 @@ const FEATURES = [
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [tab, setTab] = useState("login");
+  const [activeTab, setActiveTab] = useState("login");
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -122,8 +122,8 @@ export default function Login() {
     }
   };
 
-  const switchTab = (t) => {
-    setTab(t);
+  const switchTab = (tab) => {
+    setActiveTab(tab);
     setError("");
   };
 
@@ -213,7 +213,7 @@ export default function Login() {
             <button
               onClick={() => switchTab("login")}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors duration-150 ${
-                tab === "login"
+                activeTab === "login"
                   ? "bg-white text-gray-900"
                   : "text-gray-500 hover:text-gray-700"
               }`}
@@ -223,7 +223,7 @@ export default function Login() {
             <button
               onClick={() => switchTab("register")}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors duration-150 ${
-                tab === "register"
+                activeTab === "register"
                   ? "bg-white text-gray-900"
                   : "text-gray-500 hover:text-gray-700"
               }`}
@@ -242,7 +242,7 @@ export default function Login() {
             </p>
           </div>
 
-          {tab === "login" && (
+          {activeTab === "login" && (
             <>
               <div className="mb-8">
                 <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">
@@ -321,8 +321,7 @@ export default function Login() {
                     "Sedang masuk..."
                   ) : (
                     <>
-                      {" "}
-                      Masuk & Absen <ArrowRight size={15} />{" "}
+                      Masuk & Absen <ArrowRight size={15} />
                     </>
                   )}
                 </button>
@@ -341,7 +340,7 @@ export default function Login() {
             </>
           )}
 
-          {tab === "register" && (
+          {activeTab === "register" && (
             <>
               <div className="mb-8">
                 <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">
@@ -442,8 +441,7 @@ export default function Login() {
                     "Mendaftarkan..."
                   ) : (
                     <>
-                      {" "}
-                      Daftar & Masuk <ArrowRight size={15} />{" "}
+                      Daftar & Masuk <ArrowRight size={15} />
                     </>
                   )}
                 </button>

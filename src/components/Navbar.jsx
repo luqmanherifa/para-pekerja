@@ -24,22 +24,22 @@ const NAV_LINKS = [
 export default function Navbar({ onLogout }) {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handler = (e) => {
+    const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false);
+        setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
-    setOpen(false);
+    setIsOpen(false);
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -64,9 +64,9 @@ export default function Navbar({ onLogout }) {
         <div className="flex items-center gap-3">
           <div className="relative" ref={dropdownRef}>
             <button
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => setIsOpen((v) => !v)}
               className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-lg border transition-colors duration-150 ${
-                open
+                isOpen
                   ? "border-green-600 text-green-600 bg-green-50"
                   : "border-gray-300 text-gray-600 hover:border-green-600 hover:text-green-600"
               }`}
@@ -75,19 +75,19 @@ export default function Navbar({ onLogout }) {
               Fitur
               <ChevronDown
                 size={12}
-                className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
               />
             </button>
 
-            {open && (
+            {isOpen && (
               <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-xl overflow-hidden z-50">
-                {NAV_LINKS.map(({ label, href, icon: Icon }, i) => (
+                {NAV_LINKS.map(({ label, href, icon: Icon }, index) => (
                   <a
                     key={href}
                     href={href}
                     onClick={(e) => handleNavClick(e, href)}
                     className={`flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors duration-100 ${
-                      i !== NAV_LINKS.length - 1
+                      index !== NAV_LINKS.length - 1
                         ? "border-b border-gray-100"
                         : ""
                     }`}
@@ -123,7 +123,7 @@ export default function Navbar({ onLogout }) {
             </>
           ) : (
             <Link
-              to="/masuk"
+              to="/login"
               className="flex items-center gap-1.5 text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-150"
             >
               <LogIn size={13} />

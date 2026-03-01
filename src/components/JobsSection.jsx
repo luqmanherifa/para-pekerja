@@ -27,7 +27,7 @@ import {
   Send,
 } from "lucide-react";
 
-const formatRelative = (ts) => {
+const formatRelativeTime = (ts) => {
   if (!ts?.toDate) return "";
   const diff = (Date.now() - ts.toDate().getTime()) / 1000;
   if (diff < 60) return "baru saja";
@@ -58,7 +58,7 @@ function SkeletonCard() {
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -114,8 +114,8 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (!title.trim() || !desc.trim()) return;
-            onSubmit({ title: title.trim(), desc: desc.trim() });
+            if (!title.trim() || !description.trim()) return;
+            onSubmit({ title: title.trim(), desc: description.trim() });
           }}
           className="px-7 py-7 flex flex-col gap-6 bg-white"
         >
@@ -143,20 +143,20 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             </label>
             <textarea
               placeholder="Jelaskan apa yang dikerjakan. 1–3 kalimat sudah cukup."
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               maxLength={240}
               required
               rows={3}
               className="w-full border border-gray-200 rounded-2xl px-5 py-3.5 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-400 transition-colors resize-none leading-relaxed"
             />
             <p className="text-[10px] text-gray-300 mt-1.5 text-right tabular-nums">
-              {desc.length}/240
+              {description.length}/240
             </p>
           </div>
           <button
             type="submit"
-            disabled={!title.trim() || !desc.trim() || submitting}
+            disabled={!title.trim() || !description.trim() || submitting}
             className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-sm py-4 rounded-2xl transition-colors"
           >
             {submitting ? (
@@ -218,7 +218,7 @@ function LoginGateModal({ onClose }) {
         </div>
         <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
           <Link
-            to="/masuk"
+            to="/login"
             className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
           >
             Masuk Sekarang
@@ -236,35 +236,36 @@ function LoginGateModal({ onClose }) {
 }
 
 function JobCard({ job, user, onVote, isNew }) {
-  const layak = job.layak ?? 0;
-  const ditahan = job.ditahan ?? 0;
-  const total = layak + ditahan;
-  const layakPct = total > 0 ? Math.round((layak / total) * 100) : 50;
+  const approvedCount = job.layak ?? 0;
+  const rejectedCount = job.ditahan ?? 0;
+  const totalVotes = approvedCount + rejectedCount;
+  const approvedPct =
+    totalVotes > 0 ? Math.round((approvedCount / totalVotes) * 100) : 50;
 
-  const hasVotedLayak = job.voters_layak?.includes(user?.uid);
-  const hasVotedDitahan = job.voters_ditahan?.includes(user?.uid);
+  const hasVotedApproved = job.voters_layak?.includes(user?.uid);
+  const hasVotedRejected = job.voters_ditahan?.includes(user?.uid);
   const isOwn = user && job.uid === user.uid;
 
   const verdict =
-    total >= 10
-      ? layakPct >= 60
+    totalVotes >= 10
+      ? approvedPct >= 60
         ? { label: "Layak ✓", cls: "bg-green-100 text-green-700" }
-        : layakPct <= 40
+        : approvedPct <= 40
           ? { label: "Ditahan ✗", cls: "bg-red-100 text-red-600" }
           : { label: "Sengit", cls: "bg-gray-100 text-gray-500" }
       : null;
 
-  const cantVote = !user || isOwn;
+  const cannotVote = !user || isOwn;
 
-  const layakCls = hasVotedLayak
+  const approvedBtnCls = hasVotedApproved
     ? "bg-green-600 border-green-600 text-white"
-    : cantVote
+    : cannotVote
       ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
       : "border-green-200 bg-green-50 text-green-700 hover:bg-green-600 hover:border-green-600 hover:text-white";
 
-  const ditahanCls = hasVotedDitahan
+  const rejectedBtnCls = hasVotedRejected
     ? "bg-red-500 border-red-500 text-white"
-    : cantVote
+    : cannotVote
       ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
       : "border-red-200 bg-red-50 text-red-600 hover:bg-red-500 hover:border-red-500 hover:text-white";
 
@@ -293,7 +294,7 @@ function JobCard({ job, user, onVote, isNew }) {
           {job.createdAt && (
             <>
               <span>·</span>
-              <span>{formatRelative(job.createdAt)}</span>
+              <span>{formatRelativeTime(job.createdAt)}</span>
             </>
           )}
           {isOwn && (
@@ -308,59 +309,59 @@ function JobCard({ job, user, onVote, isNew }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              !cantVote &&
-              onVote(job.id, "layak", hasVotedLayak, hasVotedDitahan)
+              !cannotVote &&
+              onVote(job.id, "layak", hasVotedApproved, hasVotedRejected)
             }
-            disabled={cantVote}
+            disabled={cannotVote}
             title={
               isOwn
                 ? "Tidak bisa vote kerjaan sendiri"
                 : !user
                   ? "Masuk untuk vote"
-                  : hasVotedLayak
+                  : hasVotedApproved
                     ? "Batalkan vote"
                     : ""
             }
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${layakCls}`}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${approvedBtnCls}`}
           >
             <ThumbsUp size={12} strokeWidth={2.5} />
             <span>Layak</span>
             <span
-              className={`tabular-nums ${hasVotedLayak ? "text-green-200" : "text-green-500"}`}
+              className={`tabular-nums ${hasVotedApproved ? "text-green-200" : "text-green-500"}`}
             >
-              {layak}
+              {approvedCount}
             </span>
           </button>
 
           <button
             onClick={() =>
-              !cantVote &&
-              onVote(job.id, "ditahan", hasVotedLayak, hasVotedDitahan)
+              !cannotVote &&
+              onVote(job.id, "ditahan", hasVotedApproved, hasVotedRejected)
             }
-            disabled={cantVote}
+            disabled={cannotVote}
             title={
               isOwn
                 ? "Tidak bisa vote kerjaan sendiri"
                 : !user
                   ? "Masuk untuk vote"
-                  : hasVotedDitahan
+                  : hasVotedRejected
                     ? "Batalkan vote"
                     : ""
             }
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${ditahanCls}`}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${rejectedBtnCls}`}
           >
             <ThumbsDown size={12} strokeWidth={2.5} />
             <span>Ditahan</span>
             <span
-              className={`tabular-nums ${hasVotedDitahan ? "text-red-200" : "text-red-400"}`}
+              className={`tabular-nums ${hasVotedRejected ? "text-red-200" : "text-red-400"}`}
             >
-              {ditahan}
+              {rejectedCount}
             </span>
           </button>
 
           {!user && (
             <Link
-              to="/masuk"
+              to="/login"
               className="ml-auto text-[11px] text-gray-400 hover:text-green-600 font-semibold flex items-center gap-1 transition-colors"
             >
               <LogIn size={11} />
@@ -375,12 +376,12 @@ function JobCard({ job, user, onVote, isNew }) {
 
 const PREVIEW_COUNT = 4;
 
-export default function KerjaanSection() {
+export default function JobsSection() {
   const user = useSelector((s) => s.auth.user);
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showSubmit, setShowSubmit] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [newJobId, setNewJobId] = useState(null);
@@ -391,11 +392,11 @@ export default function KerjaanSection() {
       orderBy("layak", "desc"),
       limit(PREVIEW_COUNT + 1),
     );
-    const unsub = onSnapshot(q, (snap) => {
+    const unsubscribe = onSnapshot(q, (snap) => {
       setJobs(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
-    return unsub;
+    return unsubscribe;
   }, []);
 
   const handleSubmit = useCallback(
@@ -416,7 +417,7 @@ export default function KerjaanSection() {
           createdAt: serverTimestamp(),
         });
         setNewJobId(ref.id);
-        setShowSubmit(false);
+        setShowSubmitModal(false);
         setTimeout(() => setNewJobId(null), 3000);
       } catch (err) {
         console.error(err);
@@ -428,13 +429,13 @@ export default function KerjaanSection() {
   );
 
   const handleVote = useCallback(
-    async (jobId, type, hasVotedLayak, hasVotedDitahan) => {
+    async (jobId, type, hasVotedApproved, hasVotedRejected) => {
       if (!user) return;
       const opposite = type === "layak" ? "ditahan" : "layak";
       const alreadyVotedThis =
-        type === "layak" ? hasVotedLayak : hasVotedDitahan;
+        type === "layak" ? hasVotedApproved : hasVotedRejected;
       const alreadyVotedOpposite =
-        type === "layak" ? hasVotedDitahan : hasVotedLayak;
+        type === "layak" ? hasVotedRejected : hasVotedApproved;
 
       try {
         const jobRef = doc(db, "kerjaan", jobId);
@@ -474,9 +475,9 @@ export default function KerjaanSection() {
 
   return (
     <>
-      {showSubmit && (
+      {showSubmitModal && (
         <SubmitModal
-          onClose={() => setShowSubmit(false)}
+          onClose={() => setShowSubmitModal(false)}
           onSubmit={handleSubmit}
           submitting={submitting}
         />
@@ -520,7 +521,7 @@ export default function KerjaanSection() {
               )}
               <button
                 onClick={() =>
-                  user ? setShowSubmit(true) : setShowLoginGate(true)
+                  user ? setShowSubmitModal(true) : setShowLoginGate(true)
                 }
                 className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
               >
@@ -555,7 +556,7 @@ export default function KerjaanSection() {
 
           <div className="mt-8 flex items-center justify-between gap-4">
             <Link
-              to="/kerjaan"
+              to="/jobs"
               className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-6 py-3 rounded-2xl transition-colors"
             >
               Lihat Semua Kerjaan
@@ -564,7 +565,7 @@ export default function KerjaanSection() {
 
             {!user && (
               <Link
-                to="/masuk"
+                to="/login"
                 className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors"
               >
                 <LogIn size={14} />
