@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
+  Hammer,
   ClipboardCheck,
   Briefcase,
   MessageSquareQuote,
@@ -40,14 +41,11 @@ export default function Login() {
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-
   const [registerName, setRegisterName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
-
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -129,138 +127,131 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-white flex">
-      <div className="hidden lg:flex w-[45%] bg-gradient-to-br from-green-600 to-green-700 flex-col justify-between p-14 relative overflow-hidden shrink-0">
-        <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-green-500 opacity-30" />
-        <div className="absolute -bottom-24 -right-10 w-72 h-72 rounded-full bg-yellow-400 opacity-20" />
-        <div className="absolute top-1/3 right-0 w-40 h-40 rounded-full border border-green-400 opacity-20" />
-
-        <div className="relative z-10 flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-yellow-400 flex items-center justify-center shrink-0">
-            <span className="text-gray-900 text-[10px] font-extrabold tracking-tight leading-none select-none">
-              PP
-            </span>
-          </div>
-          <span className="text-white font-bold text-base tracking-tight">
+      <div className="hidden lg:flex w-[420px] shrink-0 bg-green-600 flex-col justify-between px-10 py-12">
+        <div className="flex items-center gap-2">
+          <Hammer size={16} className="text-yellow-400" strokeWidth={2.5} />
+          <span className="text-white font-black text-sm tracking-tight">
             Para Pekerja
           </span>
         </div>
 
-        <div className="relative z-10">
-          <div className="inline-block bg-yellow-400 text-gray-900 text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-5">
+        <div>
+          <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg mb-5">
             Komunitas Pendengar · ABG Siniar
-          </div>
-          <h2 className="text-4xl font-extrabold text-white leading-snug mb-4">
+          </span>
+          <h2 className="text-3xl font-black text-white leading-tight mb-3">
             Ruang pura-pura
             <br />
             <span className="text-yellow-400">produktif.</span>
           </h2>
-          <p className="text-green-100 text-sm leading-relaxed mb-8 max-w-xs">
+          <p className="text-green-200 text-[11px] leading-relaxed mb-8 max-w-xs">
             Bergabung dan nikmati semua fitur komunitas yang dibangun oleh para
             pekerja, untuk para pekerja.
           </p>
-          <ul className="flex flex-col gap-2.5">
+
+          <ul className="flex flex-col gap-2.5 mb-10">
             {FEATURES.map(({ icon: Icon, label }) => (
               <li key={label} className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-md bg-green-500 flex items-center justify-center shrink-0">
-                  <Icon size={12} className="text-white" strokeWidth={2} />
+                <div className="w-6 h-6 rounded-lg bg-green-500 flex items-center justify-center shrink-0">
+                  <Icon size={11} className="text-white" strokeWidth={2} />
                 </div>
-                <span className="text-green-100 text-xs font-medium">
+                <span className="text-green-100 text-[11px] font-semibold">
                   {label}
                 </span>
               </li>
             ))}
           </ul>
-        </div>
 
-        <div className="relative z-10 border-l-2 border-yellow-400 pl-4">
-          <p className="text-green-100 text-sm italic">
-            "Kerjaan apa yang gajinya 5 juta sehari?"
-          </p>
-          <p className="text-yellow-400 text-xs font-semibold mt-1 uppercase tracking-wide">
-            — ABG Siniar, setiap episode
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-1 flex items-center justify-center px-12 py-14">
-        <div className="w-full max-w-md">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-green-600 transition-colors duration-150 mb-8"
-          >
-            <ArrowLeft size={13} />
-            Kembali ke beranda
-          </Link>
-
-          <div className="lg:hidden mb-8 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center shrink-0">
-              <span className="text-white text-[10px] font-extrabold tracking-tight leading-none select-none">
-                PP
-              </span>
-            </div>
-            <div>
-              <span className="text-green-600 font-bold text-sm tracking-tight block">
-                Para Pekerja
-              </span>
-              <span className="text-gray-400 text-xs">
-                Komunitas Pendengar · ABG Siniar
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 mb-8">
-            <button
-              onClick={() => switchTab("login")}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors duration-150 ${
-                activeTab === "login"
-                  ? "bg-white text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Masuk
-            </button>
-            <button
-              onClick={() => switchTab("register")}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors duration-150 ${
-                activeTab === "register"
-                  ? "bg-white text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Daftar
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2 mb-8">
-            <Lock size={11} className="text-green-500 shrink-0" />
-            <p className="text-xs text-gray-400">
-              Kata sandi dienkripsi oleh{" "}
-              <span className="font-semibold text-gray-500">
-                Firebase Authentication
-              </span>
+          <div className="border-l-2 border-yellow-400 pl-4">
+            <p className="text-green-100 text-[11px] italic leading-relaxed">
+              "Kerjaan apa yang gajinya 5 juta sehari?"
+            </p>
+            <p className="text-yellow-400 text-[10px] font-bold mt-1.5 uppercase tracking-widest">
+              — ABG Siniar
             </p>
           </div>
+        </div>
 
-          {activeTab === "login" && (
-            <>
-              <div className="mb-8">
-                <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">
-                  Masuk dulu, <span className="text-green-600">Pekerja.</span>
-                </h1>
-                <p className="text-gray-400 text-sm mt-2">
-                  Setelah masuk, kamu otomatis tercatat hadir hari ini.
-                </p>
-              </div>
+        <p className="text-[10px] text-green-400 font-medium">
+          Fan-made · Bukan afiliasi resmi ABG Siniar
+        </p>
+      </div>
 
+      <div className="flex-1 flex flex-col">
+        <div className="flex items-center justify-between px-10 py-5 border-b border-gray-100">
+          <div className="flex items-center gap-2 lg:hidden">
+            <Hammer size={15} className="text-green-600" strokeWidth={2.5} />
+            <span className="text-gray-900 font-black text-sm tracking-tight">
+              Para Pekerja
+            </span>
+          </div>
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-green-600 transition-colors duration-150 ml-auto"
+          >
+            <ArrowLeft size={12} />
+            Kembali ke beranda
+          </Link>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center px-10 py-12">
+          <div className="w-full max-w-sm">
+            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 mb-8">
+              {["login", "register"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => switchTab(tab)}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-colors duration-150 ${
+                    activeTab === tab
+                      ? "bg-white text-gray-900"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  {tab === "login" ? "Masuk" : "Daftar"}
+                </button>
+              ))}
+            </div>
+
+            <div className="mb-7">
+              {activeTab === "login" ? (
+                <>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    Selamat datang kembali
+                  </p>
+                  <h1 className="text-xl font-black text-gray-900 leading-tight">
+                    Masuk dulu, <span className="text-green-600">Pekerja.</span>
+                  </h1>
+                  <p className="text-[11px] text-gray-400 mt-1.5">
+                    Setelah masuk, kamu otomatis tercatat hadir hari ini.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    Pekerja baru
+                  </p>
+                  <h1 className="text-xl font-black text-gray-900 leading-tight">
+                    Bergabung,{" "}
+                    <span className="text-green-600">Para Pekerja.</span>
+                  </h1>
+                  <p className="text-[11px] text-gray-400 mt-1.5">
+                    Daftar gratis dan langsung ikut berinteraksi bersama
+                    komunitas.
+                  </p>
+                </>
+              )}
+            </div>
+
+            {activeTab === "login" && (
               <form onSubmit={handleLogin} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Alamat Email
                   </label>
                   <div className="relative">
                     <Mail
-                      size={15}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                     />
                     <input
                       type="email"
@@ -268,19 +259,19 @@ export default function Login() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
-                      className="w-full border border-gray-300 rounded-xl pl-11 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-green-500 transition-colors duration-150"
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Kata Sandi
                   </label>
                   <div className="relative">
                     <Lock
-                      size={15}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                     />
                     <input
                       type={showLoginPassword ? "text" : "password"}
@@ -288,25 +279,25 @@ export default function Login() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
-                      className="w-full border border-gray-300 rounded-xl pl-11 pr-11 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-green-500 transition-colors duration-150"
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-9 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowLoginPassword((v) => !v)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-150"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       {showLoginPassword ? (
-                        <EyeOff size={15} />
+                        <EyeOff size={13} />
                       ) : (
-                        <Eye size={15} />
+                        <Eye size={13} />
                       )}
                     </button>
                   </div>
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                    <AlertCircle size={14} className="shrink-0" />
+                  <div className="flex items-center gap-2 text-[11px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
+                    <AlertCircle size={12} className="shrink-0" />
                     {error}
                   </div>
                 )}
@@ -314,54 +305,44 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 rounded-xl transition-colors duration-150 mt-1"
+                  className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-bold text-xs py-3 rounded-xl transition-colors mt-1"
                 >
                   {loading ? (
-                    "Sedang masuk..."
+                    <>
+                      <div className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      Sedang masuk...
+                    </>
                   ) : (
                     <>
-                      {" "}
-                      Masuk & Absen <ArrowRight size={15} />{" "}
+                      Masuk & Absen
+                      <ArrowRight size={13} />
                     </>
                   )}
                 </button>
 
-                <p className="text-center text-xs text-gray-400 mt-1">
+                <p className="text-center text-[11px] text-gray-400">
                   Belum punya akun?{" "}
                   <button
                     type="button"
                     onClick={() => switchTab("register")}
-                    className="text-green-600 font-semibold hover:underline"
+                    className="text-green-600 font-bold hover:underline"
                   >
                     Daftar sekarang
                   </button>
                 </p>
               </form>
-            </>
-          )}
+            )}
 
-          {activeTab === "register" && (
-            <>
-              <div className="mb-8">
-                <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">
-                  Bergabung,{" "}
-                  <span className="text-green-600">Para Pekerja Baru.</span>
-                </h1>
-                <p className="text-gray-400 text-sm mt-2">
-                  Daftar gratis dan langsung ikut berinteraksi bersama
-                  komunitas.
-                </p>
-              </div>
-
+            {activeTab === "register" && (
               <form onSubmit={handleRegister} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Nama Panggilan
                   </label>
                   <div className="relative">
                     <User
-                      size={15}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                     />
                     <input
                       type="text"
@@ -369,19 +350,19 @@ export default function Login() {
                       value={registerName}
                       onChange={(e) => setRegisterName(e.target.value)}
                       required
-                      className="w-full border border-gray-300 rounded-xl pl-11 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-green-500 transition-colors duration-150"
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Alamat Email
                   </label>
                   <div className="relative">
                     <Mail
-                      size={15}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                     />
                     <input
                       type="email"
@@ -389,19 +370,19 @@ export default function Login() {
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
                       required
-                      className="w-full border border-gray-300 rounded-xl pl-11 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-green-500 transition-colors duration-150"
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Kata Sandi
                   </label>
                   <div className="relative">
                     <Lock
-                      size={15}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                     />
                     <input
                       type={showRegisterPassword ? "text" : "password"}
@@ -409,25 +390,25 @@ export default function Login() {
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
                       required
-                      className="w-full border border-gray-300 rounded-xl pl-11 pr-11 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-green-500 transition-colors duration-150"
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-9 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowRegisterPassword((v) => !v)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-150"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       {showRegisterPassword ? (
-                        <EyeOff size={15} />
+                        <EyeOff size={13} />
                       ) : (
-                        <Eye size={15} />
+                        <Eye size={13} />
                       )}
                     </button>
                   </div>
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                    <AlertCircle size={14} className="shrink-0" />
+                  <div className="flex items-center gap-2 text-[11px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
+                    <AlertCircle size={12} className="shrink-0" />
                     {error}
                   </div>
                 )}
@@ -435,31 +416,44 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 rounded-xl transition-colors duration-150 mt-1"
+                  className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-bold text-xs py-3 rounded-xl transition-colors mt-1"
                 >
                   {loading ? (
-                    "Mendaftarkan..."
+                    <>
+                      <div className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      Mendaftarkan...
+                    </>
                   ) : (
                     <>
-                      {" "}
-                      Daftar & Masuk <ArrowRight size={15} />{" "}
+                      Daftar & Masuk
+                      <ArrowRight size={13} />
                     </>
                   )}
                 </button>
 
-                <p className="text-center text-xs text-gray-400 mt-1">
+                <p className="text-center text-[11px] text-gray-400">
                   Sudah punya akun?{" "}
                   <button
                     type="button"
                     onClick={() => switchTab("login")}
-                    className="text-green-600 font-semibold hover:underline"
+                    className="text-green-600 font-bold hover:underline"
                   >
                     Masuk di sini
                   </button>
                 </p>
               </form>
-            </>
-          )}
+            )}
+
+            <div className="flex items-center gap-2 mt-6 pt-5 border-t border-gray-100">
+              <Lock size={10} className="text-gray-300 shrink-0" />
+              <p className="text-[10px] text-gray-300">
+                Kata sandi dienkripsi oleh{" "}
+                <span className="font-semibold text-gray-400">
+                  Firebase Authentication
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
