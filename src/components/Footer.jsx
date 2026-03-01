@@ -8,8 +8,8 @@ import {
 } from "lucide-react";
 
 const FOOTER_LINKS = [
-  { label: "Absensi & Slip Gaji", href: "#absensi", icon: ClipboardCheck },
-  { label: "Kerjaan 5 Juta", href: "#kerjaan", icon: Briefcase },
+  { label: "Absensi & Slip Gaji", href: "#attendance", icon: ClipboardCheck },
+  { label: "Kerjaan 5 Juta", href: "#jobs", icon: Briefcase },
   { label: "Quote Battle", href: "#quote-battle", icon: MessageSquareQuote },
   { label: "Siapa Paling Benar", href: "#siapa-paling-benar", icon: Scale },
   { label: "Peringkat Tamu", href: "#guest-ranking", icon: Star },

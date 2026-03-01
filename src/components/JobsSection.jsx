@@ -34,11 +34,13 @@ const formatRelativeTime = (ts) => {
   if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
   if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
   if (diff < 2592000) return `${Math.floor(diff / 86400)} hari lalu`;
-  return ts.toDate().toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  return ts
+    .toDate()
+    .toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
 };
 
 function SkeletonCard() {
@@ -85,7 +87,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             to   { opacity: 1; transform: translateY(0) scale(1); }
           }
         `}</style>
-
         <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 px-7 py-6 relative">
           <button
             onClick={onClose}
@@ -115,7 +116,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!title.trim() || !description.trim()) return;
-            onSubmit({ title: title.trim(), desc: description.trim() });
+            onSubmit({ title: title.trim(), description: description.trim() });
           }}
           className="px-7 py-7 flex flex-col gap-6 bg-white"
         >
@@ -161,13 +162,12 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           >
             {submitting ? (
               <>
-                <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />{" "}
                 Mengirim...
               </>
             ) : (
               <>
-                <Send size={14} />
-                Kirim ke Komunitas
+                <Send size={14} /> Kirim ke Komunitas
               </>
             )}
           </button>
@@ -218,7 +218,7 @@ function LoginGateModal({ onClose }) {
         </div>
         <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
           <Link
-            to="/login"
+            to="/masuk"
             className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
           >
             Masuk Sekarang
@@ -236,14 +236,14 @@ function LoginGateModal({ onClose }) {
 }
 
 function JobCard({ job, user, onVote, isNew }) {
-  const approvedCount = job.layak ?? 0;
-  const rejectedCount = job.ditahan ?? 0;
+  const approvedCount = job.approved ?? 0;
+  const rejectedCount = job.rejected ?? 0;
   const totalVotes = approvedCount + rejectedCount;
   const approvedPct =
     totalVotes > 0 ? Math.round((approvedCount / totalVotes) * 100) : 50;
 
-  const hasVotedApproved = job.voters_layak?.includes(user?.uid);
-  const hasVotedRejected = job.voters_ditahan?.includes(user?.uid);
+  const hasVotedApproved = job.voters_approved?.includes(user?.uid);
+  const hasVotedRejected = job.voters_rejected?.includes(user?.uid);
   const isOwn = user && job.uid === user.uid;
 
   const verdict =
@@ -271,9 +271,7 @@ function JobCard({ job, user, onVote, isNew }) {
 
   return (
     <div
-      className={`bg-white border rounded-3xl transition-colors duration-200 hover:border-gray-300 ${
-        isNew ? "border-green-400" : "border-gray-200"
-      }`}
+      className={`bg-white border rounded-3xl transition-colors duration-200 hover:border-gray-300 ${isNew ? "border-green-400" : "border-gray-200"}`}
     >
       <div className="px-6 py-5">
         <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -303,14 +301,14 @@ function JobCard({ job, user, onVote, isNew }) {
         </p>
 
         <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
-          {job.desc}
+          {job.description}
         </p>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
               !cannotVote &&
-              onVote(job.id, "layak", hasVotedApproved, hasVotedRejected)
+              onVote(job.id, "approved", hasVotedApproved, hasVotedRejected)
             }
             disabled={cannotVote}
             title={
@@ -336,7 +334,7 @@ function JobCard({ job, user, onVote, isNew }) {
           <button
             onClick={() =>
               !cannotVote &&
-              onVote(job.id, "ditahan", hasVotedApproved, hasVotedRejected)
+              onVote(job.id, "rejected", hasVotedApproved, hasVotedRejected)
             }
             disabled={cannotVote}
             title={
@@ -361,7 +359,7 @@ function JobCard({ job, user, onVote, isNew }) {
 
           {!user && (
             <Link
-              to="/login"
+              to="/masuk"
               className="ml-auto text-[11px] text-gray-400 hover:text-green-600 font-semibold flex items-center gap-1 transition-colors"
             >
               <LogIn size={11} />
@@ -388,8 +386,8 @@ export default function JobsSection() {
 
   useEffect(() => {
     const q = query(
-      collection(db, "kerjaan"),
-      orderBy("layak", "desc"),
+      collection(db, "jobs"),
+      orderBy("approved", "desc"),
       limit(PREVIEW_COUNT + 1),
     );
     const unsubscribe = onSnapshot(q, (snap) => {
@@ -400,20 +398,20 @@ export default function JobsSection() {
   }, []);
 
   const handleSubmit = useCallback(
-    async ({ title, desc }) => {
+    async ({ title, description }) => {
       if (!user) return;
       setSubmitting(true);
       try {
-        const ref = await addDoc(collection(db, "kerjaan"), {
+        const ref = await addDoc(collection(db, "jobs"), {
           title,
-          desc,
+          description,
           submittedBy:
             user.displayName || user.email?.split("@")[0] || "Pekerja",
           uid: user.uid,
-          layak: 0,
-          ditahan: 0,
-          voters_layak: [],
-          voters_ditahan: [],
+          approved: 0,
+          rejected: 0,
+          voters_approved: [],
+          voters_rejected: [],
           createdAt: serverTimestamp(),
         });
         setNewJobId(ref.id);
@@ -431,14 +429,14 @@ export default function JobsSection() {
   const handleVote = useCallback(
     async (jobId, type, hasVotedApproved, hasVotedRejected) => {
       if (!user) return;
-      const opposite = type === "layak" ? "ditahan" : "layak";
+      const opposite = type === "approved" ? "rejected" : "approved";
       const alreadyVotedThis =
-        type === "layak" ? hasVotedApproved : hasVotedRejected;
+        type === "approved" ? hasVotedApproved : hasVotedRejected;
       const alreadyVotedOpposite =
-        type === "layak" ? hasVotedRejected : hasVotedApproved;
+        type === "approved" ? hasVotedRejected : hasVotedApproved;
 
       try {
-        const jobRef = doc(db, "kerjaan", jobId);
+        const jobRef = doc(db, "jobs", jobId);
         await runTransaction(db, async (tx) => {
           const snap = await tx.get(jobRef);
           if (!snap.exists()) return;
@@ -487,7 +485,7 @@ export default function JobsSection() {
       )}
 
       <section
-        id="kerjaan"
+        id="jobs"
         className="w-full bg-white border-t-4 border-b-4 border-yellow-400"
       >
         <div className="max-w-5xl mx-auto px-8 py-20">
@@ -556,16 +554,15 @@ export default function JobsSection() {
 
           <div className="mt-8 flex items-center justify-between gap-4">
             <Link
-              to="/jobs"
+              to="/kerjaan"
               className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-6 py-3 rounded-2xl transition-colors"
             >
               Lihat Semua Kerjaan
               <ArrowRight size={15} />
             </Link>
-
             {!user && (
               <Link
-                to="/login"
+                to="/masuk"
                 className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors"
               >
                 <LogIn size={14} />

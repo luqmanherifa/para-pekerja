@@ -45,7 +45,6 @@ const MOODS = [
     icon: Zap,
     pill: "bg-green-50 text-green-700 border-green-200 hover:border-green-400",
     active: "bg-green-600 text-white border-green-600",
-    dot: "bg-green-500",
     bar: "bg-green-500",
     badge: "bg-green-100 text-green-700",
   },
@@ -55,7 +54,6 @@ const MOODS = [
     icon: Coffee,
     pill: "bg-sky-50 text-sky-700 border-sky-200 hover:border-sky-400",
     active: "bg-sky-500 text-white border-sky-500",
-    dot: "bg-sky-500",
     bar: "bg-sky-400",
     badge: "bg-sky-100 text-sky-700",
   },
@@ -65,7 +63,6 @@ const MOODS = [
     icon: BatteryLow,
     pill: "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-400",
     active: "bg-gray-600 text-white border-gray-600",
-    dot: "bg-gray-400",
     bar: "bg-gray-400",
     badge: "bg-gray-100 text-gray-600",
   },
@@ -75,7 +72,6 @@ const MOODS = [
     icon: Target,
     pill: "bg-amber-50 text-amber-700 border-amber-200 hover:border-amber-400",
     active: "bg-amber-500 text-white border-amber-500",
-    dot: "bg-amber-500",
     bar: "bg-amber-400",
     badge: "bg-amber-100 text-amber-700",
   },
@@ -85,7 +81,6 @@ const MOODS = [
     icon: Tv2,
     pill: "bg-violet-50 text-violet-700 border-violet-200 hover:border-violet-400",
     active: "bg-violet-500 text-white border-violet-500",
-    dot: "bg-violet-500",
     bar: "bg-violet-400",
     badge: "bg-violet-100 text-violet-700",
   },
@@ -95,7 +90,6 @@ const MOODS = [
     icon: Umbrella,
     pill: "bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400",
     active: "bg-orange-500 text-white border-orange-500",
-    dot: "bg-orange-500",
     bar: "bg-orange-400",
     badge: "bg-orange-100 text-orange-700",
   },
@@ -105,7 +99,6 @@ const MOODS = [
     icon: AlertTriangle,
     pill: "bg-red-50 text-red-700 border-red-200 hover:border-red-400",
     active: "bg-red-500 text-white border-red-500",
-    dot: "bg-red-500",
     bar: "bg-red-400",
     badge: "bg-red-100 text-red-700",
   },
@@ -115,7 +108,6 @@ const MOODS = [
     icon: Ghost,
     pill: "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400",
     active: "bg-slate-600 text-white border-slate-600",
-    dot: "bg-slate-500",
     bar: "bg-slate-400",
     badge: "bg-slate-100 text-slate-600",
   },
@@ -265,7 +257,6 @@ function LoginNudgeModal({ moodId, onClose }) {
             to   { opacity: 1; transform: translateY(0) scale(1); }
           }
         `}</style>
-
         <div className="px-7 pt-7 pb-2">
           <button
             onClick={onClose}
@@ -273,13 +264,11 @@ function LoginNudgeModal({ moodId, onClose }) {
           >
             <X size={14} />
           </button>
-
           <div
             className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${mood.active}`}
           >
             <Icon size={26} strokeWidth={2} />
           </div>
-
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
             Mood Kamu Hari Ini
           </p>
@@ -291,10 +280,9 @@ function LoginNudgeModal({ moodId, onClose }) {
             imajiner hari ini.
           </p>
         </div>
-
         <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
           <Link
-            to="/login"
+            to="/masuk"
             className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
           >
             Masuk & Absen Sekarang
@@ -340,7 +328,6 @@ function PayslipModal({ payslip, moodId, onClose }) {
             to   { opacity: 1; transform: translateY(0) scale(1); }
           }
         `}</style>
-
         <div className="bg-gradient-to-br from-green-600 to-green-700 px-7 py-6 relative">
           <button
             onClick={onClose}
@@ -402,7 +389,6 @@ function PayslipModal({ payslip, moodId, onClose }) {
               </span>
             </div>
           ))}
-
           <div className="mt-5 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-4">
             <p className="text-[10px] font-extrabold text-amber-600 uppercase tracking-widest mb-2">
               Catatan HR
@@ -411,7 +397,6 @@ function PayslipModal({ payslip, moodId, onClose }) {
               "{payslip.hrNote}"
             </p>
           </div>
-
           <div className="flex justify-between items-center pt-5 mt-2 border-t-2 border-dashed border-gray-300">
             <span className="text-sm font-bold text-gray-900">
               Total Diterima
@@ -440,11 +425,7 @@ function AttendeeCard({ attendee, isGhost }) {
   const Icon = mood.icon;
   return (
     <div
-      className={`flex items-center gap-2 bg-white border rounded-2xl px-3.5 py-2.5 shrink-0 transition-all duration-200 ${
-        isGhost
-          ? "opacity-30 border-gray-200 select-none"
-          : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
-      }`}
+      className={`flex items-center gap-2 bg-white border rounded-2xl px-3.5 py-2.5 shrink-0 transition-all duration-200 ${isGhost ? "opacity-30 border-gray-200 select-none" : "border-gray-200 hover:border-gray-300 hover:shadow-sm"}`}
     >
       <div
         className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${mood.active}`}
@@ -472,15 +453,11 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
         const isDone = phase === "done";
 
         let className;
-        if (isDone && isSelected) {
+        if (isDone && isSelected)
           className = mood.active + " opacity-100 cursor-default";
-        } else if (isDone) {
-          className = mood.pill + " opacity-30 cursor-default";
-        } else if (isSelected) {
-          className = mood.active;
-        } else {
-          className = mood.pill + " cursor-pointer";
-        }
+        else if (isDone) className = mood.pill + " opacity-30 cursor-default";
+        else if (isSelected) className = mood.active;
+        else className = mood.pill + " cursor-pointer";
 
         return (
           <button
@@ -521,11 +498,11 @@ export default function AttendanceSection() {
       setPhase("guest");
       return;
     }
-    getDoc(doc(db, "absensi", `${user.uid}_${today}`)).then((snap) => {
+    getDoc(doc(db, "attendance", `${user.uid}_${today}`)).then((snap) => {
       if (snap.exists()) {
         const data = snap.data();
         setMyMood(data.mood);
-        setMyPayslip(data.slip);
+        setMyPayslip(data.payslip);
         setSelectedMood(data.mood);
         setPhase("done");
       } else {
@@ -536,7 +513,7 @@ export default function AttendanceSection() {
 
   useEffect(() => {
     const q = query(
-      collection(db, "absensi"),
+      collection(db, "attendance"),
       where("date", "==", today),
       orderBy("createdAt", "desc"),
       limit(40),
@@ -561,7 +538,7 @@ export default function AttendanceSection() {
 
   useEffect(() => {
     return onSnapshot(doc(db, "daily_featured", today), (snap) => {
-      if (snap.exists()) setFeaturedPayslips(snap.data().slips ?? []);
+      if (snap.exists()) setFeaturedPayslips(snap.data().payslips ?? []);
     });
   }, [today]);
 
@@ -570,7 +547,7 @@ export default function AttendanceSection() {
     setSubmitting(true);
     try {
       const payslip = buildPayslip(selectedMood);
-      const attendanceRef = doc(db, "absensi", `${user.uid}_${today}`);
+      const attendanceRef = doc(db, "attendance", `${user.uid}_${today}`);
       const statsRef = doc(db, "daily_stats", today);
       const featuredRef = doc(db, "daily_featured", today);
 
@@ -585,7 +562,7 @@ export default function AttendanceSection() {
           displayName:
             user.displayName || user.email?.split("@")[0] || "Pekerja",
           mood: selectedMood,
-          slip: payslip,
+          payslip,
           date: today,
           createdAt: serverTimestamp(),
           voteCount: 0,
@@ -615,12 +592,12 @@ export default function AttendanceSection() {
           voters: [],
         };
         const existing = featuredSnap.exists()
-          ? (featuredSnap.data().slips ?? [])
+          ? (featuredSnap.data().payslips ?? [])
           : [];
         if (!featuredSnap.exists())
-          tx.set(featuredRef, { slips: [entry], date: today });
+          tx.set(featuredRef, { payslips: [entry], date: today });
         else if (existing.length < 5)
-          tx.update(featuredRef, { slips: [...existing, entry] });
+          tx.update(featuredRef, { payslips: [...existing, entry] });
       });
 
       setMyMood(selectedMood);
@@ -640,10 +617,10 @@ export default function AttendanceSection() {
       try {
         await runTransaction(db, async (tx) => {
           const featuredRef = doc(db, "daily_featured", today);
-          const attendanceRef = doc(db, "absensi", slipId);
+          const attendanceRef = doc(db, "attendance", slipId);
           const snap = await tx.get(featuredRef);
           if (!snap.exists()) return;
-          const updated = (snap.data().slips ?? []).map((s) =>
+          const updated = (snap.data().payslips ?? []).map((s) =>
             s.id === slipId && !s.voters?.includes(user.uid)
               ? {
                   ...s,
@@ -652,7 +629,7 @@ export default function AttendanceSection() {
                 }
               : s,
           );
-          tx.update(featuredRef, { slips: updated });
+          tx.update(featuredRef, { payslips: updated });
           tx.update(attendanceRef, {
             voteCount: increment(1),
             voters: arrayUnion(user.uid),
@@ -666,11 +643,8 @@ export default function AttendanceSection() {
   );
 
   const handleMoodClick = (moodId) => {
-    if (phase === "guest") {
-      setLoginNudgeMood(moodId);
-    } else if (phase === "pick_mood") {
-      setSelectedMood(moodId);
-    }
+    if (phase === "guest") setLoginNudgeMood(moodId);
+    else if (phase === "pick_mood") setSelectedMood(moodId);
   };
 
   const isGhost = attendees.length === 0;
@@ -693,7 +667,7 @@ export default function AttendanceSection() {
         />
       )}
 
-      <section id="absensi" className="w-full bg-white">
+      <section id="attendance" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-20">
           <div className="flex items-start justify-between mb-10 gap-6">
             <div>
@@ -709,7 +683,6 @@ export default function AttendanceSection() {
                 Absen dulu sebelum pura-pura produktif. Reset tiap hari.
               </p>
             </div>
-
             <div className="shrink-0 text-right hidden sm:block">
               <p className="text-3xl font-extrabold text-gray-900">
                 {totalToday > 0 ? totalToday.toLocaleString("id-ID") : "—"}
@@ -762,7 +735,7 @@ export default function AttendanceSection() {
                       </span>
                     </div>
                   )}
-                  {phase === "guest" && (
+                  {(phase === "guest" || phase === "pick_mood") && (
                     <div>
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                         Pilih Mood Kamu
@@ -771,20 +744,9 @@ export default function AttendanceSection() {
                         Kondisi kerja hari ini?
                       </h3>
                       <p className="text-xs text-gray-400 mt-1">
-                        Klik mood untuk masuk dan absen.
-                      </p>
-                    </div>
-                  )}
-                  {phase === "pick_mood" && (
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
-                        Pilih Mood Kamu
-                      </p>
-                      <h3 className="text-lg font-extrabold text-gray-900">
-                        Kondisi kerja hari ini?
-                      </h3>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Pilih satu — tidak bisa diubah setelah absen.
+                        {phase === "guest"
+                          ? "Klik mood untuk masuk dan absen."
+                          : "Pilih satu — tidak bisa diubah setelah absen."}
                       </p>
                     </div>
                   )}
@@ -856,13 +818,12 @@ export default function AttendanceSection() {
                     >
                       {submitting ? (
                         <>
-                          <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                          <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />{" "}
                           Memproses...
                         </>
                       ) : (
                         <>
-                          <Sparkles size={15} />
-                          Absen & Lihat Slip Gaji
+                          <Sparkles size={15} /> Absen & Lihat Slip Gaji
                         </>
                       )}
                     </button>
@@ -927,7 +888,6 @@ export default function AttendanceSection() {
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">
                   Slip Paling Relate
                 </p>
-
                 {featuredPayslips.length === 0 ? (
                   <div className="space-y-3">
                     {[...Array(3)].map((_, i) => (

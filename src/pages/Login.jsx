@@ -158,7 +158,6 @@ export default function Login() {
             Bergabung dan nikmati semua fitur komunitas yang dibangun oleh para
             pekerja, untuk para pekerja.
           </p>
-
           <ul className="flex flex-col gap-2.5">
             {FEATURES.map(({ icon: Icon, label }) => (
               <li key={label} className="flex items-center gap-3">
@@ -321,7 +320,8 @@ export default function Login() {
                     "Sedang masuk..."
                   ) : (
                     <>
-                      Masuk & Absen <ArrowRight size={15} />
+                      {" "}
+                      Masuk & Absen <ArrowRight size={15} />{" "}
                     </>
                   )}
                 </button>
@@ -441,7 +441,8 @@ export default function Login() {
                     "Mendaftarkan..."
                   ) : (
                     <>
-                      Daftar & Masuk <ArrowRight size={15} />
+                      {" "}
+                      Daftar & Masuk <ArrowRight size={15} />{" "}
                     </>
                   )}
                 </button>

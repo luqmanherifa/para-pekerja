@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   LogOut,
   ClipboardCheck,
@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Absensi & Slip Gaji", href: "#absensi", icon: ClipboardCheck },
-  { label: "Kerjaan 5 Juta", href: "#kerjaan", icon: Briefcase },
+  { label: "Absensi & Slip Gaji", href: "#attendance", icon: ClipboardCheck },
+  { label: "Kerjaan 5 Juta", href: "#jobs", icon: Briefcase },
   { label: "Quote Battle", href: "#quote-battle", icon: MessageSquareQuote },
   { label: "Siapa Paling Benar", href: "#siapa-paling-benar", icon: Scale },
   { label: "Peringkat Tamu", href: "#guest-ranking", icon: Star },
@@ -23,7 +23,6 @@ const NAV_LINKS = [
 
 export default function Navbar({ onLogout }) {
   const user = useSelector((state) => state.auth.user);
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -123,7 +122,7 @@ export default function Navbar({ onLogout }) {
             </>
           ) : (
             <Link
-              to="/login"
+              to="/masuk"
               className="flex items-center gap-1.5 text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-150"
             >
               <LogIn size={13} />
