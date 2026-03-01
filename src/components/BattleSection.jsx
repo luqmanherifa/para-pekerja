@@ -57,7 +57,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
         type="button"
         onClick={() => !isDisabled && onSelect(speaker)}
         disabled={isDisabled}
-        className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all duration-150 ${
           isDisabled
             ? "opacity-30 cursor-not-allowed border-gray-200 text-gray-400 bg-white"
             : isSelected
@@ -86,7 +86,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg bg-white rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         style={{
           animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
@@ -94,51 +94,55 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
       >
         <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
 
-        <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 px-7 py-6 relative">
+        <div className="bg-yellow-400 px-6 py-5 relative">
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-full bg-yellow-300/50 text-yellow-900 hover:bg-yellow-300/80 transition-colors"
+            className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center rounded-lg bg-yellow-300/60 text-yellow-900 hover:bg-yellow-300/90 transition-colors"
           >
-            <X size={14} />
+            <X size={12} />
           </button>
-          <div className="flex items-center gap-2 mb-2">
-            <Scale size={13} className="text-yellow-800" strokeWidth={2.5} />
-            <span className="text-yellow-800 text-xs font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Scale size={12} className="text-yellow-800" strokeWidth={2.5} />
+            <span className="text-yellow-800 text-[10px] font-bold uppercase tracking-widest">
               Buat Battle
             </span>
           </div>
-          <h3 className="text-gray-900 font-extrabold text-xl leading-tight">
+          <p className="text-gray-900 font-black text-lg leading-tight">
             Siapa Paling Benar?
-          </h3>
-          <p className="text-yellow-800 text-xs mt-1.5">
+          </p>
+          <p className="text-yellow-800 text-[11px] mt-1">
             Pilih episode, dua orang, lalu ringkas pendapat masing-masing.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="px-7 py-6 flex flex-col gap-5 bg-white"
+          className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Episode
             </label>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setEpisodeOpen((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${selectedEpisode ? "border-yellow-400 text-gray-900" : "border-gray-200 text-gray-400 hover:border-gray-300"}`}
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors ${
+                  selectedEpisode
+                    ? "border-yellow-400 text-gray-900"
+                    : "border-gray-200 text-gray-400 hover:border-gray-300"
+                }`}
               >
                 <span>
                   {selectedEpisode ? selectedEpisode.label : "Pilih episode..."}
                 </span>
                 <ChevronDown
-                  size={15}
+                  size={13}
                   className={`transition-transform duration-200 text-gray-400 ${episodeOpen ? "rotate-180" : ""}`}
                 />
               </button>
               {episodeOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-2xl overflow-hidden z-10 shadow-lg">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl overflow-hidden z-10">
                   {EPISODES.map((ep) => (
                     <button
                       key={ep.id}
@@ -147,7 +151,11 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                         setSelectedEpisode(ep);
                         setEpisodeOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${selectedEpisode?.id === ep.id ? "bg-yellow-50 text-yellow-700" : "text-gray-700"}`}
+                      className={`w-full text-left px-4 py-2.5 text-xs font-semibold transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${
+                        selectedEpisode?.id === ep.id
+                          ? "bg-yellow-50 text-yellow-700"
+                          : "text-gray-700"
+                      }`}
                     >
                       {ep.label}
                     </button>
@@ -158,7 +166,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Orang A
             </label>
             <div className="flex flex-col gap-2">
@@ -201,7 +209,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   maxLength={300}
                   required
                   rows={3}
-                  className="w-full border border-gray-200 rounded-2xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
                 <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
                   {summaryA.length}/300
@@ -212,8 +220,8 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
 
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-100" />
-            <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
-              <span className="text-white text-[10px] font-extrabold tracking-widest">
+            <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
+              <span className="text-white text-[9px] font-black tracking-widest">
                 VS
               </span>
             </div>
@@ -221,7 +229,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Orang B
             </label>
             <div className="flex flex-col gap-2">
@@ -264,7 +272,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   maxLength={300}
                   required
                   rows={3}
-                  className="w-full border border-gray-200 rounded-2xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
                 <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
                   {summaryB.length}/300
@@ -276,16 +284,17 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <button
             type="submit"
             disabled={!canSubmit || submitting}
-            className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-sm py-4 rounded-2xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-xs py-3 rounded-xl transition-colors"
           >
             {submitting ? (
               <>
-                <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />{" "}
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 Mengirim...
               </>
             ) : (
               <>
-                <Send size={14} /> Buat Battle
+                <Send size={12} />
+                Buat Battle
               </>
             )}
           </button>
@@ -311,8 +320,8 @@ function BattleCard({ battle, user, onVote }) {
   const hasVoted = votedA || votedB;
 
   return (
-    <div className="group bg-white border border-gray-200 rounded-3xl overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all duration-200">
-      <div className="flex items-center justify-between px-6 pt-5 pb-3">
+    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-all duration-200">
+      <div className="flex items-center justify-between px-6 pt-4 pb-3">
         <span className="text-[10px] text-gray-300 font-semibold uppercase tracking-widest">
           {battle.episodeLabel}
         </span>
@@ -324,7 +333,7 @@ function BattleCard({ battle, user, onVote }) {
       <div className="grid grid-cols-[1fr_auto_1fr] gap-0 px-6 pb-5">
         <div className="flex flex-col gap-3">
           <span
-            className={`inline-flex items-center gap-1.5 self-start text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border ${colorA.light}`}
+            className={`inline-flex items-center gap-1.5 self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorA.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorA.dot}`} />
             {battle.speakerAName}
@@ -334,14 +343,14 @@ function BattleCard({ battle, user, onVote }) {
               </span>
             )}
           </span>
-          <p className="text-sm text-gray-700 leading-relaxed font-medium">
+          <p className="text-xs text-gray-700 leading-relaxed font-medium">
             {battle.summaryA}
           </p>
         </div>
 
-        <div className="flex items-center justify-center px-5">
-          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-            <span className="text-gray-400 text-[10px] font-extrabold tracking-widest">
+        <div className="flex items-center justify-center px-4">
+          <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+            <span className="text-gray-400 text-[9px] font-black tracking-widest">
               VS
             </span>
           </div>
@@ -349,7 +358,7 @@ function BattleCard({ battle, user, onVote }) {
 
         <div className="flex flex-col gap-3 items-end text-right">
           <span
-            className={`inline-flex items-center gap-1.5 self-end text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border ${colorB.light}`}
+            className={`inline-flex items-center gap-1.5 self-end text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorB.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorB.dot}`} />
             {battle.speakerBName}
@@ -359,7 +368,7 @@ function BattleCard({ battle, user, onVote }) {
               </span>
             )}
           </span>
-          <p className="text-sm text-gray-700 leading-relaxed font-medium">
+          <p className="text-xs text-gray-700 leading-relaxed font-medium">
             {battle.summaryB}
           </p>
         </div>
@@ -368,16 +377,16 @@ function BattleCard({ battle, user, onVote }) {
       <div className="border-t border-gray-100 px-6 py-4">
         {totalVotes > 0 && (
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-extrabold text-gray-400 tabular-nums w-8 text-right">
+            <span className="text-[10px] font-bold text-gray-400 tabular-nums w-8 text-right">
               {pctA}%
             </span>
-            <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden flex">
+            <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden flex">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${colorA.bar}`}
                 style={{ width: `${pctA}%` }}
               />
             </div>
-            <span className="text-[10px] font-extrabold text-gray-400 tabular-nums w-8">
+            <span className="text-[10px] font-bold text-gray-400 tabular-nums w-8">
               {pctB}%
             </span>
           </div>
@@ -386,12 +395,12 @@ function BattleCard({ battle, user, onVote }) {
           <button
             onClick={() => user && !hasVoted && onVote(battle.id, "A")}
             disabled={!user || hasVoted}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-2xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               votedA
                 ? `${colorA.voteLight} border`
                 : hasVoted || !user
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : `border-gray-200 text-gray-600 hover:${colorA.voteLight} hover:border-transparent`
+                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50"
             }`}
           >
             {votedA && (
@@ -405,12 +414,12 @@ function BattleCard({ battle, user, onVote }) {
           <button
             onClick={() => user && !hasVoted && onVote(battle.id, "B")}
             disabled={!user || hasVoted}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-2xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               votedB
                 ? `${colorB.voteLight} border`
                 : hasVoted || !user
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : `border-gray-200 text-gray-600 hover:${colorB.voteLight} hover:border-transparent`
+                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50"
             }`}
           >
             {votedB && (
@@ -470,48 +479,52 @@ export default function BattleSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <section
-        id="siapa-paling-benar"
-        className="w-full bg-white border-t-4 border-yellow-400"
-      >
-        <div className="max-w-5xl mx-auto px-8 py-20">
-          <div className="flex items-start justify-between mb-10 gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-4">
-                <Scale size={12} strokeWidth={2.5} />
+      <div className="w-full h-1 bg-yellow-400" />
+
+      <section id="siapa-paling-benar" className="w-full bg-white">
+        <div className="max-w-5xl mx-auto px-8 py-14">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-2.5">
+              <Scale size={13} className="text-yellow-500" strokeWidth={2.5} />
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 Siapa Paling Benar?
-              </div>
-              <h2 className="text-3xl font-extrabold text-gray-900 leading-tight">
-                Duel Pendapat
-                <br />
-                <span className="text-yellow-500">Per Episode</span>
-              </h2>
-              <p className="text-gray-400 text-sm mt-2 max-w-xs leading-relaxed">
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {(totalBattles[activeEpisode.id] ?? 0) > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                    Battle aktif
+                  </span>
+                  <span className="text-sm font-black text-gray-900 tabular-nums">
+                    {totalBattles[activeEpisode.id]}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-end justify-between mb-8 gap-6">
+            <div>
+              <p className="text-base font-black text-gray-900 leading-tight">
+                Duel Pendapat Per Episode
+              </p>
+              <p className="text-[11px] text-gray-400 mt-0.5">
                 Rangkum argumen dua orang. Komunitas pilih siapa yang paling
                 benar — atau paling chaos.
               </p>
             </div>
-            <div className="shrink-0 flex flex-col items-end gap-3">
-              {(totalBattles[activeEpisode.id] ?? 0) > 0 && (
-                <div className="text-right">
-                  <p className="text-3xl font-extrabold text-gray-900">
-                    {totalBattles[activeEpisode.id]}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-0.5">battle aktif</p>
-                </div>
-              )}
-              <button
-                onClick={openSubmitModal}
-                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
-              >
-                <Plus size={14} strokeWidth={2.5} />
-                Buat Battle
-              </button>
-            </div>
+            <button
+              onClick={openSubmitModal}
+              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
+            >
+              <Plus size={12} strokeWidth={2.5} />
+              Buat Battle
+            </button>
           </div>
 
           <div
-            className="flex items-center gap-2 mb-8 overflow-x-auto pb-1"
+            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
             style={{ scrollbarWidth: "none" }}
           >
             {EPISODES.map((ep) => {
@@ -521,7 +534,7 @@ export default function BattleSection() {
                 <button
                   key={ep.id}
                   onClick={() => setActiveEpisode(ep)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
                     isActive
                       ? "bg-yellow-400 text-gray-900 border-yellow-400"
                       : "bg-white text-gray-600 border-gray-200 hover:border-yellow-300 hover:text-yellow-600"
@@ -530,7 +543,11 @@ export default function BattleSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${isActive ? "bg-yellow-500 text-yellow-100" : "bg-gray-100 text-gray-500"}`}
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                        isActive
+                          ? "bg-yellow-500 text-yellow-100"
+                          : "bg-gray-100 text-gray-500"
+                      }`}
                     >
                       {count}
                     </span>
@@ -540,22 +557,22 @@ export default function BattleSection() {
             })}
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-3">
             {loading ? (
               [...Array(2)].map((_, i) => (
                 <div
                   key={i}
-                  className="border border-gray-100 rounded-3xl p-6 animate-pulse"
+                  className="border border-gray-100 rounded-2xl p-6 animate-pulse"
                 >
                   <div className="grid grid-cols-[1fr_auto_1fr] gap-4">
                     <div className="space-y-2">
-                      <div className="h-5 bg-gray-100 rounded-full w-24" />
+                      <div className="h-4 bg-gray-100 rounded-full w-24" />
                       <div className="h-3 bg-gray-100 rounded-full w-full" />
                       <div className="h-3 bg-gray-100 rounded-full w-4/5" />
                     </div>
-                    <div className="w-8 h-8 bg-gray-100 rounded-full self-center" />
+                    <div className="w-7 h-7 bg-gray-100 rounded-full self-center" />
                     <div className="space-y-2 items-end flex flex-col">
-                      <div className="h-5 bg-gray-100 rounded-full w-24" />
+                      <div className="h-4 bg-gray-100 rounded-full w-24" />
                       <div className="h-3 bg-gray-100 rounded-full w-full" />
                       <div className="h-3 bg-gray-100 rounded-full w-4/5" />
                     </div>
@@ -563,23 +580,23 @@ export default function BattleSection() {
                 </div>
               ))
             ) : isEmpty ? (
-              <div className="border-2 border-dashed border-gray-200 rounded-3xl px-8 py-16 text-center">
+              <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
                 <Swords
-                  size={32}
-                  className="text-gray-200 mx-auto mb-4"
+                  size={28}
+                  className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-sm font-bold text-gray-400 mb-1">
+                <p className="text-xs font-black text-gray-400 mb-1">
                   Belum ada battle untuk episode ini.
                 </p>
-                <p className="text-xs text-gray-300 mb-6">
+                <p className="text-[11px] text-gray-300 mb-5">
                   Jadilah yang pertama merangkum duel pendapat.
                 </p>
                 <button
                   onClick={openSubmitModal}
-                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
+                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
                 >
-                  <Plus size={14} />
+                  <Plus size={12} />
                   Buat Battle Pertama
                 </button>
               </div>
@@ -596,12 +613,12 @@ export default function BattleSection() {
           </div>
 
           {!user && !isEmpty && !loading && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
               <Link
                 to="/masuk"
                 className="inline-flex items-center gap-1.5 text-yellow-600 font-bold hover:underline"
               >
-                <LogIn size={12} />
+                <LogIn size={11} />
                 Masuk
               </Link>
               <span>untuk buat battle dan ikut vote.</span>
