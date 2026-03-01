@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Absensi", href: "#attendance", icon: ClipboardCheck },
+  { label: "Absensi dan Gaji", href: "#attendance", icon: ClipboardCheck },
   { label: "Kerjaan 5 Juta", href: "#jobs", icon: Briefcase },
   { label: "Quote Battle", href: "#quote-battle", icon: MessageSquareQuote },
   { label: "Siapa Paling Benar", href: "#siapa-paling-benar", icon: Scale },
