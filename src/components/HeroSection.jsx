@@ -10,7 +10,6 @@ export default function HeroSection() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "users"), (snap) => {
       setTotalMembers(snap.size);
-
       const since = Date.now() - 24 * 60 * 60 * 1000;
       const active = snap.docs.filter((d) => {
         const t = d.data().lastActiveAt;
@@ -18,13 +17,11 @@ export default function HeroSection() {
       });
       setActiveToday(active.length);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const scrollTo = (id) => {
+  const scrollTo = (id) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section className="w-full bg-gradient-to-br from-green-600 to-green-700">
@@ -35,18 +32,15 @@ export default function HeroSection() {
               <Zap size={11} strokeWidth={2.5} />
               Komunitas Pendengar · ABG Siniar
             </div>
-
             <h1 className="text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
               Selamat datang,
               <br />
               <span className="text-yellow-400">Para Pekerja.</span>
             </h1>
-
             <p className="text-green-100 text-base leading-relaxed mb-8 max-w-md">
               Ini bukan tempat kerja beneran. Tapi kamu tetap perlu absen, kirim
               kerjaan absurd, dan vote siapa yang paling benar.
             </p>
-
             <div className="flex items-center gap-3">
               <button
                 onClick={() => scrollTo("attendance")}

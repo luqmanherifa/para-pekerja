@@ -1,20 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { db } from "../firebase/config";
-import {
-  collection,
-  doc,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  increment,
-  arrayUnion,
-  runTransaction,
-} from "firebase/firestore";
 import {
   MessageSquareQuote,
   ThumbsUp,
@@ -24,82 +9,16 @@ import {
   LogIn,
   ChevronDown,
 } from "lucide-react";
-
-const EPISODES = [
-  { id: "ep1", label: "Episode 1" },
-  { id: "ep2", label: "Episode 2" },
-  { id: "ep3", label: "Episode 3" },
-  { id: "ep4", label: "Episode 4" },
-  { id: "ep5", label: "Episode 5" },
-];
-
-const COMEDIANS = [
-  { id: "arif", name: "Arif Brata", type: "host" },
-  { id: "bintang", name: "Bintang Emon", type: "host" },
-  { id: "gilang", name: "Gilang Bhaskara", type: "host" },
-];
-
-const GUESTS = [
-  { id: "adi", name: "Adi Arkiang", type: "guest" },
-  { id: "pandji", name: "Pandji Pragiwaksono", type: "guest" },
-  { id: "raditya", name: "Raditya Dika", type: "guest" },
-];
-
-const ALL_SPEAKERS = [...COMEDIANS, ...GUESTS];
-
-const SPEAKER_COLORS = {
-  arif: {
-    bg: "bg-green-600",
-    light: "bg-green-50 text-green-700 border-green-200",
-    dot: "bg-green-500",
-  },
-  bintang: {
-    bg: "bg-sky-500",
-    light: "bg-sky-50 text-sky-700 border-sky-200",
-    dot: "bg-sky-500",
-  },
-  gilang: {
-    bg: "bg-amber-500",
-    light: "bg-amber-50 text-amber-700 border-amber-200",
-    dot: "bg-amber-500",
-  },
-  adi: {
-    bg: "bg-violet-500",
-    light: "bg-violet-50 text-violet-700 border-violet-200",
-    dot: "bg-violet-500",
-  },
-  pandji: {
-    bg: "bg-orange-500",
-    light: "bg-orange-50 text-orange-700 border-orange-200",
-    dot: "bg-orange-500",
-  },
-  raditya: {
-    bg: "bg-rose-500",
-    light: "bg-rose-50 text-rose-700 border-rose-200",
-    dot: "bg-rose-500",
-  },
-};
-
-const getSpeaker = (id) => ALL_SPEAKERS.find((s) => s.id === id);
-const getSpeakerColor = (id) =>
-  SPEAKER_COLORS[id] ?? {
-    bg: "bg-gray-500",
-    light: "bg-gray-50 text-gray-700 border-gray-200",
-    dot: "bg-gray-400",
-  };
+import { useQuotes } from "../hooks/useQuotes";
+import LoginGateModal from "./LoginGateModal";
+import { EPISODES } from "../data/episodes";
+import { HOSTS, GUESTS, getSpeakerColor } from "../data/speakers";
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [selectedSpeaker, setSelectedSpeaker] = useState(null);
   const [quoteText, setQuoteText] = useState("");
   const [episodeOpen, setEpisodeOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
 
   const canSubmit =
     selectedEpisode && selectedSpeaker && quoteText.trim().length >= 5;
@@ -129,12 +48,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
         }}
       >
-        <style>{`
-          @keyframes modalIn {
-            from { opacity: 0; transform: translateY(32px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
+        <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
 
         <div className="bg-gradient-to-br from-green-600 to-green-700 px-7 py-6 relative">
           <button
@@ -173,11 +87,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               <button
                 type="button"
                 onClick={() => setEpisodeOpen((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${
-                  selectedEpisode
-                    ? "border-green-500 text-gray-900 bg-white"
-                    : "border-gray-200 text-gray-400 bg-white hover:border-gray-300"
-                }`}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${selectedEpisode ? "border-green-500 text-gray-900" : "border-gray-200 text-gray-400 hover:border-gray-300"}`}
               >
                 <span>
                   {selectedEpisode ? selectedEpisode.label : "Pilih episode..."}
@@ -197,11 +107,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                         setSelectedEpisode(ep);
                         setEpisodeOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-green-50 hover:text-green-700 ${
-                        selectedEpisode?.id === ep.id
-                          ? "bg-green-50 text-green-700"
-                          : "text-gray-700"
-                      }`}
+                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-green-50 hover:text-green-700 ${selectedEpisode?.id === ep.id ? "bg-green-50 text-green-700" : "text-gray-700"}`}
                     >
                       {ep.label}
                     </button>
@@ -217,24 +123,20 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             </label>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-2">
-                {COMEDIANS.map((c) => {
-                  const color = getSpeakerColor(c.id);
-                  const isSelected = selectedSpeaker?.id === c.id;
+                {HOSTS.map((s) => {
+                  const color = getSpeakerColor(s.id);
+                  const isSelected = selectedSpeaker?.id === s.id;
                   return (
                     <button
-                      key={c.id}
+                      key={s.id}
                       type="button"
-                      onClick={() => setSelectedSpeaker(c)}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
-                        isSelected
-                          ? `${color.bg} text-white border-transparent`
-                          : `${color.light} hover:opacity-80`
-                      }`}
+                      onClick={() => setSelectedSpeaker(s)}
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${isSelected ? `${color.bg} text-white border-transparent` : `${color.light} hover:opacity-80`}`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white/60" : color.dot}`}
                       />
-                      {c.name}
+                      {s.name}
                     </button>
                   );
                 })}
@@ -247,24 +149,20 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                 <div className="h-px flex-1 bg-gray-100" />
               </div>
               <div className="flex flex-wrap gap-2">
-                {GUESTS.map((g) => {
-                  const color = getSpeakerColor(g.id);
-                  const isSelected = selectedSpeaker?.id === g.id;
+                {GUESTS.map((s) => {
+                  const color = getSpeakerColor(s.id);
+                  const isSelected = selectedSpeaker?.id === s.id;
                   return (
                     <button
-                      key={g.id}
+                      key={s.id}
                       type="button"
-                      onClick={() => setSelectedSpeaker(g)}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
-                        isSelected
-                          ? `${color.bg} text-white border-transparent`
-                          : `${color.light} hover:opacity-80`
-                      }`}
+                      onClick={() => setSelectedSpeaker(s)}
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${isSelected ? `${color.bg} text-white border-transparent` : `${color.light} hover:opacity-80`}`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white/60" : color.dot}`}
                       />
-                      {g.name}
+                      {s.name}
                     </button>
                   );
                 })}
@@ -312,69 +210,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
   );
 }
 
-function LoginGateModal({ onClose }) {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}
-      >
-        <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
-        <div className="px-7 pt-7 pb-2">
-          <button
-            onClick={onClose}
-            className="float-right w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
-          >
-            <X size={14} />
-          </button>
-          <div className="w-14 h-14 rounded-2xl bg-green-600 flex items-center justify-center mb-5">
-            <MessageSquareQuote
-              size={26}
-              className="text-white"
-              strokeWidth={2}
-            />
-          </div>
-          <h3 className="text-xl font-extrabold text-gray-900 mb-2">
-            Masuk dulu, Pekerja.
-          </h3>
-          <p className="text-sm text-gray-500 leading-relaxed">
-            Kamu perlu masuk untuk submit quote dan ikut vote bersama komunitas.
-          </p>
-        </div>
-        <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
-          <Link
-            to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
-          >
-            Masuk Sekarang
-          </Link>
-          <button
-            onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-sm py-2.5 rounded-2xl transition-colors"
-          >
-            Nanti dulu
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function QuoteCard({ quote, user, onVote, rank }) {
-  const speaker = getSpeaker(quote.speakerId);
   const color = getSpeakerColor(quote.speakerId);
   const hasVoted = quote.voters?.includes(user?.uid);
   const isOwn = user && quote.uid === user.uid;
@@ -390,7 +226,6 @@ function QuoteCard({ quote, user, onVote, rank }) {
             {rank <= 3 ? ["①", "②", "③"][rank - 1] : rank}
           </span>
         </div>
-
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-3">
             <span
@@ -408,17 +243,14 @@ function QuoteCard({ quote, user, onVote, rank }) {
               {quote.episodeLabel}
             </span>
           </div>
-
           <p className="text-sm text-gray-800 leading-relaxed font-medium italic">
             "{quote.text}"
           </p>
-
           <p className="text-[10px] text-gray-300 mt-2">
             oleh {quote.submittedBy}
           </p>
         </div>
-
-        <div className="shrink-0 flex flex-col items-center gap-1">
+        <div className="shrink-0">
           <button
             onClick={() => !cannotVote && onVote(quote.id)}
             disabled={cannotVote}
@@ -449,109 +281,30 @@ function QuoteCard({ quote, user, onVote, rank }) {
 }
 
 export default function QuoteSection() {
-  const user = useSelector((s) => s.auth.user);
-
-  const [activeEpisode, setActiveEpisode] = useState(EPISODES[0]);
-  const [quotes, setQuotes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [showLoginGate, setShowLoginGate] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [totalQuotes, setTotalQuotes] = useState({});
-
-  useEffect(() => {
-    setLoading(true);
-    const q = query(
-      collection(db, "quotes"),
-      where("episodeId", "==", activeEpisode.id),
-      orderBy("voteCount", "desc"),
-      orderBy("createdAt", "desc"),
-    );
-    const unsubscribe = onSnapshot(q, (snap) => {
-      setQuotes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, [activeEpisode.id]);
-
-  useEffect(() => {
-    const unsubscribes = EPISODES.map((ep) => {
-      const q = query(
-        collection(db, "quotes"),
-        where("episodeId", "==", ep.id),
-      );
-      return onSnapshot(q, (snap) => {
-        setTotalQuotes((prev) => ({ ...prev, [ep.id]: snap.size }));
-      });
-    });
-    return () => unsubscribes.forEach((u) => u());
-  }, []);
-
-  const handleSubmit = useCallback(
-    async ({
-      episodeId,
-      episodeLabel,
-      speakerId,
-      speakerName,
-      speakerType,
-      text,
-    }) => {
-      if (!user) return;
-      setSubmitting(true);
-      try {
-        await addDoc(collection(db, "quotes"), {
-          episodeId,
-          episodeLabel,
-          speakerId,
-          speakerName,
-          speakerType,
-          text,
-          uid: user.uid,
-          submittedBy:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          voteCount: 0,
-          voters: [],
-          createdAt: serverTimestamp(),
-        });
-        setShowSubmitModal(false);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [user],
-  );
-
-  const handleVote = useCallback(
-    async (quoteId) => {
-      if (!user) return;
-      try {
-        const quoteRef = doc(db, "quotes", quoteId);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(quoteRef);
-          if (!snap.exists()) return;
-          if (snap.data().voters?.includes(user.uid)) return;
-          tx.update(quoteRef, {
-            voteCount: increment(1),
-            voters: arrayUnion(user.uid),
-          });
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [user],
-  );
-
-  const isEmpty = !loading && quotes.length === 0;
+  const {
+    user,
+    activeEpisode,
+    quotes,
+    loading,
+    showSubmitModal,
+    showLoginGate,
+    submitting,
+    totalQuotes,
+    isEmpty,
+    setActiveEpisode,
+    setShowSubmitModal,
+    setShowLoginGate,
+    submitQuote,
+    voteQuote,
+    openSubmitModal,
+  } = useQuotes();
 
   return (
     <>
       {showSubmitModal && (
         <SubmitModal
           onClose={() => setShowSubmitModal(false)}
-          onSubmit={handleSubmit}
+          onSubmit={submitQuote}
           submitting={submitting}
         />
       )}
@@ -580,7 +333,6 @@ export default function QuoteSection() {
                 vote.
               </p>
             </div>
-
             <div className="shrink-0 flex flex-col items-end gap-3">
               {totalQuotes[activeEpisode.id] > 0 && (
                 <div className="text-right">
@@ -593,9 +345,7 @@ export default function QuoteSection() {
                 </div>
               )}
               <button
-                onClick={() =>
-                  user ? setShowSubmitModal(true) : setShowLoginGate(true)
-                }
+                onClick={openSubmitModal}
                 className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
               >
                 <Plus size={14} strokeWidth={2.5} />
@@ -624,11 +374,7 @@ export default function QuoteSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${
-                        isActive
-                          ? "bg-green-500 text-green-100"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
+                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${isActive ? "bg-green-500 text-green-100" : "bg-gray-100 text-gray-500"}`}
                     >
                       {count}
                     </span>
@@ -642,34 +388,23 @@ export default function QuoteSection() {
             <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest mr-1">
               Dalam episode ini:
             </span>
-            {COMEDIANS.map((c) => {
-              const color = getSpeakerColor(c.id);
-              const count = quotes.filter((q) => q.speakerId === c.id).length;
+            {[...HOSTS, ...GUESTS].map((s) => {
+              const color = getSpeakerColor(s.id);
+              const count = quotes.filter((q) => q.speakerId === s.id).length;
               if (count === 0) return null;
               return (
                 <span
-                  key={c.id}
+                  key={s.id}
                   className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
-                  {c.name} <span className="opacity-50">({count})</span>
-                </span>
-              );
-            })}
-            {GUESTS.map((g) => {
-              const color = getSpeakerColor(g.id);
-              const count = quotes.filter((q) => q.speakerId === g.id).length;
-              if (count === 0) return null;
-              return (
-                <span
-                  key={g.id}
-                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
-                  {g.name}{" "}
-                  <span className="opacity-50 font-medium normal-case tracking-normal">
-                    · tamu ({count})
-                  </span>
+                  {s.name}
+                  {s.type === "guest" && (
+                    <span className="opacity-50 font-medium normal-case tracking-normal">
+                      · tamu
+                    </span>
+                  )}
+                  <span className="opacity-50">({count})</span>
                 </span>
               );
             })}
@@ -707,9 +442,7 @@ export default function QuoteSection() {
                   Jadilah yang pertama mengarsipkan momen terbaik.
                 </p>
                 <button
-                  onClick={() =>
-                    user ? setShowSubmitModal(true) : setShowLoginGate(true)
-                  }
+                  onClick={openSubmitModal}
                   className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
                 >
                   <Plus size={14} />
@@ -722,7 +455,7 @@ export default function QuoteSection() {
                   key={quote.id}
                   quote={quote}
                   user={user}
-                  onVote={handleVote}
+                  onVote={voteQuote}
                   rank={index + 1}
                 />
               ))

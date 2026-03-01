@@ -1,21 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { db } from "../firebase/config";
-import {
-  collection,
-  doc,
-  addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  serverTimestamp,
-  increment,
-  arrayUnion,
-  arrayRemove,
-  runTransaction,
-} from "firebase/firestore";
 import {
   Briefcase,
   ThumbsUp,
@@ -26,6 +10,8 @@ import {
   LogIn,
   Send,
 } from "lucide-react";
+import { useJobs } from "../hooks/useJobs";
+import LoginGateModal from "./LoginGateModal";
 
 const formatRelativeTime = (ts) => {
   if (!ts?.toDate) return "";
@@ -41,31 +27,9 @@ const formatRelativeTime = (ts) => {
   });
 };
 
-function SkeletonCard() {
-  return (
-    <div className="bg-gray-50 border border-gray-200 rounded-3xl px-6 py-5">
-      <div className="h-3.5 bg-gray-200 rounded-full w-3/5 mb-2.5 animate-pulse" />
-      <div className="h-2.5 bg-gray-100 rounded-full w-1/4 mb-4 animate-pulse" />
-      <div className="h-2.5 bg-gray-100 rounded-full w-full mb-2 animate-pulse" />
-      <div className="h-2.5 bg-gray-100 rounded-full w-4/5 mb-5 animate-pulse" />
-      <div className="flex gap-2">
-        <div className="h-8 bg-gray-100 rounded-xl w-24 animate-pulse" />
-        <div className="h-8 bg-gray-100 rounded-xl w-24 animate-pulse" />
-      </div>
-    </div>
-  );
-}
-
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
 
   return (
     <div
@@ -79,12 +43,8 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
         }}
       >
-        <style>{`
-          @keyframes modalIn {
-            from { opacity: 0; transform: translateY(32px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
+        <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
+
         <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 px-7 py-6 relative">
           <button
             onClick={onClose}
@@ -175,64 +135,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
   );
 }
 
-function LoginGateModal({ onClose }) {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-sm bg-white rounded-3xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}
-      >
-        <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
-        <div className="px-7 pt-7 pb-2">
-          <button
-            onClick={onClose}
-            className="float-right w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
-          >
-            <X size={14} />
-          </button>
-          <div className="w-14 h-14 rounded-2xl bg-yellow-400 flex items-center justify-center mb-5">
-            <Briefcase size={26} className="text-gray-900" strokeWidth={2} />
-          </div>
-          <h3 className="text-xl font-extrabold text-gray-900 mb-2">
-            Masuk dulu, Pekerja.
-          </h3>
-          <p className="text-sm text-gray-500 leading-relaxed">
-            Kamu perlu masuk untuk submit kerjaan dan ikut vote bersama
-            komunitas.
-          </p>
-        </div>
-        <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
-          <Link
-            to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
-          >
-            Masuk Sekarang
-          </Link>
-          <button
-            onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-sm py-2.5 rounded-2xl transition-colors"
-          >
-            Nanti dulu
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function JobCard({ job, user, onVote, isNew }) {
   const approvedCount = job.approved ?? 0;
   const rejectedCount = job.rejected ?? 0;
@@ -284,7 +186,6 @@ function JobCard({ job, user, onVote, isNew }) {
             </span>
           )}
         </div>
-
         <p className="text-[11px] text-gray-400 mb-3 flex items-center gap-1.5 flex-wrap">
           <span className="font-semibold text-gray-500">{job.submittedBy}</span>
           {job.createdAt && (
@@ -297,11 +198,9 @@ function JobCard({ job, user, onVote, isNew }) {
             <span className="text-yellow-600 font-semibold">· milikmu</span>
           )}
         </p>
-
         <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
           {job.description}
         </p>
-
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
@@ -328,7 +227,6 @@ function JobCard({ job, user, onVote, isNew }) {
               {approvedCount}
             </span>
           </button>
-
           <button
             onClick={() =>
               !cannotVote &&
@@ -354,7 +252,6 @@ function JobCard({ job, user, onVote, isNew }) {
               {rejectedCount}
             </span>
           </button>
-
           {!user && (
             <Link
               to="/masuk"
@@ -370,111 +267,46 @@ function JobCard({ job, user, onVote, isNew }) {
   );
 }
 
-const PREVIEW_COUNT = 4;
+function SkeletonCard() {
+  return (
+    <div className="bg-gray-50 border border-gray-200 rounded-3xl px-6 py-5">
+      <div className="h-3.5 bg-gray-200 rounded-full w-3/5 mb-2.5 animate-pulse" />
+      <div className="h-2.5 bg-gray-100 rounded-full w-1/4 mb-4 animate-pulse" />
+      <div className="h-2.5 bg-gray-100 rounded-full w-full mb-2 animate-pulse" />
+      <div className="h-2.5 bg-gray-100 rounded-full w-4/5 mb-5 animate-pulse" />
+      <div className="flex gap-2">
+        <div className="h-8 bg-gray-100 rounded-xl w-24 animate-pulse" />
+        <div className="h-8 bg-gray-100 rounded-xl w-24 animate-pulse" />
+      </div>
+    </div>
+  );
+}
 
 export default function JobsSection() {
-  const user = useSelector((s) => s.auth.user);
-
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [showLoginGate, setShowLoginGate] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [newJobId, setNewJobId] = useState(null);
-
-  useEffect(() => {
-    const q = query(
-      collection(db, "jobs"),
-      orderBy("approved", "desc"),
-      limit(PREVIEW_COUNT + 1),
-    );
-    const unsubscribe = onSnapshot(q, (snap) => {
-      setJobs(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, []);
-
-  const handleSubmit = useCallback(
-    async ({ title, description }) => {
-      if (!user) return;
-      setSubmitting(true);
-      try {
-        const ref = await addDoc(collection(db, "jobs"), {
-          title,
-          description,
-          submittedBy:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          uid: user.uid,
-          approved: 0,
-          rejected: 0,
-          voters_approved: [],
-          voters_rejected: [],
-          createdAt: serverTimestamp(),
-        });
-        setNewJobId(ref.id);
-        setShowSubmitModal(false);
-        setTimeout(() => setNewJobId(null), 3000);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [user],
-  );
-
-  const handleVote = useCallback(
-    async (jobId, type, hasVotedApproved, hasVotedRejected) => {
-      if (!user) return;
-      const opposite = type === "approved" ? "rejected" : "approved";
-      const alreadyVotedThis =
-        type === "approved" ? hasVotedApproved : hasVotedRejected;
-      const alreadyVotedOpposite =
-        type === "approved" ? hasVotedRejected : hasVotedApproved;
-
-      try {
-        const jobRef = doc(db, "jobs", jobId);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(jobRef);
-          if (!snap.exists()) return;
-
-          if (alreadyVotedThis) {
-            tx.update(jobRef, {
-              [type]: increment(-1),
-              [`voters_${type}`]: arrayRemove(user.uid),
-            });
-          } else if (alreadyVotedOpposite) {
-            tx.update(jobRef, {
-              [type]: increment(1),
-              [`voters_${type}`]: arrayUnion(user.uid),
-              [opposite]: increment(-1),
-              [`voters_${opposite}`]: arrayRemove(user.uid),
-            });
-          } else {
-            tx.update(jobRef, {
-              [type]: increment(1),
-              [`voters_${type}`]: arrayUnion(user.uid),
-            });
-          }
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [user],
-  );
-
-  const isEmpty = jobs.length === 0 && !loading;
-  const displayJobs = jobs.slice(0, PREVIEW_COUNT);
-  const hasMore = jobs.length > PREVIEW_COUNT;
+  const {
+    user,
+    jobs,
+    loading,
+    showSubmitModal,
+    showLoginGate,
+    submitting,
+    newJobId,
+    hasMore,
+    isEmpty,
+    PREVIEW_COUNT,
+    setShowSubmitModal,
+    setShowLoginGate,
+    submitJob,
+    voteJob,
+    openSubmitModal,
+  } = useJobs();
 
   return (
     <>
       {showSubmitModal && (
         <SubmitModal
           onClose={() => setShowSubmitModal(false)}
-          onSubmit={handleSubmit}
+          onSubmit={submitJob}
           submitting={submitting}
         />
       )}
@@ -503,7 +335,6 @@ export default function JobsSection() {
                 menentukan.
               </p>
             </div>
-
             <div className="shrink-0 flex flex-col items-end gap-3">
               {!loading && !isEmpty && (
                 <div className="text-right">
@@ -516,9 +347,7 @@ export default function JobsSection() {
                 </div>
               )}
               <button
-                onClick={() =>
-                  user ? setShowSubmitModal(true) : setShowLoginGate(true)
-                }
+                onClick={openSubmitModal}
                 className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
               >
                 <Plus size={14} strokeWidth={2.5} />
@@ -539,12 +368,12 @@ export default function JobsSection() {
                 ? [...Array(PREVIEW_COUNT)].map((_, i) => (
                     <SkeletonCard key={i} />
                   ))
-                : displayJobs.map((job) => (
+                : jobs.map((job) => (
                     <JobCard
                       key={job.id}
                       job={job}
                       user={user}
-                      onVote={handleVote}
+                      onVote={voteJob}
                       isNew={job.id === newJobId}
                     />
                   ))}

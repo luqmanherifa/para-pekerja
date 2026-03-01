@@ -1,21 +1,3 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { db } from "../firebase/config";
-import {
-  collection,
-  doc,
-  getDoc,
-  increment,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  serverTimestamp,
-  arrayUnion,
-  runTransaction,
-} from "firebase/firestore";
 import {
   Zap,
   Coffee,
@@ -24,291 +6,39 @@ import {
   Tv2,
   Umbrella,
   AlertTriangle,
+  Ghost,
   CheckCircle2,
   Users,
   ThumbsUp,
-  X,
   FileText,
   Sparkles,
-  Ghost,
+  X,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAttendance } from "../hooks/useAttendance";
+import LoginGateModal from "./LoginGateModal";
+import {
+  MOODS,
+  GHOST_ATTENDEES,
+  AMBIENT_TEXT,
+  getMoodById,
+  formatRupiah,
+} from "../data/moods";
 
-const getTodayDate = () =>
-  new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-
-const formatRupiah = (n) => `Rp ${(n ?? 0).toLocaleString("id-ID")}`;
-
-const MOODS = [
-  {
-    id: "productive",
-    label: "Produktif Total",
-    icon: Zap,
-    pill: "bg-green-50 text-green-700 border-green-200 hover:border-green-400",
-    active: "bg-green-600 text-white border-green-600",
-    bar: "bg-green-500",
-    badge: "bg-green-100 text-green-700",
-  },
-  {
-    id: "chill",
-    label: "Santai tapi Jalan",
-    icon: Coffee,
-    pill: "bg-sky-50 text-sky-700 border-sky-200 hover:border-sky-400",
-    active: "bg-sky-500 text-white border-sky-500",
-    bar: "bg-sky-400",
-    badge: "bg-sky-100 text-sky-700",
-  },
-  {
-    id: "low_energy",
-    label: "Low Energy",
-    icon: BatteryLow,
-    pill: "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-400",
-    active: "bg-gray-600 text-white border-gray-600",
-    bar: "bg-gray-400",
-    badge: "bg-gray-100 text-gray-600",
-  },
-  {
-    id: "focus",
-    label: "Fokus, Jangan Ganggu",
-    icon: Target,
-    pill: "bg-amber-50 text-amber-700 border-amber-200 hover:border-amber-400",
-    active: "bg-amber-500 text-white border-amber-500",
-    bar: "bg-amber-400",
-    badge: "bg-amber-100 text-amber-700",
-  },
-  {
-    id: "watching",
-    label: "Kerja Sambil Nonton",
-    icon: Tv2,
-    pill: "bg-violet-50 text-violet-700 border-violet-200 hover:border-violet-400",
-    active: "bg-violet-500 text-white border-violet-500",
-    bar: "bg-violet-400",
-    badge: "bg-violet-100 text-violet-700",
-  },
-  {
-    id: "freelance",
-    label: "Freelancer Mode",
-    icon: Umbrella,
-    pill: "bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400",
-    active: "bg-orange-500 text-white border-orange-500",
-    bar: "bg-orange-400",
-    badge: "bg-orange-100 text-orange-700",
-  },
-  {
-    id: "survival",
-    label: "Survival Mode",
-    icon: AlertTriangle,
-    pill: "bg-red-50 text-red-700 border-red-200 hover:border-red-400",
-    active: "bg-red-500 text-white border-red-500",
-    bar: "bg-red-400",
-    badge: "bg-red-100 text-red-700",
-  },
-  {
-    id: "autopilot",
-    label: "Autopilot Mode",
-    icon: Ghost,
-    pill: "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400",
-    active: "bg-slate-600 text-white border-slate-600",
-    bar: "bg-slate-400",
-    badge: "bg-slate-100 text-slate-600",
-  },
-];
-
-const getMoodById = (id) => MOODS.find((m) => m.id === id) ?? MOODS[0];
-
-const GHOST_ATTENDEES = [
-  { id: "g1", displayName: "Arif Brata", mood: "productive" },
-  { id: "g2", displayName: "Bintang Emon", mood: "chill" },
-  { id: "g3", displayName: "Gilang Bhaskara", mood: "focus" },
-  { id: "g4", displayName: "Adi Arkiang", mood: "watching" },
-  { id: "g5", displayName: "Pandji Pragiwaksono", mood: "freelance" },
-  { id: "g6", displayName: "Raditya Dika", mood: "survival" },
-  { id: "g7", displayName: "Arif Brata", mood: "low_energy" },
-  { id: "g8", displayName: "Bintang Emon", mood: "autopilot" },
-];
-
-const PAYSLIP_DATA = {
-  productive: {
-    items: [
-      { label: "Bonus Semangat Pagi", amount: 250000 },
-      { label: "Insentif Kamera Menyala saat Meeting", amount: 175000 },
-      { label: "Potongan Overthinking Deadline", amount: -75000 },
-    ],
-    hrNote:
-      "Kinerja hari ini patut diapresiasi. Pertahankan — meski kita semua tahu besok mungkin berbeda.",
-  },
-  chill: {
-    items: [
-      { label: "Bonus Tidak Panik", amount: 200000 },
-      { label: "Insentif Mengalir Apa Adanya", amount: 100000 },
-      { label: "Potongan Terlalu Santai di Jam Sibuk", amount: -50000 },
-    ],
-    hrNote:
-      "Santai memang pilihan hidup. HR mencatat kehadiran, bukan kegelisahan kamu.",
-  },
-  low_energy: {
-    items: [
-      { label: "Tunjangan Tetap Masuk Kerja", amount: 100000 },
-      { label: "Apresiasi Buka Laptop Walau Berat", amount: 75000 },
-      { label: "Potongan Semangat Tertinggal di Kasur", amount: -150000 },
-      { label: "Potongan Sering Lihat Jam", amount: -50000 },
-    ],
-    hrNote:
-      "HR memahami. Terkadang hadir secara fisik sudah merupakan prestasi tersendiri.",
-  },
-  focus: {
-    items: [
-      { label: "Bonus Mode Tidak Terganggu", amount: 300000 },
-      { label: "Insentif Notifikasi Dibisukan", amount: 125000 },
-      { label: "Potongan Lupa Makan Siang", amount: -25000 },
-    ],
-    hrNote:
-      "HR menghormati ketenangan kamu hari ini. Pintu HR juga dikunci untuk kamu.",
-  },
-  watching: {
-    items: [
-      { label: "Bonus Multitasking Profesional", amount: 200000 },
-      { label: "Insentif Tidak Tertangkap Basah", amount: 150000 },
-      { label: "Potongan Produktivitas Terbagi", amount: -200000 },
-      { label: "Potongan Rewind 3 Menit karena Tidak Fokus", amount: -75000 },
-    ],
-    hrNote:
-      "HR tidak bertanya. HR juga sedang menonton sesuatu saat menulis catatan ini.",
-  },
-  freelance: {
-    items: [
-      { label: "Bonus Kebebasan Waktu", amount: 350000 },
-      { label: "Insentif Tidak Ada yang Mengawasi", amount: 200000 },
-      { label: "Potongan Batas Waktu Ambigu", amount: -100000 },
-      { label: "Potongan Tidak Ada BPJS", amount: -125000 },
-    ],
-    hrNote:
-      "Kebebasan adalah gaji yang tidak tertulis. Tapi ini tetap slip bergaji 5 juta.",
-  },
-  survival: {
-    items: [
-      { label: "Tunjangan Bertahan Hidup", amount: 100000 },
-      { label: "Bonus Belum Resign", amount: 250000 },
-      { label: "Potongan Kekacauan Hari Ini", amount: -200000 },
-      { label: "Potongan Energi Habis sejak Senin", amount: -150000 },
-    ],
-    hrNote:
-      "HR melihat kondisi kamu. HR ikut berdoa. Semoga hari ini segera selesai.",
-  },
-  autopilot: {
-    items: [
-      { label: "Bonus Tubuh Hadir, Pikiran Entah di Mana", amount: 200000 },
-      { label: "Insentif Menjawab Chat Tanpa Membaca", amount: 100000 },
-      { label: "Potongan Tidak Ingat Apa yang Dikerjakan", amount: -125000 },
-      {
-        label: "Potongan Rapat Dihadiri tapi Tidak Didengarkan",
-        amount: -75000,
-      },
-    ],
-    hrNote:
-      "HR tidak tahu kamu hadir atau tidak. Kamu juga tidak tahu. Sama-sama.",
-  },
+const MOOD_ICONS = {
+  Zap,
+  Coffee,
+  BatteryLow,
+  Target,
+  Tv2,
+  Umbrella,
+  AlertTriangle,
+  Ghost,
 };
-
-const buildPayslip = (moodId) => {
-  const base = 5000000;
-  const data = PAYSLIP_DATA[moodId] ?? PAYSLIP_DATA.productive;
-  const total = base + data.items.reduce((sum, item) => sum + item.amount, 0);
-  return { base, items: data.items, total, hrNote: data.hrNote };
-};
-
-const AMBIENT_TEXT = {
-  productive: "Kantor hari ini sedang bersemangat.",
-  chill: "Suasana santai tapi tetap jalan hari ini.",
-  low_energy: "Kantor hari ini sedang tidak baik-baik saja.",
-  focus: "Bisukan notifikasi. Kantor sedang serius.",
-  watching: "Separuh kantor sedang menonton sesuatu.",
-  freelance: "Hari ini mayoritas kerja dari mana saja.",
-  survival: "Mode darurat. Bertahanlah.",
-  autopilot: "Hari ini kantor berjalan sendiri. Entah siapa yang mengemudikan.",
-  default: "Absen dulu sebelum pura-pura kerja.",
-};
-
-function LoginNudgeModal({ moodId, onClose }) {
-  const mood = getMoodById(moodId);
-  const Icon = mood.icon;
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          animation: "nudgeIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}
-      >
-        <style>{`
-          @keyframes nudgeIn {
-            from { opacity: 0; transform: translateY(32px) scale(0.95); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
-        <div className="px-7 pt-7 pb-2">
-          <button
-            onClick={onClose}
-            className="float-right w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
-          >
-            <X size={14} />
-          </button>
-          <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${mood.active}`}
-          >
-            <Icon size={26} strokeWidth={2} />
-          </div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
-            Mood Kamu Hari Ini
-          </p>
-          <h3 className="text-xl font-extrabold text-gray-900 mb-2">
-            {mood.label}
-          </h3>
-          <p className="text-sm text-gray-500 leading-relaxed">
-            Masuk dulu untuk absen dengan mood ini dan dapatkan slip gaji
-            imajiner hari ini.
-          </p>
-        </div>
-        <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
-          <Link
-            to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
-          >
-            Masuk & Absen Sekarang
-          </Link>
-          <button
-            onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-sm py-2.5 rounded-2xl transition-colors"
-          >
-            Nanti dulu
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function PayslipModal({ payslip, moodId, onClose }) {
   const mood = getMoodById(moodId);
-  const Icon = mood.icon;
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  const Icon = MOOD_ICONS[mood.icon];
 
   return (
     <div
@@ -328,6 +58,7 @@ function PayslipModal({ payslip, moodId, onClose }) {
             to   { opacity: 1; transform: translateY(0) scale(1); }
           }
         `}</style>
+
         <div className="bg-gradient-to-br from-green-600 to-green-700 px-7 py-6 relative">
           <button
             onClick={onClose}
@@ -420,12 +151,80 @@ function PayslipModal({ payslip, moodId, onClose }) {
   );
 }
 
-function AttendeeCard({ attendee, isGhost }) {
-  const mood = getMoodById(attendee.mood);
-  const Icon = mood.icon;
+function LoginNudgeModal({ moodId, onClose }) {
+  const mood = getMoodById(moodId);
+  const Icon = MOOD_ICONS[mood.icon];
+
   return (
     <div
-      className={`flex items-center gap-2 bg-white border rounded-2xl px-3.5 py-2.5 shrink-0 transition-all duration-200 ${isGhost ? "opacity-30 border-gray-200 select-none" : "border-gray-200 hover:border-gray-300 hover:shadow-sm"}`}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          animation: "nudgeIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
+        }}
+      >
+        <style>{`
+          @keyframes nudgeIn {
+            from { opacity: 0; transform: translateY(32px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+          }
+        `}</style>
+        <div className="px-7 pt-7 pb-2">
+          <button
+            onClick={onClose}
+            className="float-right w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
+          >
+            <X size={14} />
+          </button>
+          <div
+            className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${mood.active}`}
+          >
+            <Icon size={26} strokeWidth={2} />
+          </div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+            Mood Kamu Hari Ini
+          </p>
+          <h3 className="text-xl font-extrabold text-gray-900 mb-2">
+            {mood.label}
+          </h3>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            Masuk dulu untuk absen dengan mood ini dan dapatkan slip gaji
+            imajiner hari ini.
+          </p>
+        </div>
+        <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
+          <Link
+            to="/masuk"
+            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
+          >
+            Masuk & Absen Sekarang
+          </Link>
+          <button
+            onClick={onClose}
+            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-sm py-2.5 rounded-2xl transition-colors"
+          >
+            Nanti dulu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AttendeeCard({ attendee, isGhost }) {
+  const mood = getMoodById(attendee.mood);
+  const Icon = MOOD_ICONS[mood.icon];
+  return (
+    <div
+      className={`flex items-center gap-2 bg-white border rounded-2xl px-3.5 py-2.5 shrink-0 transition-all duration-200 ${
+        isGhost
+          ? "opacity-30 border-gray-200 select-none"
+          : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
+      }`}
     >
       <div
         className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${mood.active}`}
@@ -448,7 +247,7 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
   return (
     <div className="grid grid-cols-2 gap-2.5">
       {MOODS.map((mood) => {
-        const Icon = mood.icon;
+        const Icon = MOOD_ICONS[mood.icon];
         const isSelected = selectedMood === mood.id;
         const isDone = phase === "done";
 
@@ -476,176 +275,26 @@ function MoodGrid({ phase, selectedMood, onMoodClick }) {
 }
 
 export default function AttendanceSection() {
-  const user = useSelector((s) => s.auth.user);
-  const today = getTodayDate();
-
-  const [phase, setPhase] = useState("loading");
-  const [selectedMood, setSelectedMood] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [myPayslip, setMyPayslip] = useState(null);
-  const [myMood, setMyMood] = useState(null);
-  const [showPayslipModal, setShowPayslipModal] = useState(false);
-  const [loginNudgeMood, setLoginNudgeMood] = useState(null);
-
-  const [attendees, setAttendees] = useState([]);
-  const [dailyStats, setDailyStats] = useState({});
-  const [totalToday, setTotalToday] = useState(0);
-  const [featuredPayslips, setFeaturedPayslips] = useState([]);
-  const [dominantMood, setDominantMood] = useState(null);
-
-  useEffect(() => {
-    if (!user) {
-      setPhase("guest");
-      return;
-    }
-    getDoc(doc(db, "attendance", `${user.uid}_${today}`)).then((snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        setMyMood(data.mood);
-        setMyPayslip(data.payslip);
-        setSelectedMood(data.mood);
-        setPhase("done");
-      } else {
-        setPhase("pick_mood");
-      }
-    });
-  }, [user, today]);
-
-  useEffect(() => {
-    const q = query(
-      collection(db, "attendance"),
-      where("date", "==", today),
-      orderBy("createdAt", "desc"),
-      limit(40),
-    );
-    return onSnapshot(q, (snap) =>
-      setAttendees(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    );
-  }, [today]);
-
-  useEffect(() => {
-    return onSnapshot(doc(db, "daily_stats", today), (snap) => {
-      if (!snap.exists()) return;
-      const data = snap.data();
-      setDailyStats(data.moods ?? {});
-      setTotalToday(data.total ?? 0);
-      const top = Object.entries(data.moods ?? {}).sort(
-        (a, b) => b[1] - a[1],
-      )[0];
-      if (top) setDominantMood(top[0]);
-    });
-  }, [today]);
-
-  useEffect(() => {
-    return onSnapshot(doc(db, "daily_featured", today), (snap) => {
-      if (snap.exists()) setFeaturedPayslips(snap.data().payslips ?? []);
-    });
-  }, [today]);
-
-  const handleSubmit = useCallback(async () => {
-    if (!user || !selectedMood || submitting) return;
-    setSubmitting(true);
-    try {
-      const payslip = buildPayslip(selectedMood);
-      const attendanceRef = doc(db, "attendance", `${user.uid}_${today}`);
-      const statsRef = doc(db, "daily_stats", today);
-      const featuredRef = doc(db, "daily_featured", today);
-
-      await runTransaction(db, async (tx) => {
-        const [statsSnap, featuredSnap] = await Promise.all([
-          tx.get(statsRef),
-          tx.get(featuredRef),
-        ]);
-
-        tx.set(attendanceRef, {
-          uid: user.uid,
-          displayName:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          mood: selectedMood,
-          payslip,
-          date: today,
-          createdAt: serverTimestamp(),
-          voteCount: 0,
-          voters: [],
-        });
-
-        statsSnap.exists()
-          ? tx.update(statsRef, {
-              total: increment(1),
-              [`moods.${selectedMood}`]: increment(1),
-            })
-          : tx.set(statsRef, {
-              total: 1,
-              moods: { [selectedMood]: 1 },
-              date: today,
-            });
-
-        const entry = {
-          id: `${user.uid}_${today}`,
-          uid: user.uid,
-          displayName:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          mood: selectedMood,
-          hrNote: payslip.hrNote,
-          total: payslip.total,
-          voteCount: 0,
-          voters: [],
-        };
-        const existing = featuredSnap.exists()
-          ? (featuredSnap.data().payslips ?? [])
-          : [];
-        if (!featuredSnap.exists())
-          tx.set(featuredRef, { payslips: [entry], date: today });
-        else if (existing.length < 5)
-          tx.update(featuredRef, { payslips: [...existing, entry] });
-      });
-
-      setMyMood(selectedMood);
-      setMyPayslip(payslip);
-      setPhase("done");
-      setShowPayslipModal(true);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSubmitting(false);
-    }
-  }, [user, selectedMood, submitting, today]);
-
-  const handleVote = useCallback(
-    async (slipId) => {
-      if (!user) return;
-      try {
-        await runTransaction(db, async (tx) => {
-          const featuredRef = doc(db, "daily_featured", today);
-          const attendanceRef = doc(db, "attendance", slipId);
-          const snap = await tx.get(featuredRef);
-          if (!snap.exists()) return;
-          const updated = (snap.data().payslips ?? []).map((s) =>
-            s.id === slipId && !s.voters?.includes(user.uid)
-              ? {
-                  ...s,
-                  voteCount: (s.voteCount ?? 0) + 1,
-                  voters: [...(s.voters ?? []), user.uid],
-                }
-              : s,
-          );
-          tx.update(featuredRef, { payslips: updated });
-          tx.update(attendanceRef, {
-            voteCount: increment(1),
-            voters: arrayUnion(user.uid),
-          });
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [user, today],
-  );
-
-  const handleMoodClick = (moodId) => {
-    if (phase === "guest") setLoginNudgeMood(moodId);
-    else if (phase === "pick_mood") setSelectedMood(moodId);
-  };
+  const {
+    user,
+    phase,
+    selectedMood,
+    submitting,
+    myPayslip,
+    myMood,
+    showPayslipModal,
+    loginNudgeMood,
+    attendees,
+    dailyStats,
+    totalToday,
+    featuredPayslips,
+    dominantMood,
+    setShowPayslipModal,
+    setLoginNudgeMood,
+    submitAttendance,
+    votePayslip,
+    handleMoodClick,
+  } = useAttendance();
 
   const isGhost = attendees.length === 0;
   const displayAttendees = isGhost ? GHOST_ATTENDEES : attendees;
@@ -753,7 +402,7 @@ export default function AttendanceSection() {
                   {phase === "done" &&
                     (() => {
                       const mood = getMoodById(myMood);
-                      const Icon = mood.icon;
+                      const Icon = MOOD_ICONS[mood.icon];
                       return (
                         <div className="flex items-center gap-4 w-full">
                           <div
@@ -812,13 +461,13 @@ export default function AttendanceSection() {
                   )}
                   {phase === "pick_mood" && (
                     <button
-                      onClick={handleSubmit}
+                      onClick={submitAttendance}
                       disabled={!selectedMood || submitting}
                       className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 text-white font-bold text-sm py-4 rounded-2xl transition-colors"
                     >
                       {submitting ? (
                         <>
-                          <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />{" "}
+                          <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
                           Memproses...
                         </>
                       ) : (
@@ -853,7 +502,7 @@ export default function AttendanceSection() {
                       totalToday > 0
                         ? Math.round((count / totalToday) * 100)
                         : 0;
-                    const Icon = m.icon;
+                    const Icon = MOOD_ICONS[m.icon];
                     return (
                       <div
                         key={m.id}
@@ -911,11 +560,10 @@ export default function AttendanceSection() {
                   <div className="space-y-3">
                     {featuredPayslips.map((slip) => {
                       const mood = getMoodById(slip.mood);
-                      const Icon = mood.icon;
+                      const Icon = MOOD_ICONS[mood.icon];
                       const hasVoted = slip.voters?.includes(user?.uid);
                       const isOwn = slip.uid === user?.uid;
                       const cannotVote = isOwn || hasVoted || !user;
-
                       return (
                         <div
                           key={slip.id}
@@ -935,7 +583,7 @@ export default function AttendanceSection() {
                             </p>
                           </div>
                           <button
-                            onClick={() => !cannotVote && handleVote(slip.id)}
+                            onClick={() => !cannotVote && votePayslip(slip.id)}
                             disabled={cannotVote}
                             title={
                               isOwn

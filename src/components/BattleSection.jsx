@@ -1,104 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { db } from "../firebase/config";
-import {
-  collection,
-  doc,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  increment,
-  runTransaction,
-} from "firebase/firestore";
 import { Scale, Plus, X, Send, LogIn, ChevronDown, Swords } from "lucide-react";
-
-const EPISODES = [
-  { id: "ep1", label: "Episode 1" },
-  { id: "ep2", label: "Episode 2" },
-  { id: "ep3", label: "Episode 3" },
-  { id: "ep4", label: "Episode 4" },
-  { id: "ep5", label: "Episode 5" },
-];
-
-const COMEDIANS = [
-  { id: "arif", name: "Arif Brata", type: "host" },
-  { id: "bintang", name: "Bintang Emon", type: "host" },
-  { id: "gilang", name: "Gilang Bhaskara", type: "host" },
-];
-
-const GUESTS = [
-  { id: "adi", name: "Adi Arkiang", type: "guest" },
-  { id: "pandji", name: "Pandji Pragiwaksono", type: "guest" },
-  { id: "raditya", name: "Raditya Dika", type: "guest" },
-];
-
-const ALL_SPEAKERS = [...COMEDIANS, ...GUESTS];
-
-const SPEAKER_COLORS = {
-  arif: {
-    bg: "bg-green-600",
-    light: "bg-green-50 text-green-700 border-green-200",
-    dot: "bg-green-500",
-    vote: "bg-green-600 hover:bg-green-700",
-    voteLight: "bg-green-50 border-green-300 text-green-700",
-    bar: "bg-green-500",
-  },
-  bintang: {
-    bg: "bg-sky-500",
-    light: "bg-sky-50 text-sky-700 border-sky-200",
-    dot: "bg-sky-500",
-    vote: "bg-sky-500 hover:bg-sky-600",
-    voteLight: "bg-sky-50 border-sky-300 text-sky-700",
-    bar: "bg-sky-500",
-  },
-  gilang: {
-    bg: "bg-amber-500",
-    light: "bg-amber-50 text-amber-700 border-amber-200",
-    dot: "bg-amber-500",
-    vote: "bg-amber-500 hover:bg-amber-600",
-    voteLight: "bg-amber-50 border-amber-300 text-amber-700",
-    bar: "bg-amber-500",
-  },
-  adi: {
-    bg: "bg-violet-500",
-    light: "bg-violet-50 text-violet-700 border-violet-200",
-    dot: "bg-violet-500",
-    vote: "bg-violet-500 hover:bg-violet-600",
-    voteLight: "bg-violet-50 border-violet-300 text-violet-700",
-    bar: "bg-violet-500",
-  },
-  pandji: {
-    bg: "bg-orange-500",
-    light: "bg-orange-50 text-orange-700 border-orange-200",
-    dot: "bg-orange-500",
-    vote: "bg-orange-500 hover:bg-orange-600",
-    voteLight: "bg-orange-50 border-orange-300 text-orange-700",
-    bar: "bg-orange-500",
-  },
-  raditya: {
-    bg: "bg-rose-500",
-    light: "bg-rose-50 text-rose-700 border-rose-200",
-    dot: "bg-rose-500",
-    vote: "bg-rose-500 hover:bg-rose-600",
-    voteLight: "bg-rose-50 border-rose-300 text-rose-700",
-    bar: "bg-rose-500",
-  },
-};
-
-const getSpeaker = (id) => ALL_SPEAKERS.find((s) => s.id === id);
-const getSpeakerColor = (id) =>
-  SPEAKER_COLORS[id] ?? {
-    bg: "bg-gray-500",
-    light: "bg-gray-50 text-gray-700 border-gray-200",
-    dot: "bg-gray-400",
-    vote: "bg-gray-500 hover:bg-gray-600",
-    voteLight: "bg-gray-50 border-gray-300 text-gray-700",
-    bar: "bg-gray-400",
-  };
+import { useBattles } from "../hooks/useBattles";
+import LoginGateModal from "./LoginGateModal";
+import { EPISODES } from "../data/episodes";
+import { HOSTS, GUESTS, getSpeakerColor } from "../data/speakers";
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
@@ -107,13 +13,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
   const [summaryA, setSummaryA] = useState("");
   const [summaryB, setSummaryB] = useState("");
   const [episodeOpen, setEpisodeOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
 
   const handleSelectA = (s) => {
     setSpeakerA(s);
@@ -228,11 +127,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               <button
                 type="button"
                 onClick={() => setEpisodeOpen((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${
-                  selectedEpisode
-                    ? "border-yellow-400 text-gray-900 bg-white"
-                    : "border-gray-200 text-gray-400 bg-white hover:border-gray-300"
-                }`}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${selectedEpisode ? "border-yellow-400 text-gray-900" : "border-gray-200 text-gray-400 hover:border-gray-300"}`}
               >
                 <span>
                   {selectedEpisode ? selectedEpisode.label : "Pilih episode..."}
@@ -252,11 +147,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                         setSelectedEpisode(ep);
                         setEpisodeOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${
-                        selectedEpisode?.id === ep.id
-                          ? "bg-yellow-50 text-yellow-700"
-                          : "text-gray-700"
-                      }`}
+                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${selectedEpisode?.id === ep.id ? "bg-yellow-50 text-yellow-700" : "text-gray-700"}`}
                     >
                       {ep.label}
                     </button>
@@ -272,10 +163,10 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             </label>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-2">
-                {COMEDIANS.map((c) => (
+                {HOSTS.map((s) => (
                   <SpeakerButton
-                    key={c.id}
-                    speaker={c}
+                    key={s.id}
+                    speaker={s}
                     selected={speakerA}
                     onSelect={handleSelectA}
                     disabledId={speakerB?.id}
@@ -290,10 +181,10 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                 <div className="h-px flex-1 bg-gray-100" />
               </div>
               <div className="flex flex-wrap gap-2">
-                {GUESTS.map((g) => (
+                {GUESTS.map((s) => (
                   <SpeakerButton
-                    key={g.id}
-                    speaker={g}
+                    key={s.id}
+                    speaker={s}
                     selected={speakerA}
                     onSelect={handleSelectA}
                     disabledId={speakerB?.id}
@@ -335,10 +226,10 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             </label>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-2">
-                {COMEDIANS.map((c) => (
+                {HOSTS.map((s) => (
                   <SpeakerButton
-                    key={c.id}
-                    speaker={c}
+                    key={s.id}
+                    speaker={s}
                     selected={speakerB}
                     onSelect={handleSelectB}
                     disabledId={speakerA?.id}
@@ -353,10 +244,10 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                 <div className="h-px flex-1 bg-gray-100" />
               </div>
               <div className="flex flex-wrap gap-2">
-                {GUESTS.map((g) => (
+                {GUESTS.map((s) => (
                   <SpeakerButton
-                    key={g.id}
-                    speaker={g}
+                    key={s.id}
+                    speaker={s}
                     selected={speakerB}
                     onSelect={handleSelectB}
                     disabledId={speakerA?.id}
@@ -399,63 +290,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             )}
           </button>
         </form>
-      </div>
-    </div>
-  );
-}
-
-function LoginGateModal({ onClose }) {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}
-      >
-        <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
-        <div className="px-7 pt-7 pb-2">
-          <button
-            onClick={onClose}
-            className="float-right w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
-          >
-            <X size={14} />
-          </button>
-          <div className="w-14 h-14 rounded-2xl bg-yellow-400 flex items-center justify-center mb-5">
-            <Scale size={26} className="text-gray-900" strokeWidth={2} />
-          </div>
-          <h3 className="text-xl font-extrabold text-gray-900 mb-2">
-            Masuk dulu, Pekerja.
-          </h3>
-          <p className="text-sm text-gray-500 leading-relaxed">
-            Kamu perlu masuk untuk buat battle dan ikut vote bersama komunitas.
-          </p>
-        </div>
-        <div className="px-7 pb-7 pt-5 flex flex-col gap-2.5">
-          <Link
-            to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm py-3.5 rounded-2xl transition-colors"
-          >
-            Masuk Sekarang
-          </Link>
-          <button
-            onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-sm py-2.5 rounded-2xl transition-colors"
-          >
-            Nanti dulu
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -548,7 +382,6 @@ function BattleCard({ battle, user, onVote }) {
             </span>
           </div>
         )}
-
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => user && !hasVoted && onVote(battle.id, "A")}
@@ -589,7 +422,6 @@ function BattleCard({ battle, user, onVote }) {
             </span>
           </button>
         </div>
-
         {!user && (
           <p className="text-center text-[10px] text-gray-300 mt-2">
             <Link
@@ -607,135 +439,30 @@ function BattleCard({ battle, user, onVote }) {
 }
 
 export default function BattleSection() {
-  const user = useSelector((s) => s.auth.user);
-
-  const [activeEpisode, setActiveEpisode] = useState(EPISODES[0]);
-  const [battles, setBattles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [showLoginGate, setShowLoginGate] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [totalBattles, setTotalBattles] = useState({});
-
-  useEffect(() => {
-    setLoading(true);
-    const q = query(
-      collection(db, "battles"),
-      where("episodeId", "==", activeEpisode.id),
-      orderBy("totalVotes", "desc"),
-      orderBy("createdAt", "desc"),
-    );
-    const unsubscribe = onSnapshot(q, (snap) => {
-      setBattles(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, [activeEpisode.id]);
-
-  useEffect(() => {
-    const unsubscribes = EPISODES.map((ep) => {
-      const q = query(
-        collection(db, "battles"),
-        where("episodeId", "==", ep.id),
-      );
-      return onSnapshot(q, (snap) => {
-        setTotalBattles((prev) => ({ ...prev, [ep.id]: snap.size }));
-      });
-    });
-    return () => unsubscribes.forEach((u) => u());
-  }, []);
-
-  const handleSubmit = useCallback(
-    async ({
-      episodeId,
-      episodeLabel,
-      speakerAId,
-      speakerAName,
-      speakerAType,
-      summaryA,
-      speakerBId,
-      speakerBName,
-      speakerBType,
-      summaryB,
-    }) => {
-      if (!user) return;
-      setSubmitting(true);
-      try {
-        await addDoc(collection(db, "battles"), {
-          episodeId,
-          episodeLabel,
-          speakerAId,
-          speakerAName,
-          speakerAType,
-          summaryA,
-          speakerBId,
-          speakerBName,
-          speakerBType,
-          summaryB,
-          uid: user.uid,
-          submittedBy:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          voteCountA: 0,
-          voteCountB: 0,
-          totalVotes: 0,
-          votersA: [],
-          votersB: [],
-          createdAt: serverTimestamp(),
-        });
-        setShowSubmitModal(false);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [user],
-  );
-
-  const handleVote = useCallback(
-    async (battleId, side) => {
-      if (!user) return;
-      try {
-        const battleRef = doc(db, "battles", battleId);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(battleRef);
-          if (!snap.exists()) return;
-          const data = snap.data();
-          if (
-            data.votersA?.includes(user.uid) ||
-            data.votersB?.includes(user.uid)
-          )
-            return;
-
-          if (side === "A") {
-            tx.update(battleRef, {
-              voteCountA: increment(1),
-              totalVotes: increment(1),
-              votersA: [...(data.votersA ?? []), user.uid],
-            });
-          } else {
-            tx.update(battleRef, {
-              voteCountB: increment(1),
-              totalVotes: increment(1),
-              votersB: [...(data.votersB ?? []), user.uid],
-            });
-          }
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [user],
-  );
-
-  const isEmpty = !loading && battles.length === 0;
+  const {
+    user,
+    activeEpisode,
+    battles,
+    loading,
+    showSubmitModal,
+    showLoginGate,
+    submitting,
+    totalBattles,
+    isEmpty,
+    setActiveEpisode,
+    setShowSubmitModal,
+    setShowLoginGate,
+    submitBattle,
+    voteBattle,
+    openSubmitModal,
+  } = useBattles();
 
   return (
     <>
       {showSubmitModal && (
         <SubmitModal
           onClose={() => setShowSubmitModal(false)}
-          onSubmit={handleSubmit}
+          onSubmit={submitBattle}
           submitting={submitting}
         />
       )}
@@ -764,7 +491,6 @@ export default function BattleSection() {
                 benar — atau paling chaos.
               </p>
             </div>
-
             <div className="shrink-0 flex flex-col items-end gap-3">
               {(totalBattles[activeEpisode.id] ?? 0) > 0 && (
                 <div className="text-right">
@@ -775,9 +501,7 @@ export default function BattleSection() {
                 </div>
               )}
               <button
-                onClick={() =>
-                  user ? setShowSubmitModal(true) : setShowLoginGate(true)
-                }
+                onClick={openSubmitModal}
                 className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
               >
                 <Plus size={14} strokeWidth={2.5} />
@@ -806,11 +530,7 @@ export default function BattleSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${
-                        isActive
-                          ? "bg-yellow-500 text-yellow-100"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
+                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${isActive ? "bg-yellow-500 text-yellow-100" : "bg-gray-100 text-gray-500"}`}
                     >
                       {count}
                     </span>
@@ -856,9 +576,7 @@ export default function BattleSection() {
                   Jadilah yang pertama merangkum duel pendapat.
                 </p>
                 <button
-                  onClick={() =>
-                    user ? setShowSubmitModal(true) : setShowLoginGate(true)
-                  }
+                  onClick={openSubmitModal}
                   className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
                 >
                   <Plus size={14} />
@@ -871,7 +589,7 @@ export default function BattleSection() {
                   key={battle.id}
                   battle={battle}
                   user={user}
-                  onVote={handleVote}
+                  onVote={voteBattle}
                 />
               ))
             )}
