@@ -37,7 +37,7 @@ export default function LoginGateModal({ onClose }) {
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">
             Diperlukan Login
           </p>
-          <h3 className="text-base font-black text-gray-900 mb-1.5">
+          <h3 className="text-base font-extrabold text-gray-900 mb-1.5">
             Masuk dulu, Pekerja.
           </h3>
           <p className="text-xs text-gray-500 leading-relaxed">

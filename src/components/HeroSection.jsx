@@ -38,7 +38,7 @@ export default function HeroSection() {
               <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">
                 Pekerja
               </span>
-              <span className="text-sm font-black text-white tabular-nums">
+              <span className="text-sm font-extrabold text-white tabular-nums">
                 {totalMembers.toLocaleString("id-ID")}
               </span>
             </div>
@@ -48,7 +48,7 @@ export default function HeroSection() {
               <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">
                 Aktif hari ini
               </span>
-              <span className="text-sm font-black text-yellow-400 tabular-nums">
+              <span className="text-sm font-extrabold text-yellow-400 tabular-nums">
                 {activeToday.toLocaleString("id-ID")}
               </span>
             </div>
@@ -58,7 +58,7 @@ export default function HeroSection() {
           <p className="text-sm font-medium text-green-300 mb-1.5 italic">
             Ruang pura-pura produktif sejak hari pertama.
           </p>
-          <h1 className="text-5xl font-black text-white leading-[1.05] tracking-tight">
+          <h1 className="text-5xl font-extrabold text-white leading-[1.05] tracking-tight">
             Selamat datang,{" "}
             <span className="text-yellow-400">Para Pekerja.</span>
           </h1>

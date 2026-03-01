@@ -116,7 +116,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               Buat Battle
             </span>
           </div>
-          <p className="text-gray-900 font-black text-lg leading-tight">
+          <p className="text-gray-900 font-extrabold text-lg leading-tight">
             Siapa Paling Benar?
           </p>
           <p className="text-yellow-800 text-xs mt-1">
@@ -230,7 +230,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-100" />
             <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
-              <span className="text-white text-xs font-black tracking-widest">
+              <span className="text-white text-xs font-extrabold tracking-widest">
                 VS
               </span>
             </div>
@@ -359,7 +359,7 @@ function BattleCard({ battle, user, onVote }) {
 
         <div className="flex items-center justify-center px-4">
           <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-            <span className="text-gray-400 text-xs font-black tracking-widest">
+            <span className="text-gray-400 text-xs font-extrabold tracking-widest">
               VS
             </span>
           </div>
@@ -573,7 +573,7 @@ export default function BattleSection() {
                   className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-xs font-black text-gray-400 mb-1">
+                <p className="text-xs font-extrabold text-gray-400 mb-1">
                   Belum ada battle untuk episode ini.
                 </p>
                 <p className="text-xs text-gray-300 mb-5">

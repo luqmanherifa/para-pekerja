@@ -74,7 +74,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               Tambah Quote
             </span>
           </div>
-          <p className="text-white font-black text-lg leading-tight">
+          <p className="text-white font-extrabold text-lg leading-tight">
             Quote Battle
           </p>
           <p className="text-green-300 text-xs mt-1">
@@ -245,7 +245,7 @@ function QuoteCard({ quote, user, onVote, rank }) {
       <div className="flex items-start gap-4">
         <div className="shrink-0 w-5 text-center">
           <span
-            className={`text-xs font-black tabular-nums ${rank <= 3 ? "text-yellow-500" : "text-gray-300"}`}
+            className={`text-xs font-extrabold tabular-nums ${rank <= 3 ? "text-yellow-500" : "text-gray-300"}`}
           >
             {rank <= 3 ? ["①", "②", "③"][rank - 1] : rank}
           </span>
@@ -443,7 +443,7 @@ export default function QuoteSection() {
                   className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-xs font-black text-gray-400 mb-1">
+                <p className="text-xs font-extrabold text-gray-400 mb-1">
                   Belum ada quote untuk episode ini.
                 </p>
                 <p className="text-xs text-gray-300 mb-5">

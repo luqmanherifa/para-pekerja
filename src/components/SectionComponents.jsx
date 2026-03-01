@@ -29,7 +29,7 @@ export function SectionCounter({ label, value }) {
       <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
         {label}
       </span>
-      <span className="text-sm font-black text-gray-900 tabular-nums">
+      <span className="text-sm font-extrabold text-gray-900 tabular-nums">
         {typeof value === "number" ? value.toLocaleString("id-ID") : value}
       </span>
     </div>
@@ -40,7 +40,7 @@ export function SectionTitle({ title, subtitle, children }) {
   return (
     <div className="flex items-end justify-between mb-8 gap-6">
       <div>
-        <p className="text-base font-black text-gray-900 leading-tight">
+        <p className="text-base font-extrabold text-gray-900 leading-tight">
           {title}
         </p>
         {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
@@ -97,7 +97,7 @@ export function EmptyState({ icon: Icon, title, subtitle, children }) {
         className="text-gray-200 mx-auto mb-3"
         strokeWidth={1.5}
       />
-      <p className="text-xs font-black text-gray-400 mb-1">{title}</p>
+      <p className="text-xs font-extrabold text-gray-400 mb-1">{title}</p>
       {subtitle && <p className="text-xs text-gray-300 mb-5">{subtitle}</p>}
       {children}
     </div>

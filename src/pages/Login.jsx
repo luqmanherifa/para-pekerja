@@ -130,7 +130,7 @@ export default function Login() {
       <div className="hidden lg:flex w-[420px] shrink-0 bg-green-600 flex-col justify-between px-10 py-12">
         <div className="flex items-center gap-2">
           <Hammer size={16} className="text-yellow-400" strokeWidth={2.5} />
-          <span className="text-white font-black text-sm tracking-tight">
+          <span className="text-white font-extrabold text-sm tracking-tight">
             Para Pekerja
           </span>
         </div>
@@ -139,7 +139,7 @@ export default function Login() {
           <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg mb-5">
             Komunitas Pendengar · ABG Siniar
           </span>
-          <h2 className="text-3xl font-black text-white leading-tight mb-3">
+          <h2 className="text-3xl font-extrabold text-white leading-tight mb-3">
             Ruang pura-pura
             <br />
             <span className="text-yellow-400">produktif.</span>
@@ -181,7 +181,7 @@ export default function Login() {
         <div className="flex items-center justify-between px-10 py-5 border-b border-gray-100">
           <div className="flex items-center gap-2 lg:hidden">
             <Hammer size={15} className="text-green-600" strokeWidth={2.5} />
-            <span className="text-gray-900 font-black text-sm tracking-tight">
+            <span className="text-gray-900 font-extrabold text-sm tracking-tight">
               Para Pekerja
             </span>
           </div>
@@ -218,7 +218,7 @@ export default function Login() {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                     Selamat datang kembali
                   </p>
-                  <h1 className="text-xl font-black text-gray-900 leading-tight">
+                  <h1 className="text-xl font-extrabold text-gray-900 leading-tight">
                     Masuk dulu, <span className="text-green-600">Pekerja.</span>
                   </h1>
                   <p className="text-xs text-gray-400 mt-1.5">
@@ -230,7 +230,7 @@ export default function Login() {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                     Pekerja baru
                   </p>
-                  <h1 className="text-xl font-black text-gray-900 leading-tight">
+                  <h1 className="text-xl font-extrabold text-gray-900 leading-tight">
                     Bergabung,{" "}
                     <span className="text-green-600">Para Pekerja.</span>
                   </h1>

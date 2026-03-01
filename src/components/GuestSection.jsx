@@ -25,7 +25,7 @@ function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
       <div className="flex items-center gap-4">
         <div className="shrink-0 w-6 text-center">
           <span
-            className={`text-xs font-black tabular-nums ${isTop ? color.rank : "text-gray-200"}`}
+            className={`text-xs font-extrabold tabular-nums ${isTop ? color.rank : "text-gray-200"}`}
           >
             {rankLabel}
           </span>
@@ -33,12 +33,12 @@ function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
         <div
           className={`shrink-0 w-9 h-9 rounded-xl ${color.accent} flex items-center justify-center`}
         >
-          <span className="text-white font-black text-sm leading-none">
+          <span className="text-white font-extrabold text-sm leading-none">
             {guest.name.charAt(0)}
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-black text-gray-900">{guest.name}</p>
+          <p className="text-xs font-extrabold text-gray-900">{guest.name}</p>
           <div className="flex flex-wrap gap-1 mt-1">
             {guest.episodes.map((ep) => (
               <span

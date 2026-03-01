@@ -51,7 +51,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               Usul Kerjaan
             </span>
           </div>
-          <p className="text-white font-black text-lg leading-tight">
+          <p className="text-white font-extrabold text-lg leading-tight">
             Kerjaan 5 Juta
           </p>
           <p className="text-green-300 text-xs mt-1">
@@ -138,7 +138,7 @@ function JobCard({ job, user, onVote, isNew }) {
       <div className="flex items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
-            <p className="text-xs font-black text-gray-900">{job.title}</p>
+            <p className="text-xs font-extrabold text-gray-900">{job.title}</p>
             {isNew && (
               <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
                 baru!
@@ -290,7 +290,7 @@ export default function JobsSection() {
                   className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-xs font-black text-gray-400 mb-1">
+                <p className="text-xs font-extrabold text-gray-400 mb-1">
                   Belum ada usul kerjaan.
                 </p>
                 <p className="text-xs text-gray-300 mb-5">

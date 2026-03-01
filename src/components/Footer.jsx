@@ -30,7 +30,7 @@ export default function Footer() {
           <div className="max-w-xs">
             <div className="flex items-center gap-2 mb-4">
               <Hammer size={16} className="text-yellow-400" strokeWidth={2.5} />
-              <span className="font-black text-white text-sm tracking-tight">
+              <span className="font-extrabold text-white text-sm tracking-tight">
                 Para Pekerja
               </span>
             </div>

@@ -80,7 +80,7 @@ function PayslipModal({ payslip, moodId, onClose }) {
               Slip Gaji Imajiner
             </span>
           </div>
-          <p className="text-white font-black text-lg leading-tight">
+          <p className="text-white font-extrabold text-lg leading-tight">
             PT. Para Pekerja Indonesia
           </p>
           <p className="text-green-300 text-xs mt-1">
@@ -138,7 +138,7 @@ function PayslipModal({ payslip, moodId, onClose }) {
             <span className="text-xs font-bold text-gray-900">
               Total Diterima
             </span>
-            <span className="text-xl font-black text-green-600">
+            <span className="text-xl font-extrabold text-green-600">
               {formatRupiah(payslip.total)}
             </span>
           </div>
@@ -283,7 +283,7 @@ export default function AttendanceSection() {
                 )}
                 {(phase === "guest" || phase === "pick_mood") && (
                   <div>
-                    <p className="text-xs font-black text-gray-900 leading-tight">
+                    <p className="text-xs font-extrabold text-gray-900 leading-tight">
                       Kondisi kerja hari ini?
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
@@ -308,13 +308,13 @@ export default function AttendanceSection() {
                           <p className="text-xs font-bold text-green-600 uppercase tracking-widest">
                             Sudah Absen ✓
                           </p>
-                          <p className="text-xs font-black text-gray-900">
+                          <p className="text-xs font-extrabold text-gray-900">
                             {mood.label}
                           </p>
                         </div>
                         <div className="ml-auto text-right">
                           <p className="text-xs text-gray-400">Gaji hari ini</p>
-                          <p className="text-xs font-black text-green-600">
+                          <p className="text-xs font-extrabold text-green-600">
                             {formatRupiah(myPayslip?.total)}
                           </p>
                         </div>
