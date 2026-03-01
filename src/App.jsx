@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/config";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "./store/authSlice";
-import Login from "./pages/Login";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 
 export default function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -24,9 +24,16 @@ export default function App() {
         dispatch(setUser(null));
       }
     });
-
     return () => unsubscribe();
   }, [dispatch]);
 
-  return <div>{user ? <Home /> : <Login />}</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/masuk" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

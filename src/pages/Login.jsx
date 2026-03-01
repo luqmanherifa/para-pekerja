@@ -8,11 +8,13 @@ import { auth, db } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
   User,
   ArrowRight,
+  ArrowLeft,
   AlertCircle,
   Eye,
   EyeOff,
@@ -33,6 +35,7 @@ const FEATURES = [
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [tab, setTab] = useState("login");
 
   const [loginEmail, setLoginEmail] = useState("");
@@ -69,6 +72,7 @@ export default function Login() {
         displayName: user.displayName ?? null,
       }),
     );
+    navigate("/");
   };
 
   const handleLogin = async (e) => {
@@ -181,6 +185,14 @@ export default function Login() {
 
       <div className="flex-1 flex items-center justify-center px-12 py-14">
         <div className="w-full max-w-md">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-green-600 transition-colors duration-150 mb-8"
+          >
+            <ArrowLeft size={13} />
+            Kembali ke beranda
+          </Link>
+
           <div className="lg:hidden mb-8 flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center shrink-0">
               <span className="text-white text-[10px] font-extrabold tracking-tight leading-none select-none">
@@ -218,6 +230,16 @@ export default function Login() {
             >
               Daftar
             </button>
+          </div>
+
+          <div className="flex items-center gap-2 mb-8">
+            <Lock size={11} className="text-green-500 shrink-0" />
+            <p className="text-xs text-gray-400">
+              Kata sandi dienkripsi oleh{" "}
+              <span className="font-semibold text-gray-500">
+                Firebase Authentication
+              </span>
+            </p>
           </div>
 
           {tab === "login" && (
@@ -304,18 +326,6 @@ export default function Login() {
                     </>
                   )}
                 </button>
-
-                <div className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
-                  <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-                    <Lock size={13} className="text-green-600" />
-                  </div>
-                  <p className="text-xs text-gray-500 leading-snug">
-                    Kata sandi dienkripsi oleh{" "}
-                    <span className="font-semibold text-gray-700">
-                      Firebase Authentication
-                    </span>
-                  </p>
-                </div>
 
                 <p className="text-center text-xs text-gray-400 mt-1">
                   Belum punya akun?{" "}
@@ -437,18 +447,6 @@ export default function Login() {
                     </>
                   )}
                 </button>
-
-                <div className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
-                  <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-                    <Lock size={13} className="text-green-600" />
-                  </div>
-                  <p className="text-xs text-gray-500 leading-snug">
-                    Kata sandi dienkripsi oleh{" "}
-                    <span className="font-semibold text-gray-700">
-                      Firebase Authentication
-                    </span>
-                  </p>
-                </div>
 
                 <p className="text-center text-xs text-gray-400 mt-1">
                   Sudah punya akun?{" "}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import {
   LogOut,
   ClipboardCheck,
@@ -9,6 +10,7 @@ import {
   Star,
   LayoutGrid,
   ChevronDown,
+  LogIn,
 } from "lucide-react";
 
 const NAV_LINKS = [
@@ -21,6 +23,7 @@ const NAV_LINKS = [
 
 export default function Navbar({ onLogout }) {
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -43,12 +46,9 @@ export default function Navbar({ onLogout }) {
   return (
     <nav className="w-full bg-white border-b border-gray-200">
       <div className="max-w-5xl mx-auto px-8 py-4 flex items-center justify-between">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
+        <Link
+          to="/"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="flex items-center gap-2.5 group"
         >
           <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center shrink-0">
@@ -59,7 +59,7 @@ export default function Navbar({ onLogout }) {
           <span className="font-bold text-gray-900 text-sm tracking-tight group-hover:text-green-600 transition-colors duration-150">
             Para Pekerja
           </span>
-        </a>
+        </Link>
 
         <div className="flex items-center gap-3">
           <div className="relative" ref={dropdownRef}>
@@ -108,17 +108,28 @@ export default function Navbar({ onLogout }) {
 
           <div className="w-px h-5 bg-gray-200" />
 
-          <span className="text-xs text-gray-400 hidden xl:block max-w-[160px] truncate">
-            {user?.email}
-          </span>
-
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-1.5 text-xs font-semibold border border-gray-300 hover:border-red-400 hover:text-red-500 text-gray-600 px-3 py-2 rounded-lg transition-colors duration-150"
-          >
-            <LogOut size={13} />
-            Keluar
-          </button>
+          {user ? (
+            <>
+              <span className="text-xs text-gray-400 hidden xl:block max-w-[160px] truncate">
+                {user.displayName || user.email}
+              </span>
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-1.5 text-xs font-semibold border border-gray-300 hover:border-red-400 hover:text-red-500 text-gray-600 px-3 py-2 rounded-lg transition-colors duration-150"
+              >
+                <LogOut size={13} />
+                Keluar
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/masuk"
+              className="flex items-center gap-1.5 text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-150"
+            >
+              <LogIn size={13} />
+              Masuk
+            </Link>
+          )}
         </div>
       </div>
     </nav>

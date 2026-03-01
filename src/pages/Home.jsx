@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
