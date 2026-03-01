@@ -3,30 +3,12 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
+import AbsensiSection from "../components/AbsensiSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {
-  ClipboardCheck,
-  Briefcase,
-  MessageSquareQuote,
-  Scale,
-  Star,
-} from "lucide-react";
+import { Briefcase, MessageSquareQuote, Scale, Star } from "lucide-react";
 
 const COMING_SOON_SECTIONS = [
-  {
-    id: "absensi",
-    icon: ClipboardCheck,
-    label: "Fitur 2",
-    title: "Absensi & Slip Gaji Imajiner",
-    desc: "Absen sekali sehari, pilih mood kerja, dan dapatkan slip gaji absurd. Lihat statistik mood komunitas dan vote slip yang paling relate.",
-    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
-    textMain: "text-gray-900",
-    textSub: "text-yellow-900",
-    iconBg: "bg-yellow-600",
-    iconColor: "text-white",
-    badge: "bg-yellow-600 text-yellow-100",
-  },
   {
     id: "kerjaan",
     icon: Briefcase,
@@ -94,6 +76,8 @@ export default function Home() {
       <Navbar onLogout={handleLogout} />
 
       <HeroSection />
+
+      <AbsensiSection />
 
       {COMING_SOON_SECTIONS.map((section) => {
         const Icon = section.icon;
