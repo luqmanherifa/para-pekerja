@@ -34,17 +34,17 @@ export default function Footer() {
                 Para Pekerja
               </span>
             </div>
-            <p className="text-green-200 text-[11px] leading-relaxed mb-4">
+            <p className="text-green-200 text-xs leading-relaxed mb-4">
               Ruang digital komunitas ABG Siniar. Dibangun oleh para pekerja,
               untuk para pekerja — yang sedang berpura-pura produktif.
             </p>
-            <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg">
+            <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg">
               Fan-made · Bukan afiliasi resmi
             </span>
           </div>
 
           <div>
-            <p className="text-[10px] font-bold text-green-300 uppercase tracking-widest mb-3">
+            <p className="text-xs font-bold text-green-300 uppercase tracking-widest mb-3">
               Fitur
             </p>
             <ul className="flex flex-col gap-2.5">
@@ -53,7 +53,7 @@ export default function Footer() {
                   <a
                     href={href}
                     onClick={(e) => handleNavClick(e, href)}
-                    className="flex items-center gap-2 text-[11px] font-semibold text-green-200 hover:text-yellow-400 transition-colors duration-150"
+                    className="flex items-center gap-2 text-xs font-semibold text-green-200 hover:text-yellow-400 transition-colors duration-150"
                   >
                     <Icon
                       size={11}
@@ -68,14 +68,14 @@ export default function Footer() {
           </div>
 
           <div className="max-w-xs">
-            <p className="text-[10px] font-bold text-green-300 uppercase tracking-widest mb-3">
+            <p className="text-xs font-bold text-green-300 uppercase tracking-widest mb-3">
               Kata Mereka
             </p>
             <div className="border-l-2 border-yellow-400 pl-4">
-              <p className="text-green-100 text-[11px] italic leading-relaxed">
+              <p className="text-green-100 text-xs italic leading-relaxed">
                 "Kerjaan apa yang gajinya 5 juta sehari?"
               </p>
-              <p className="text-yellow-400 text-[10px] font-bold mt-2 uppercase tracking-widest">
+              <p className="text-yellow-400 text-xs font-bold mt-2 uppercase tracking-widest">
                 — ABG Siniar
               </p>
             </div>
@@ -83,13 +83,13 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-green-500 pt-5 flex items-center justify-between">
-          <p className="text-[10px] text-green-400 font-medium">
+          <p className="text-xs text-green-400 font-medium">
             © {new Date().getFullYear()} Para Pekerja · Fan-made community
             platform · Bukan produk resmi ABG Siniar
           </p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 text-[10px] font-bold text-green-300 hover:text-yellow-400 uppercase tracking-widest transition-colors duration-150"
+            className="flex items-center gap-1.5 text-xs font-bold text-green-300 hover:text-yellow-400 uppercase tracking-widest transition-colors duration-150"
           >
             <ArrowUp size={11} strokeWidth={2.5} />
             Kembali ke atas

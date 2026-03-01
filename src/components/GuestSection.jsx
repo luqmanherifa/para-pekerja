@@ -1,5 +1,11 @@
-import { Link } from "react-router-dom";
-import { Star, LogIn } from "lucide-react";
+import { Star } from "lucide-react";
+import {
+  SeparatorBar,
+  SectionHeader,
+  SectionCounter,
+  SectionTitle,
+  LoginNudge,
+} from "./SectionComponents";
 import { useGuest } from "../hooks/useGuest";
 import LoginGateModal from "./LoginGateModal";
 import { getSpeakerColor } from "../data/speakers";
@@ -37,7 +43,7 @@ function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
             {guest.episodes.map((ep) => (
               <span
                 key={ep}
-                className="text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
+                className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
               >
                 {ep}
               </span>
@@ -49,7 +55,7 @@ function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
             onClick={() => canVote && onVote(guest.id)}
             disabled={!canVote}
             title={!user ? "Masuk untuk vote" : hasVoted ? "Sudah di-vote" : ""}
-            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-[10px] font-bold transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVoted
                 ? `${color.voteLight} border`
                 : !user
@@ -89,38 +95,20 @@ export default function GuestSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <div className="w-full h-1 bg-gray-200" />
+      <SeparatorBar color="gray" />
 
       <section id="guest-ranking" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <Star size={13} className="text-green-600" strokeWidth={2.5} />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Peringkat Tamu
-              </span>
-            </div>
+          <SectionHeader icon={Star} label="Peringkat Tamu">
             {totalVotes > 0 && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-                  Total vote
-                </span>
-                <span className="text-sm font-black text-gray-900 tabular-nums">
-                  {totalVotes.toLocaleString("id-ID")}
-                </span>
-              </div>
+              <SectionCounter label="Total vote" value={totalVotes} />
             )}
-          </div>
+          </SectionHeader>
 
-          <div className="mb-8">
-            <p className="text-base font-black text-gray-900 leading-tight">
-              Tamu Terbaik Versi Para Pekerja
-            </p>
-            <p className="text-[11px] text-gray-400 mt-0.5">
-              Vote guest favoritmu. Ranking ditentukan sepenuhnya oleh
-              komunitas.
-            </p>
-          </div>
+          <SectionTitle
+            title="Tamu Terbaik Versi Para Pekerja"
+            subtitle="Vote guest favoritmu. Ranking ditentukan sepenuhnya oleh komunitas."
+          />
 
           <div className="flex flex-col gap-2.5">
             {loading
@@ -154,16 +142,7 @@ export default function GuestSection() {
           </div>
 
           {!user && !loading && (
-            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-              <Link
-                to="/masuk"
-                className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
-              >
-                <LogIn size={11} />
-                Masuk
-              </Link>
-              <span>untuk vote guest favoritmu.</span>
-            </div>
+            <LoginNudge text="untuk vote guest favoritmu." />
           )}
         </div>
       </section>

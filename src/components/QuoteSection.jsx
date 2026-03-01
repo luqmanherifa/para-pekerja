@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   MessageSquareQuote,
   ThumbsUp,
   Plus,
   X,
   Send,
-  LogIn,
   ChevronDown,
 } from "lucide-react";
+import {
+  SeparatorBar,
+  SectionHeader,
+  SectionCounter,
+  SectionTitle,
+  LoginNudge,
+  SectionButton,
+  EmptyState,
+} from "./SectionComponents";
 import { useQuotes } from "../hooks/useQuotes";
 import LoginGateModal from "./LoginGateModal";
 import { EPISODES } from "../data/episodes";
@@ -63,14 +70,14 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               className="text-green-200"
               strokeWidth={2.5}
             />
-            <span className="text-green-200 text-[10px] font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
               Tambah Quote
             </span>
           </div>
           <p className="text-white font-black text-lg leading-tight">
             Quote Battle
           </p>
-          <p className="text-green-300 text-[11px] mt-1">
+          <p className="text-green-300 text-xs mt-1">
             Pilih episode, siapa yang ngomong, lalu tulis quote-nya.
           </p>
         </div>
@@ -80,7 +87,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Episode
             </label>
             <div className="relative">
@@ -126,7 +133,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Siapa yang ngomong
             </label>
             <div className="flex flex-col gap-2">
@@ -155,7 +162,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-gray-100" />
-                <span className="text-[10px] text-gray-300 font-semibold uppercase tracking-widest">
+                <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
                   Guest
                 </span>
                 <div className="h-px flex-1 bg-gray-100" />
@@ -187,7 +194,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Quote
             </label>
             <textarea
@@ -199,7 +206,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               rows={3}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
             />
-            <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
+            <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
               {quoteText.length}/200
             </p>
           </div>
@@ -246,7 +253,7 @@ function QuoteCard({ quote, user, onVote, rank }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-3">
             <span
-              className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
+              className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
               {quote.speakerName}
@@ -256,16 +263,14 @@ function QuoteCard({ quote, user, onVote, rank }) {
                 </span>
               )}
             </span>
-            <span className="text-[10px] text-gray-300 font-medium">
+            <span className="text-xs text-gray-300 font-medium">
               {quote.episodeLabel}
             </span>
           </div>
           <p className="text-xs text-gray-800 leading-relaxed font-medium italic">
             "{quote.text}"
           </p>
-          <p className="text-[10px] text-gray-300 mt-2">
-            oleh {quote.submittedBy}
-          </p>
+          <p className="text-xs text-gray-300 mt-2">oleh {quote.submittedBy}</p>
         </div>
         <div className="shrink-0">
           <button
@@ -280,7 +285,7 @@ function QuoteCard({ quote, user, onVote, rank }) {
                     ? "Masuk untuk vote"
                     : ""
             }
-            className={`flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl border text-[10px] font-bold transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVoted
                 ? "bg-green-50 border-green-200 text-green-600"
                 : cannotVote
@@ -329,53 +334,27 @@ export default function QuoteSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <div className="w-full h-1 bg-yellow-400" />
+      <SeparatorBar />
 
       <section id="quote-battle" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <MessageSquareQuote
-                size={13}
-                className="text-green-600"
-                strokeWidth={2.5}
+          <SectionHeader icon={MessageSquareQuote} label="Quote Battle">
+            {totalQuotes[activeEpisode.id] > 0 && (
+              <SectionCounter
+                label="Quote terkumpul"
+                value={totalQuotes[activeEpisode.id]}
               />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Quote Battle
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              {totalQuotes[activeEpisode.id] > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-                    Quote terkumpul
-                  </span>
-                  <span className="text-sm font-black text-gray-900 tabular-nums">
-                    {totalQuotes[activeEpisode.id]}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+            )}
+          </SectionHeader>
 
-          <div className="flex items-end justify-between mb-8 gap-6">
-            <div>
-              <p className="text-base font-black text-gray-900 leading-tight">
-                Arsip Quote Para Pekerja
-              </p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Kumpulkan momen terbaik dari tiap episode. Satu quote, satu
-                vote.
-              </p>
-            </div>
-            <button
-              onClick={openSubmitModal}
-              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
-            >
-              <Plus size={12} strokeWidth={2.5} />
+          <SectionTitle
+            title="Arsip Quote Para Pekerja"
+            subtitle="Kumpulkan momen terbaik dari tiap episode. Satu quote, satu vote."
+          >
+            <SectionButton onClick={openSubmitModal} icon={Plus}>
               Tambah Quote
-            </button>
-          </div>
+            </SectionButton>
+          </SectionTitle>
 
           <div
             className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
@@ -397,7 +376,7 @@ export default function QuoteSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                      className={`text-xs font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
                         isActive
                           ? "bg-green-500 text-green-100"
                           : "bg-gray-100 text-gray-500"
@@ -413,7 +392,7 @@ export default function QuoteSection() {
 
           {!loading && !isEmpty && (
             <div className="flex items-center gap-2 mb-6 flex-wrap">
-              <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest mr-1">
+              <span className="text-xs text-gray-300 font-bold uppercase tracking-widest mr-1">
                 Dalam episode ini:
               </span>
               {[...HOSTS, ...GUESTS].map((s) => {
@@ -423,7 +402,7 @@ export default function QuoteSection() {
                 return (
                   <span
                     key={s.id}
-                    className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${color.light}`}
+                    className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${color.light}`}
                   >
                     <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
                     {s.name}
@@ -467,7 +446,7 @@ export default function QuoteSection() {
                 <p className="text-xs font-black text-gray-400 mb-1">
                   Belum ada quote untuk episode ini.
                 </p>
-                <p className="text-[11px] text-gray-300 mb-5">
+                <p className="text-xs text-gray-300 mb-5">
                   Jadilah yang pertama mengarsipkan momen terbaik.
                 </p>
                 <button
@@ -492,16 +471,7 @@ export default function QuoteSection() {
           </div>
 
           {!user && !isEmpty && !loading && (
-            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-              <Link
-                to="/masuk"
-                className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
-              >
-                <LogIn size={11} />
-                Masuk
-              </Link>
-              <span>untuk submit quote dan ikut vote.</span>
-            </div>
+            <LoginNudge text="untuk submit quote dan ikut vote." />
           )}
         </div>
       </section>

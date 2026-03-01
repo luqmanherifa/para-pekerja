@@ -29,13 +29,13 @@ export default function HeroSection() {
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-2">
             <Hammer size={13} className="text-green-300" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-green-300 uppercase tracking-widest">
+            <span className="text-xs font-bold text-green-300 uppercase tracking-widest">
               Komunitas Pendengar · ABG Siniar
             </span>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-green-300 uppercase tracking-widest">
+              <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">
                 Pekerja
               </span>
               <span className="text-sm font-black text-white tabular-nums">
@@ -45,7 +45,7 @@ export default function HeroSection() {
             <div className="w-px h-3.5 bg-green-500" />
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="text-[10px] font-semibold text-green-300 uppercase tracking-widest">
+              <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">
                 Aktif hari ini
               </span>
               <span className="text-sm font-black text-yellow-400 tabular-nums">
@@ -54,19 +54,16 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-
         <div className="mb-8">
           <p className="text-sm font-medium text-green-300 mb-1.5 italic">
             Ruang pura-pura produktif sejak hari pertama.
           </p>
-          <h1 className="text-[52px] font-black text-white leading-[1.05] tracking-tight">
+          <h1 className="text-5xl font-black text-white leading-[1.05] tracking-tight">
             Selamat datang,{" "}
             <span className="text-yellow-400">Para Pekerja.</span>
           </h1>
         </div>
-
         <div className="w-full h-px bg-green-500 mb-8" />
-
         <div className="flex items-end justify-between gap-12">
           <p className="text-green-200 text-sm leading-relaxed max-w-sm">
             Absen tiap hari, kirim kerjaan absurd, vote siapa yang paling benar,

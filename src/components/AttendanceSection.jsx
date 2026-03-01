@@ -12,11 +12,16 @@ import {
   Sparkles,
   X,
   ClipboardCheck,
-  LogIn,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAttendance } from "../hooks/useAttendance";
 import LoginGateModal from "./LoginGateModal";
+import {
+  SeparatorBar,
+  SectionHeader,
+  SectionCounter,
+  SectionTitle,
+  LoginNudge,
+} from "./SectionComponents";
 import {
   MOODS,
   GHOST_ATTENDEES,
@@ -71,14 +76,14 @@ function PayslipModal({ payslip, moodId, onClose }) {
             <div className="w-5 h-5 rounded-md bg-yellow-400 flex items-center justify-center">
               <Icon size={11} className="text-gray-900" strokeWidth={2.5} />
             </div>
-            <span className="text-green-200 text-[10px] font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
               Slip Gaji Imajiner
             </span>
           </div>
           <p className="text-white font-black text-lg leading-tight">
             PT. Para Pekerja Indonesia
           </p>
-          <p className="text-green-300 text-[11px] mt-1">
+          <p className="text-green-300 text-xs mt-1">
             {new Date().toLocaleDateString("id-ID", {
               weekday: "long",
               year: "numeric",
@@ -110,11 +115,11 @@ function PayslipModal({ payslip, moodId, onClose }) {
               key={i}
               className="flex justify-between items-start py-2.5 border-b border-dashed border-gray-100 gap-4"
             >
-              <span className="text-[11px] text-gray-500 leading-snug flex-1">
+              <span className="text-xs text-gray-500 leading-snug flex-1">
                 {item.label}
               </span>
               <span
-                className={`text-[11px] font-bold shrink-0 ${item.amount >= 0 ? "text-green-600" : "text-red-500"}`}
+                className={`text-xs font-bold shrink-0 ${item.amount >= 0 ? "text-green-600" : "text-red-500"}`}
               >
                 {item.amount >= 0 ? "+" : ""}Rp{" "}
                 {Math.abs(item.amount).toLocaleString("id-ID")}
@@ -122,10 +127,10 @@ function PayslipModal({ payslip, moodId, onClose }) {
             </div>
           ))}
           <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3">
-            <p className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest mb-1">
+            <p className="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-1">
               Catatan HR
             </p>
-            <p className="text-[11px] text-yellow-800 leading-relaxed italic">
+            <p className="text-xs text-yellow-800 leading-relaxed italic">
               "{payslip.hrNote}"
             </p>
           </div>
@@ -196,65 +201,40 @@ export default function AttendanceSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <div className="w-full h-1 bg-yellow-400" />
+      <SeparatorBar />
 
       <section id="attendance" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <ClipboardCheck
-                size={13}
-                className="text-green-600"
-                strokeWidth={2.5}
-              />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Absensi Harian
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              {totalToday > 0 && (
-                <>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-                      Sudah absen
+          <SectionHeader icon={ClipboardCheck} label="Absensi Harian">
+            {totalToday > 0 && (
+              <>
+                <SectionCounter label="Sudah absen" value={totalToday} />
+                {dominantMood && (
+                  <>
+                    <div className="w-px h-3.5 bg-gray-200" />
+                    <span className="text-xs text-gray-400 italic">
+                      {ambientText}
                     </span>
-                    <span className="text-sm font-black text-gray-900 tabular-nums">
-                      {totalToday.toLocaleString("id-ID")}
-                    </span>
-                  </div>
-                  {dominantMood && (
-                    <>
-                      <div className="w-px h-3.5 bg-gray-200" />
-                      <span className="text-[11px] text-gray-400 italic">
-                        {ambientText}
-                      </span>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+                  </>
+                )}
+              </>
+            )}
+          </SectionHeader>
 
-          <div className="flex items-end justify-between mb-8 gap-6">
-            <div>
-              <p className="text-base font-black text-gray-900 leading-tight">
-                Kondisi Kerja Hari Ini
-              </p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Pilih mood, absen, dan dapatkan slip gaji imajiner kamu hari
-                ini.
-              </p>
-            </div>
+          <SectionTitle
+            title="Kondisi Kerja Hari Ini"
+            subtitle="Pilih mood, absen, dan dapatkan slip gaji imajiner kamu hari ini."
+          >
             {phase === "done" && (
               <button
                 onClick={() => setShowPayslipModal(true)}
-                className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
+                className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
               >
                 <FileText size={12} />
                 Lihat Slip Gaji
               </button>
             )}
-          </div>
+          </SectionTitle>
 
           <div
             className="mb-10 overflow-x-auto"
@@ -278,13 +258,13 @@ export default function AttendanceSection() {
                     >
                       <Icon size={9} strokeWidth={2.5} />
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-700 whitespace-nowrap">
+                    <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">
                       {a.displayName}
                     </span>
                   </div>
                 );
               })}
-              <span className="text-[11px] text-gray-300 whitespace-nowrap pl-1 shrink-0">
+              <span className="text-xs text-gray-300 whitespace-nowrap pl-1 shrink-0">
                 {isGhost ? "Jadilah yang pertama ✦" : "· · ·"}
               </span>
             </div>
@@ -306,7 +286,7 @@ export default function AttendanceSection() {
                     <p className="text-xs font-black text-gray-900 leading-tight">
                       Kondisi kerja hari ini?
                     </p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
+                    <p className="text-xs text-gray-400 mt-0.5">
                       {phase === "guest"
                         ? "Klik mood untuk masuk dan absen."
                         : "Pilih satu — tidak bisa diubah setelah absen."}
@@ -325,7 +305,7 @@ export default function AttendanceSection() {
                           <Icon size={15} strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest">
+                          <p className="text-xs font-bold text-green-600 uppercase tracking-widest">
                             Sudah Absen ✓
                           </p>
                           <p className="text-xs font-black text-gray-900">
@@ -333,9 +313,7 @@ export default function AttendanceSection() {
                           </p>
                         </div>
                         <div className="ml-auto text-right">
-                          <p className="text-[10px] text-gray-400">
-                            Gaji hari ini
-                          </p>
+                          <p className="text-xs text-gray-400">Gaji hari ini</p>
                           <p className="text-xs font-black text-green-600">
                             {formatRupiah(myPayslip?.total)}
                           </p>
@@ -389,7 +367,7 @@ export default function AttendanceSection() {
               {phase === "guest" && (
                 <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shrink-0" />
-                  <p className="text-[11px] text-gray-500">
+                  <p className="text-xs text-gray-500">
                     Klik salah satu mood di atas untuk masuk dan absen.
                   </p>
                 </div>
@@ -417,7 +395,7 @@ export default function AttendanceSection() {
 
             <div className="col-span-2 flex flex-col gap-7">
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
                   Suasana Kantor
                 </p>
                 <div className="space-y-2.5">
@@ -444,7 +422,7 @@ export default function AttendanceSection() {
                             style={{ width: `${pct}%` }}
                           />
                         </div>
-                        <span className="text-[10px] font-bold text-gray-400 w-4 text-right tabular-nums">
+                        <span className="text-xs font-bold text-gray-400 w-4 text-right tabular-nums">
                           {count > 0 ? count : ""}
                         </span>
                       </div>
@@ -452,7 +430,7 @@ export default function AttendanceSection() {
                   })}
                 </div>
                 {totalToday === 0 && (
-                  <p className="text-[11px] text-gray-300 mt-3 italic">
+                  <p className="text-xs text-gray-300 mt-3 italic">
                     Belum ada yang absen hari ini.
                   </p>
                 )}
@@ -461,7 +439,7 @@ export default function AttendanceSection() {
               <div className="w-full h-px bg-gray-100" />
 
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
                   Slip Paling Relate
                 </p>
                 {featuredPayslips.length === 0 ? (
@@ -479,7 +457,7 @@ export default function AttendanceSection() {
                         <div className="w-9 h-7 rounded-lg bg-gray-100" />
                       </div>
                     ))}
-                    <p className="text-[11px] text-gray-300 italic mt-1">
+                    <p className="text-xs text-gray-300 italic mt-1">
                       Belum ada slip hari ini.
                     </p>
                   </div>
@@ -502,10 +480,10 @@ export default function AttendanceSection() {
                             <Icon size={11} strokeWidth={2} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[11px] font-bold text-gray-800 truncate">
+                            <p className="text-xs font-bold text-gray-800 truncate">
                               {slip.displayName}
                             </p>
-                            <p className="text-[10px] font-semibold text-green-600">
+                            <p className="text-xs font-semibold text-green-600">
                               {formatRupiah(slip.total)}
                             </p>
                           </div>
@@ -521,7 +499,7 @@ export default function AttendanceSection() {
                                     ? "Masuk untuk vote"
                                     : ""
                             }
-                            className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-[10px] font-bold transition-all shrink-0 ${
+                            className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-bold transition-all shrink-0 ${
                               hasVoted
                                 ? "bg-green-50 border-green-200 text-green-600"
                                 : cannotVote
@@ -544,16 +522,7 @@ export default function AttendanceSection() {
           </div>
 
           {phase === "guest" && (
-            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-              <Link
-                to="/masuk"
-                className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
-              >
-                <LogIn size={11} />
-                Masuk
-              </Link>
-              <span>untuk absen dan dapatkan slip gaji imajiner.</span>
-            </div>
+            <LoginNudge text="untuk absen dan dapatkan slip gaji imajiner." />
           )}
         </div>
       </section>

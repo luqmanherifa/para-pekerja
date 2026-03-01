@@ -33,12 +33,10 @@ const getInitials = (user) => {
 
 export default function Navbar({ onLogout }) {
   const user = useSelector((state) => state.auth.user);
-
   const handleNavClick = (e, href) => {
     e.preventDefault();
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
-
   return (
     <nav className="w-full bg-white border-b border-gray-200">
       <div className="max-w-5xl mx-auto px-8 py-0 flex items-center justify-between h-14">
@@ -56,7 +54,6 @@ export default function Navbar({ onLogout }) {
             Para Pekerja
           </span>
         </Link>
-
         <div className="flex items-center gap-1">
           {NAV_LINKS.map(({ label, href, icon: Icon }) => (
             <a
@@ -70,12 +67,11 @@ export default function Navbar({ onLogout }) {
             </a>
           ))}
         </div>
-
         {user ? (
           <div className="flex items-center gap-0 bg-gray-100 rounded-xl overflow-hidden shrink-0">
             <div className="flex items-center gap-2 px-3 py-2">
               <div className="w-5 h-5 rounded-md bg-green-600 flex items-center justify-center shrink-0">
-                <span className="text-white text-[9px] font-extrabold leading-none">
+                <span className="text-white text-xs font-extrabold leading-none">
                   {getInitials(user)}
                 </span>
               </div>
@@ -83,9 +79,7 @@ export default function Navbar({ onLogout }) {
                 {user.displayName || user.email}
               </span>
             </div>
-
             <div className="w-px h-5 bg-gray-300" />
-
             <button
               onClick={onLogout}
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all duration-150"

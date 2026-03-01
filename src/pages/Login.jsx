@@ -136,7 +136,7 @@ export default function Login() {
         </div>
 
         <div>
-          <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg mb-5">
+          <span className="inline-flex items-center gap-1.5 bg-yellow-400 text-gray-900 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg mb-5">
             Komunitas Pendengar · ABG Siniar
           </span>
           <h2 className="text-3xl font-black text-white leading-tight mb-3">
@@ -144,7 +144,7 @@ export default function Login() {
             <br />
             <span className="text-yellow-400">produktif.</span>
           </h2>
-          <p className="text-green-200 text-[11px] leading-relaxed mb-8 max-w-xs">
+          <p className="text-green-200 text-xs leading-relaxed mb-8 max-w-xs">
             Bergabung dan nikmati semua fitur komunitas yang dibangun oleh para
             pekerja, untuk para pekerja.
           </p>
@@ -155,7 +155,7 @@ export default function Login() {
                 <div className="w-6 h-6 rounded-lg bg-green-500 flex items-center justify-center shrink-0">
                   <Icon size={11} className="text-white" strokeWidth={2} />
                 </div>
-                <span className="text-green-100 text-[11px] font-semibold">
+                <span className="text-green-100 text-xs font-semibold">
                   {label}
                 </span>
               </li>
@@ -163,16 +163,16 @@ export default function Login() {
           </ul>
 
           <div className="border-l-2 border-yellow-400 pl-4">
-            <p className="text-green-100 text-[11px] italic leading-relaxed">
+            <p className="text-green-100 text-xs italic leading-relaxed">
               "Kerjaan apa yang gajinya 5 juta sehari?"
             </p>
-            <p className="text-yellow-400 text-[10px] font-bold mt-1.5 uppercase tracking-widest">
+            <p className="text-yellow-400 text-xs font-bold mt-1.5 uppercase tracking-widest">
               — ABG Siniar
             </p>
           </div>
         </div>
 
-        <p className="text-[10px] text-green-400 font-medium">
+        <p className="text-xs text-green-400 font-medium">
           Fan-made · Bukan afiliasi resmi ABG Siniar
         </p>
       </div>
@@ -187,7 +187,7 @@ export default function Login() {
           </div>
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-green-600 transition-colors duration-150 ml-auto"
+            className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-green-600 transition-colors duration-150 ml-auto"
           >
             <ArrowLeft size={12} />
             Kembali ke beranda
@@ -215,26 +215,26 @@ export default function Login() {
             <div className="mb-7">
               {activeTab === "login" ? (
                 <>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                     Selamat datang kembali
                   </p>
                   <h1 className="text-xl font-black text-gray-900 leading-tight">
                     Masuk dulu, <span className="text-green-600">Pekerja.</span>
                   </h1>
-                  <p className="text-[11px] text-gray-400 mt-1.5">
+                  <p className="text-xs text-gray-400 mt-1.5">
                     Setelah masuk, kamu otomatis tercatat hadir hari ini.
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                     Pekerja baru
                   </p>
                   <h1 className="text-xl font-black text-gray-900 leading-tight">
                     Bergabung,{" "}
                     <span className="text-green-600">Para Pekerja.</span>
                   </h1>
-                  <p className="text-[11px] text-gray-400 mt-1.5">
+                  <p className="text-xs text-gray-400 mt-1.5">
                     Daftar gratis dan langsung ikut berinteraksi bersama
                     komunitas.
                   </p>
@@ -245,7 +245,7 @@ export default function Login() {
             {activeTab === "login" && (
               <form onSubmit={handleLogin} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Alamat Email
                   </label>
                   <div className="relative">
@@ -265,7 +265,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Kata Sandi
                   </label>
                   <div className="relative">
@@ -296,7 +296,7 @@ export default function Login() {
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-[11px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
+                  <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
                     <AlertCircle size={12} className="shrink-0" />
                     {error}
                   </div>
@@ -320,7 +320,7 @@ export default function Login() {
                   )}
                 </button>
 
-                <p className="text-center text-[11px] text-gray-400">
+                <p className="text-center text-xs text-gray-400">
                   Belum punya akun?{" "}
                   <button
                     type="button"
@@ -336,7 +336,7 @@ export default function Login() {
             {activeTab === "register" && (
               <form onSubmit={handleRegister} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Nama Panggilan
                   </label>
                   <div className="relative">
@@ -356,7 +356,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Alamat Email
                   </label>
                   <div className="relative">
@@ -376,7 +376,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
                     Kata Sandi
                   </label>
                   <div className="relative">
@@ -407,7 +407,7 @@ export default function Login() {
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-[11px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
+                  <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
                     <AlertCircle size={12} className="shrink-0" />
                     {error}
                   </div>
@@ -431,7 +431,7 @@ export default function Login() {
                   )}
                 </button>
 
-                <p className="text-center text-[11px] text-gray-400">
+                <p className="text-center text-xs text-gray-400">
                   Sudah punya akun?{" "}
                   <button
                     type="button"
@@ -446,7 +446,7 @@ export default function Login() {
 
             <div className="flex items-center gap-2 mt-6 pt-5 border-t border-gray-100">
               <Lock size={10} className="text-gray-300 shrink-0" />
-              <p className="text-[10px] text-gray-300">
+              <p className="text-xs text-gray-300">
                 Kata sandi dienkripsi oleh{" "}
                 <span className="font-semibold text-gray-400">
                   Firebase Authentication

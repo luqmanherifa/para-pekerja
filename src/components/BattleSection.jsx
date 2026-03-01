@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Scale, Plus, X, Send, LogIn, ChevronDown, Swords } from "lucide-react";
+import { Scale, Plus, X, Send, ChevronDown, Swords } from "lucide-react";
+import {
+  SeparatorBar,
+  SectionHeader,
+  SectionCounter,
+  SectionTitle,
+  LoginNudge,
+  SectionButton,
+  EmptyState,
+} from "./SectionComponents";
 import { useBattles } from "../hooks/useBattles";
 import LoginGateModal from "./LoginGateModal";
 import { EPISODES } from "../data/episodes";
 import { HOSTS, GUESTS, getSpeakerColor } from "../data/speakers";
+import { Link } from "react-router-dom";
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
@@ -103,14 +112,14 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </button>
           <div className="flex items-center gap-2 mb-1.5">
             <Scale size={12} className="text-yellow-800" strokeWidth={2.5} />
-            <span className="text-yellow-800 text-[10px] font-bold uppercase tracking-widest">
+            <span className="text-yellow-800 text-xs font-bold uppercase tracking-widest">
               Buat Battle
             </span>
           </div>
           <p className="text-gray-900 font-black text-lg leading-tight">
             Siapa Paling Benar?
           </p>
-          <p className="text-yellow-800 text-[11px] mt-1">
+          <p className="text-yellow-800 text-xs mt-1">
             Pilih episode, dua orang, lalu ringkas pendapat masing-masing.
           </p>
         </div>
@@ -120,7 +129,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Episode
             </label>
             <div className="relative">
@@ -166,7 +175,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Orang A
             </label>
             <div className="flex flex-col gap-2">
@@ -183,7 +192,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-gray-100" />
-                <span className="text-[10px] text-gray-300 font-semibold uppercase tracking-widest">
+                <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
                   Guest
                 </span>
                 <div className="h-px flex-1 bg-gray-100" />
@@ -211,7 +220,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
-                <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
+                <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
                   {summaryA.length}/300
                 </p>
               </div>
@@ -221,7 +230,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-100" />
             <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
-              <span className="text-white text-[9px] font-black tracking-widest">
+              <span className="text-white text-xs font-black tracking-widest">
                 VS
               </span>
             </div>
@@ -229,7 +238,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Orang B
             </label>
             <div className="flex flex-col gap-2">
@@ -246,7 +255,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-gray-100" />
-                <span className="text-[10px] text-gray-300 font-semibold uppercase tracking-widest">
+                <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
                   Guest
                 </span>
                 <div className="h-px flex-1 bg-gray-100" />
@@ -274,7 +283,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
-                <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
+                <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
                   {summaryB.length}/300
                 </p>
               </div>
@@ -322,10 +331,10 @@ function BattleCard({ battle, user, onVote }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-all duration-200">
       <div className="flex items-center justify-between px-6 pt-4 pb-3">
-        <span className="text-[10px] text-gray-300 font-semibold uppercase tracking-widest">
+        <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
           {battle.episodeLabel}
         </span>
-        <span className="text-[10px] text-gray-300 font-medium">
+        <span className="text-xs text-gray-300 font-medium">
           oleh {battle.submittedBy}
         </span>
       </div>
@@ -333,7 +342,7 @@ function BattleCard({ battle, user, onVote }) {
       <div className="grid grid-cols-[1fr_auto_1fr] gap-0 px-6 pb-5">
         <div className="flex flex-col gap-3">
           <span
-            className={`inline-flex items-center gap-1.5 self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorA.light}`}
+            className={`inline-flex items-center gap-1.5 self-start text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorA.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorA.dot}`} />
             {battle.speakerAName}
@@ -350,7 +359,7 @@ function BattleCard({ battle, user, onVote }) {
 
         <div className="flex items-center justify-center px-4">
           <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-            <span className="text-gray-400 text-[9px] font-black tracking-widest">
+            <span className="text-gray-400 text-xs font-black tracking-widest">
               VS
             </span>
           </div>
@@ -358,7 +367,7 @@ function BattleCard({ battle, user, onVote }) {
 
         <div className="flex flex-col gap-3 items-end text-right">
           <span
-            className={`inline-flex items-center gap-1.5 self-end text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorB.light}`}
+            className={`inline-flex items-center gap-1.5 self-end text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorB.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorB.dot}`} />
             {battle.speakerBName}
@@ -377,7 +386,7 @@ function BattleCard({ battle, user, onVote }) {
       <div className="border-t border-gray-100 px-6 py-4">
         {totalVotes > 0 && (
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-bold text-gray-400 tabular-nums w-8 text-right">
+            <span className="text-xs font-bold text-gray-400 tabular-nums w-8 text-right">
               {pctA}%
             </span>
             <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden flex">
@@ -386,7 +395,7 @@ function BattleCard({ battle, user, onVote }) {
                 style={{ width: `${pctA}%` }}
               />
             </div>
-            <span className="text-[10px] font-bold text-gray-400 tabular-nums w-8">
+            <span className="text-xs font-bold text-gray-400 tabular-nums w-8">
               {pctB}%
             </span>
           </div>
@@ -432,7 +441,7 @@ function BattleCard({ battle, user, onVote }) {
           </button>
         </div>
         {!user && (
-          <p className="text-center text-[10px] text-gray-300 mt-2">
+          <p className="text-center text-xs text-gray-300 mt-2">
             <Link
               to="/masuk"
               className="text-yellow-600 font-bold hover:underline"
@@ -479,49 +488,27 @@ export default function BattleSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <div className="w-full h-1 bg-yellow-400" />
+      <SeparatorBar />
 
       <section id="siapa-paling-benar" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <Scale size={13} className="text-yellow-500" strokeWidth={2.5} />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Siapa Paling Benar?
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              {(totalBattles[activeEpisode.id] ?? 0) > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-                    Battle aktif
-                  </span>
-                  <span className="text-sm font-black text-gray-900 tabular-nums">
-                    {totalBattles[activeEpisode.id]}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+          <SectionHeader icon={Scale} label="Siapa Paling Benar?">
+            {(totalBattles[activeEpisode.id] ?? 0) > 0 && (
+              <SectionCounter
+                label="Battle aktif"
+                value={totalBattles[activeEpisode.id]}
+              />
+            )}
+          </SectionHeader>
 
-          <div className="flex items-end justify-between mb-8 gap-6">
-            <div>
-              <p className="text-base font-black text-gray-900 leading-tight">
-                Duel Pendapat Per Episode
-              </p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Rangkum argumen dua orang. Komunitas pilih siapa yang paling
-                benar — atau paling chaos.
-              </p>
-            </div>
-            <button
-              onClick={openSubmitModal}
-              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
-            >
-              <Plus size={12} strokeWidth={2.5} />
+          <SectionTitle
+            title="Duel Pendapat Per Episode"
+            subtitle="Rangkum argumen dua orang. Komunitas pilih siapa yang paling benar — atau paling chaos."
+          >
+            <SectionButton onClick={openSubmitModal} icon={Plus}>
               Buat Battle
-            </button>
-          </div>
+            </SectionButton>
+          </SectionTitle>
 
           <div
             className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
@@ -543,7 +530,7 @@ export default function BattleSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                      className={`text-xs font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
                         isActive
                           ? "bg-yellow-500 text-yellow-100"
                           : "bg-gray-100 text-gray-500"
@@ -589,7 +576,7 @@ export default function BattleSection() {
                 <p className="text-xs font-black text-gray-400 mb-1">
                   Belum ada battle untuk episode ini.
                 </p>
-                <p className="text-[11px] text-gray-300 mb-5">
+                <p className="text-xs text-gray-300 mb-5">
                   Jadilah yang pertama merangkum duel pendapat.
                 </p>
                 <button
@@ -613,16 +600,7 @@ export default function BattleSection() {
           </div>
 
           {!user && !isEmpty && !loading && (
-            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-              <Link
-                to="/masuk"
-                className="inline-flex items-center gap-1.5 text-yellow-600 font-bold hover:underline"
-              >
-                <LogIn size={11} />
-                Masuk
-              </Link>
-              <span>untuk buat battle dan ikut vote.</span>
-            </div>
+            <LoginNudge text="untuk buat battle dan ikut vote." />
           )}
         </div>
       </section>

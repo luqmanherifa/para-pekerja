@@ -34,7 +34,7 @@ export default function LoginGateModal({ onClose }) {
           <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center mb-4">
             <LogIn size={18} className="text-white" strokeWidth={2} />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">
             Diperlukan Login
           </p>
           <h3 className="text-base font-black text-gray-900 mb-1.5">

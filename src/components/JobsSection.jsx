@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Briefcase, Plus, X, Send, ThumbsUp, ThumbsDown } from "lucide-react";
 import {
-  Briefcase,
-  Plus,
-  X,
-  Send,
-  LogIn,
-  ThumbsUp,
-  ThumbsDown,
-} from "lucide-react";
+  SeparatorBar,
+  SectionHeader,
+  SectionCounter,
+  SectionTitle,
+  LoginNudge,
+  SectionButton,
+  EmptyState,
+} from "./SectionComponents";
 import { useJobs } from "../hooks/useJobs";
 import LoginGateModal from "./LoginGateModal";
 
@@ -47,14 +47,14 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </button>
           <div className="flex items-center gap-2 mb-1.5">
             <Briefcase size={12} className="text-green-200" strokeWidth={2.5} />
-            <span className="text-green-200 text-[10px] font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
               Usul Kerjaan
             </span>
           </div>
           <p className="text-white font-black text-lg leading-tight">
             Kerjaan 5 Juta
           </p>
-          <p className="text-green-300 text-[11px] mt-1">
+          <p className="text-green-300 text-xs mt-1">
             Kasih judul dan deskripsi kerjaan absurd gajinya 5 juta.
           </p>
         </div>
@@ -64,7 +64,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Judul Kerjaan
             </label>
             <input
@@ -76,13 +76,13 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               required
               className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors font-medium"
             />
-            <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
+            <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
               {title.length}/80
             </p>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Deskripsi
             </label>
             <textarea
@@ -94,7 +94,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               rows={4}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
             />
-            <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
+            <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
               {description.length}/300
             </p>
           </div>
@@ -140,18 +140,18 @@ function JobCard({ job, user, onVote, isNew }) {
           <div className="flex items-center gap-2 mb-1.5">
             <p className="text-xs font-black text-gray-900">{job.title}</p>
             {isNew && (
-              <span className="text-[10px] font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
                 baru!
               </span>
             )}
           </div>
-          <p className="text-[11px] text-gray-500 leading-relaxed mb-3">
+          <p className="text-xs text-gray-500 leading-relaxed mb-3">
             {job.description}
           </p>
-          <p className="text-[10px] text-gray-300">oleh {job.submittedBy}</p>
+          <p className="text-xs text-gray-300">oleh {job.submittedBy}</p>
           {totalVotes > 0 && (
             <div className="flex items-center gap-2 mt-3">
-              <span className="text-[10px] font-bold text-green-600 tabular-nums w-7 text-right">
+              <span className="text-xs font-bold text-green-600 tabular-nums w-7 text-right">
                 {approvedPct}%
               </span>
               <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -160,7 +160,7 @@ function JobCard({ job, user, onVote, isNew }) {
                   style={{ width: `${approvedPct}%` }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-red-400 tabular-nums w-7">
+              <span className="text-xs font-bold text-red-400 tabular-nums w-7">
                 {100 - approvedPct}%
               </span>
             </div>
@@ -174,7 +174,7 @@ function JobCard({ job, user, onVote, isNew }) {
             }
             disabled={!user}
             title={!user ? "Masuk untuk vote" : ""}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold transition-all duration-150 ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVotedApproved
                 ? "bg-green-50 border-green-200 text-green-600"
                 : !user
@@ -192,7 +192,7 @@ function JobCard({ job, user, onVote, isNew }) {
             }
             disabled={!user}
             title={!user ? "Masuk untuk vote" : ""}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold transition-all duration-150 ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVotedRejected
                 ? "bg-red-50 border-red-200 text-red-500"
                 : !user
@@ -241,52 +241,27 @@ export default function JobsSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <div className="w-full h-1 bg-yellow-400" />
+      <SeparatorBar />
 
       <section id="jobs" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <Briefcase
-                size={13}
-                className="text-green-600"
-                strokeWidth={2.5}
-              />
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Kerjaan 5 Juta
-              </span>
-            </div>
+          <SectionHeader icon={Briefcase} label="Kerjaan 5 Juta">
             {jobs.length > 0 && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-                  Usul masuk
-                </span>
-                <span className="text-sm font-black text-gray-900 tabular-nums">
-                  {jobs.length}
-                  {hasMore ? "+" : ""}
-                </span>
-              </div>
+              <SectionCounter
+                label="Usul masuk"
+                value={`${jobs.length}${hasMore ? "+" : ""}`}
+              />
             )}
-          </div>
+          </SectionHeader>
 
-          <div className="flex items-end justify-between mb-8 gap-6">
-            <div>
-              <p className="text-base font-black text-gray-900 leading-tight">
-                Kerjaan Absurd Gaji 5 Juta
-              </p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Usulkan pekerjaan paling absurd. Komunitas vote layak atau
-                nggak.
-              </p>
-            </div>
-            <button
-              onClick={openSubmitModal}
-              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
-            >
-              <Plus size={12} strokeWidth={2.5} />
+          <SectionTitle
+            title="Kerjaan Absurd Gaji 5 Juta"
+            subtitle="Usulkan pekerjaan paling absurd. Komunitas vote layak atau nggak."
+          >
+            <SectionButton onClick={openSubmitModal} icon={Plus}>
               Usul Kerjaan
-            </button>
-          </div>
+            </SectionButton>
+          </SectionTitle>
 
           <div className="flex flex-col gap-2.5">
             {loading ? (
@@ -318,7 +293,7 @@ export default function JobsSection() {
                 <p className="text-xs font-black text-gray-400 mb-1">
                   Belum ada usul kerjaan.
                 </p>
-                <p className="text-[11px] text-gray-300 mb-5">
+                <p className="text-xs text-gray-300 mb-5">
                   Jadilah yang pertama usul kerjaan paling absurd.
                 </p>
                 <button
@@ -343,22 +318,13 @@ export default function JobsSection() {
           </div>
 
           {hasMore && !loading && (
-            <p className="text-center text-[11px] text-gray-300 mt-4">
+            <p className="text-center text-xs text-gray-300 mt-4">
               Menampilkan {PREVIEW_COUNT} usul terbaru.
             </p>
           )}
 
           {!user && !isEmpty && !loading && (
-            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-              <Link
-                to="/masuk"
-                className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
-              >
-                <LogIn size={11} />
-                Masuk
-              </Link>
-              <span>untuk usul kerjaan dan ikut vote.</span>
-            </div>
+            <LoginNudge text="untuk usul kerjaan dan ikut vote." />
           )}
         </div>
       </section>
