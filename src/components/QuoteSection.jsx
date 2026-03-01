@@ -42,7 +42,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl"
+        className="w-full max-w-md bg-white rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         style={{
           animation: "modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
@@ -50,55 +50,59 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
       >
         <style>{`@keyframes modalIn { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
 
-        <div className="bg-gradient-to-br from-green-600 to-green-700 px-7 py-6 relative">
+        <div className="bg-green-600 px-6 py-5 relative">
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-full bg-green-500/40 text-green-100 hover:bg-green-500/70 transition-colors"
+            className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center rounded-lg bg-green-500/40 text-green-100 hover:bg-green-500/70 transition-colors"
           >
-            <X size={14} />
+            <X size={12} />
           </button>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1.5">
             <MessageSquareQuote
-              size={13}
+              size={12}
               className="text-green-200"
               strokeWidth={2.5}
             />
-            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-[10px] font-bold uppercase tracking-widest">
               Tambah Quote
             </span>
           </div>
-          <h3 className="text-white font-extrabold text-xl leading-tight">
+          <p className="text-white font-black text-lg leading-tight">
             Quote Battle
-          </h3>
-          <p className="text-green-300 text-xs mt-1.5">
+          </p>
+          <p className="text-green-300 text-[11px] mt-1">
             Pilih episode, siapa yang ngomong, lalu tulis quote-nya.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="px-7 py-6 flex flex-col gap-5 bg-white"
+          className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Episode
             </label>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setEpisodeOpen((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-sm font-semibold transition-colors ${selectedEpisode ? "border-green-500 text-gray-900" : "border-gray-200 text-gray-400 hover:border-gray-300"}`}
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors ${
+                  selectedEpisode
+                    ? "border-green-500 text-gray-900"
+                    : "border-gray-200 text-gray-400 hover:border-gray-300"
+                }`}
               >
                 <span>
                   {selectedEpisode ? selectedEpisode.label : "Pilih episode..."}
                 </span>
                 <ChevronDown
-                  size={15}
+                  size={13}
                   className={`transition-transform duration-200 text-gray-400 ${episodeOpen ? "rotate-180" : ""}`}
                 />
               </button>
               {episodeOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-2xl overflow-hidden z-10 shadow-lg">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl overflow-hidden z-10">
                   {EPISODES.map((ep) => (
                     <button
                       key={ep.id}
@@ -107,7 +111,11 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                         setSelectedEpisode(ep);
                         setEpisodeOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors hover:bg-green-50 hover:text-green-700 ${selectedEpisode?.id === ep.id ? "bg-green-50 text-green-700" : "text-gray-700"}`}
+                      className={`w-full text-left px-4 py-2.5 text-xs font-semibold transition-colors hover:bg-green-50 hover:text-green-700 ${
+                        selectedEpisode?.id === ep.id
+                          ? "bg-green-50 text-green-700"
+                          : "text-gray-700"
+                      }`}
                     >
                       {ep.label}
                     </button>
@@ -118,7 +126,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Siapa yang ngomong
             </label>
             <div className="flex flex-col gap-2">
@@ -131,7 +139,11 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                       key={s.id}
                       type="button"
                       onClick={() => setSelectedSpeaker(s)}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${isSelected ? `${color.bg} text-white border-transparent` : `${color.light} hover:opacity-80`}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all duration-150 ${
+                        isSelected
+                          ? `${color.bg} text-white border-transparent`
+                          : `${color.light} hover:opacity-80`
+                      }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white/60" : color.dot}`}
@@ -157,7 +169,11 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                       key={s.id}
                       type="button"
                       onClick={() => setSelectedSpeaker(s)}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${isSelected ? `${color.bg} text-white border-transparent` : `${color.light} hover:opacity-80`}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all duration-150 ${
+                        isSelected
+                          ? `${color.bg} text-white border-transparent`
+                          : `${color.light} hover:opacity-80`
+                      }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white/60" : color.dot}`}
@@ -171,7 +187,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-2.5">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
               Quote
             </label>
             <textarea
@@ -181,9 +197,9 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               maxLength={200}
               required
               rows={3}
-              className="w-full border border-gray-200 rounded-2xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
             />
-            <p className="text-[10px] text-gray-300 mt-1.5 text-right tabular-nums">
+            <p className="text-[10px] text-gray-300 mt-1 text-right tabular-nums">
               {quoteText.length}/200
             </p>
           </div>
@@ -191,16 +207,17 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <button
             type="submit"
             disabled={!canSubmit || submitting}
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-sm py-4 rounded-2xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-xs py-3 rounded-xl transition-colors"
           >
             {submitting ? (
               <>
-                <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />{" "}
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 Mengirim...
               </>
             ) : (
               <>
-                <Send size={14} /> Kirim Quote
+                <Send size={12} />
+                Kirim Quote
               </>
             )}
           </button>
@@ -217,11 +234,11 @@ function QuoteCard({ quote, user, onVote, rank }) {
   const cannotVote = isOwn || hasVoted || !user;
 
   return (
-    <div className="group bg-white border border-gray-200 rounded-3xl px-6 py-5 hover:border-gray-300 hover:shadow-sm transition-all duration-200">
+    <div className="bg-white border border-gray-200 rounded-2xl px-6 py-5 hover:border-gray-300 transition-all duration-200">
       <div className="flex items-start gap-4">
-        <div className="shrink-0 w-6 text-center">
+        <div className="shrink-0 w-5 text-center">
           <span
-            className={`text-xs font-extrabold tabular-nums ${rank <= 3 ? "text-yellow-500" : "text-gray-300"}`}
+            className={`text-xs font-black tabular-nums ${rank <= 3 ? "text-yellow-500" : "text-gray-300"}`}
           >
             {rank <= 3 ? ["①", "②", "③"][rank - 1] : rank}
           </span>
@@ -229,7 +246,7 @@ function QuoteCard({ quote, user, onVote, rank }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-3">
             <span
-              className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
+              className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
               {quote.speakerName}
@@ -243,7 +260,7 @@ function QuoteCard({ quote, user, onVote, rank }) {
               {quote.episodeLabel}
             </span>
           </div>
-          <p className="text-sm text-gray-800 leading-relaxed font-medium italic">
+          <p className="text-xs text-gray-800 leading-relaxed font-medium italic">
             "{quote.text}"
           </p>
           <p className="text-[10px] text-gray-300 mt-2">
@@ -263,15 +280,15 @@ function QuoteCard({ quote, user, onVote, rank }) {
                     ? "Masuk untuk vote"
                     : ""
             }
-            className={`flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl border text-[10px] font-bold transition-all duration-150 ${
               hasVoted
-                ? "bg-green-50 border-green-300 text-green-600"
+                ? "bg-green-50 border-green-200 text-green-600"
                 : cannotVote
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
                   : "border-gray-200 text-gray-400 hover:border-green-400 hover:text-green-600 hover:bg-green-50"
             }`}
           >
-            <ThumbsUp size={13} />
+            <ThumbsUp size={11} />
             <span className="tabular-nums">{quote.voteCount ?? 0}</span>
           </button>
         </div>
@@ -312,50 +329,56 @@ export default function QuoteSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <section
-        id="quote-battle"
-        className="w-full bg-white border-t-4 border-green-600"
-      >
-        <div className="max-w-5xl mx-auto px-8 py-20">
-          <div className="flex items-start justify-between mb-10 gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-4">
-                <MessageSquareQuote size={12} strokeWidth={2.5} />
+      <div className="w-full h-1 bg-yellow-400" />
+
+      <section id="quote-battle" className="w-full bg-white">
+        <div className="max-w-5xl mx-auto px-8 py-14">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-2.5">
+              <MessageSquareQuote
+                size={13}
+                className="text-green-600"
+                strokeWidth={2.5}
+              />
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 Quote Battle
-              </div>
-              <h2 className="text-3xl font-extrabold text-gray-900 leading-tight">
-                Arsip Quote
-                <br />
-                <span className="text-green-600">Para Pekerja</span>
-              </h2>
-              <p className="text-gray-400 text-sm mt-2 max-w-xs leading-relaxed">
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {totalQuotes[activeEpisode.id] > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                    Quote terkumpul
+                  </span>
+                  <span className="text-sm font-black text-gray-900 tabular-nums">
+                    {totalQuotes[activeEpisode.id]}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-end justify-between mb-8 gap-6">
+            <div>
+              <p className="text-base font-black text-gray-900 leading-tight">
+                Arsip Quote Para Pekerja
+              </p>
+              <p className="text-[11px] text-gray-400 mt-0.5">
                 Kumpulkan momen terbaik dari tiap episode. Satu quote, satu
                 vote.
               </p>
             </div>
-            <div className="shrink-0 flex flex-col items-end gap-3">
-              {totalQuotes[activeEpisode.id] > 0 && (
-                <div className="text-right">
-                  <p className="text-3xl font-extrabold text-gray-900">
-                    {totalQuotes[activeEpisode.id]}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    quote terkumpul
-                  </p>
-                </div>
-              )}
-              <button
-                onClick={openSubmitModal}
-                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
-              >
-                <Plus size={14} strokeWidth={2.5} />
-                Tambah Quote
-              </button>
-            </div>
+            <button
+              onClick={openSubmitModal}
+              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
+            >
+              <Plus size={12} strokeWidth={2.5} />
+              Tambah Quote
+            </button>
           </div>
 
           <div
-            className="flex items-center gap-2 mb-8 overflow-x-auto pb-1"
+            className="flex items-center gap-2 mb-6 overflow-x-auto pb-1"
             style={{ scrollbarWidth: "none" }}
           >
             {EPISODES.map((ep) => {
@@ -365,7 +388,7 @@ export default function QuoteSection() {
                 <button
                   key={ep.id}
                   onClick={() => setActiveEpisode(ep)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
                     isActive
                       ? "bg-green-600 text-white border-green-600"
                       : "bg-white text-gray-600 border-gray-200 hover:border-green-400 hover:text-green-600"
@@ -374,7 +397,11 @@ export default function QuoteSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full tabular-nums ${isActive ? "bg-green-500 text-green-100" : "bg-gray-100 text-gray-500"}`}
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                        isActive
+                          ? "bg-green-500 text-green-100"
+                          : "bg-gray-100 text-gray-500"
+                      }`}
                     >
                       {count}
                     </span>
@@ -384,68 +411,70 @@ export default function QuoteSection() {
             })}
           </div>
 
-          <div className="flex items-center gap-2 mb-6 flex-wrap">
-            <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest mr-1">
-              Dalam episode ini:
-            </span>
-            {[...HOSTS, ...GUESTS].map((s) => {
-              const color = getSpeakerColor(s.id);
-              const count = quotes.filter((q) => q.speakerId === s.id).length;
-              if (count === 0) return null;
-              return (
-                <span
-                  key={s.id}
-                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
-                  {s.name}
-                  {s.type === "guest" && (
-                    <span className="opacity-50 font-medium normal-case tracking-normal">
-                      · tamu
-                    </span>
-                  )}
-                  <span className="opacity-50">({count})</span>
-                </span>
-              );
-            })}
-          </div>
+          {!loading && !isEmpty && (
+            <div className="flex items-center gap-2 mb-6 flex-wrap">
+              <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest mr-1">
+                Dalam episode ini:
+              </span>
+              {[...HOSTS, ...GUESTS].map((s) => {
+                const color = getSpeakerColor(s.id);
+                const count = quotes.filter((q) => q.speakerId === s.id).length;
+                if (count === 0) return null;
+                return (
+                  <span
+                    key={s.id}
+                    className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${color.light}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
+                    {s.name}
+                    {s.type === "guest" && (
+                      <span className="opacity-50 font-medium normal-case tracking-normal">
+                        · tamu
+                      </span>
+                    )}
+                    <span className="opacity-50">({count})</span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {loading ? (
               [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="border border-gray-100 rounded-3xl px-6 py-5 animate-pulse"
+                  className="border border-gray-100 rounded-2xl px-6 py-5 animate-pulse"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-6 h-4 bg-gray-100 rounded" />
-                    <div className="flex-1 space-y-2.5">
-                      <div className="h-5 bg-gray-100 rounded-full w-28" />
-                      <div className="h-3.5 bg-gray-100 rounded-full w-full" />
-                      <div className="h-3.5 bg-gray-100 rounded-full w-4/5" />
+                    <div className="w-5 h-4 bg-gray-100 rounded" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-100 rounded-full w-24" />
+                      <div className="h-3 bg-gray-100 rounded-full w-full" />
+                      <div className="h-3 bg-gray-100 rounded-full w-4/5" />
                     </div>
-                    <div className="w-12 h-14 bg-gray-100 rounded-xl" />
+                    <div className="w-10 h-12 bg-gray-100 rounded-xl" />
                   </div>
                 </div>
               ))
             ) : isEmpty ? (
-              <div className="border-2 border-dashed border-gray-200 rounded-3xl px-8 py-16 text-center">
+              <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
                 <MessageSquareQuote
-                  size={32}
-                  className="text-gray-200 mx-auto mb-4"
+                  size={28}
+                  className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-sm font-bold text-gray-400 mb-1">
+                <p className="text-xs font-black text-gray-400 mb-1">
                   Belum ada quote untuk episode ini.
                 </p>
-                <p className="text-xs text-gray-300 mb-6">
+                <p className="text-[11px] text-gray-300 mb-5">
                   Jadilah yang pertama mengarsipkan momen terbaik.
                 </p>
                 <button
                   onClick={openSubmitModal}
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-sm px-5 py-2.5 rounded-2xl transition-colors"
+                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
                 >
-                  <Plus size={14} />
+                  <Plus size={12} />
                   Tambah Quote Pertama
                 </button>
               </div>
@@ -463,12 +492,12 @@ export default function QuoteSection() {
           </div>
 
           {!user && !isEmpty && !loading && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
               <Link
                 to="/masuk"
                 className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
               >
-                <LogIn size={12} />
+                <LogIn size={11} />
                 Masuk
               </Link>
               <span>untuk submit quote dan ikut vote.</span>
