@@ -4,36 +4,25 @@ import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
 import AbsensiSection from "../components/AbsensiSection";
+import KerjaanSection from "../components/KerjaanSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Briefcase, MessageSquareQuote, Scale, Star } from "lucide-react";
+import { MessageSquareQuote, Scale, Star } from "lucide-react";
 
 const COMING_SOON_SECTIONS = [
-  {
-    id: "kerjaan",
-    icon: Briefcase,
-    label: "Fitur 3",
-    title: "Kerjaan 5 Juta",
-    desc: "Kirim pekerjaan absurd kamu dan biarkan komunitas menilainya. Layak 5 Juta atau Gaji Ditahan — kamu yang memutuskan.",
-    bg: "bg-gradient-to-br from-green-600 to-green-700",
-    textMain: "text-white",
-    textSub: "text-green-100",
-    iconBg: "bg-green-800",
-    iconColor: "text-white",
-    badge: "bg-green-800 text-green-200",
-  },
   {
     id: "quote-battle",
     icon: MessageSquareQuote,
     label: "Fitur 4",
     title: "Quote Battle",
     desc: "Pilih komedian, pilih episode, dan kirim quote terbaik versi kamu. Komunitas yang vote mana yang paling berkesan.",
-    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
-    textMain: "text-gray-900",
-    textSub: "text-yellow-900",
-    iconBg: "bg-yellow-600",
+    bg: "bg-gradient-to-br from-green-600 to-green-700",
+    border: "border-t-4 border-green-500",
+    textMain: "text-white",
+    textSub: "text-green-100",
+    iconBg: "bg-green-800",
     iconColor: "text-white",
-    badge: "bg-yellow-600 text-yellow-100",
+    badge: "bg-green-800 text-green-200",
   },
   {
     id: "siapa-paling-benar",
@@ -41,12 +30,13 @@ const COMING_SOON_SECTIONS = [
     label: "Fitur 5",
     title: "Siapa Paling Benar?",
     desc: "Rangkum opini masing-masing komedian dalam satu episode. Komunitas vote siapa yang paling masuk akal — atau paling chaos.",
-    bg: "bg-gradient-to-br from-green-600 to-green-700",
-    textMain: "text-white",
-    textSub: "text-green-100",
-    iconBg: "bg-green-800",
+    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
+    border: "border-t-4 border-yellow-300",
+    textMain: "text-gray-900",
+    textSub: "text-yellow-900",
+    iconBg: "bg-yellow-600",
     iconColor: "text-white",
-    badge: "bg-green-800 text-green-200",
+    badge: "bg-yellow-600 text-yellow-100",
   },
   {
     id: "guest-ranking",
@@ -54,12 +44,13 @@ const COMING_SOON_SECTIONS = [
     label: "Fitur 6",
     title: "Peringkat Tamu",
     desc: "Vote performa tamu terbaik dan tambahkan momen favoritmu. Siapa tamu terbaik versi para pekerja? Kamu yang menentukan.",
-    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
-    textMain: "text-gray-900",
-    textSub: "text-yellow-900",
-    iconBg: "bg-yellow-600",
+    bg: "bg-gradient-to-br from-green-600 to-green-700",
+    border: "border-t-4 border-green-500",
+    textMain: "text-white",
+    textSub: "text-green-100",
+    iconBg: "bg-green-800",
     iconColor: "text-white",
-    badge: "bg-yellow-600 text-yellow-100",
+    badge: "bg-green-800 text-green-200",
   },
 ];
 
@@ -77,7 +68,11 @@ export default function Home() {
 
       <HeroSection />
 
-      <AbsensiSection />
+      <div className="border-t-4 border-yellow-400">
+        <AbsensiSection />
+      </div>
+
+      <KerjaanSection />
 
       {COMING_SOON_SECTIONS.map((section) => {
         const Icon = section.icon;
@@ -85,7 +80,7 @@ export default function Home() {
           <section
             key={section.id}
             id={section.id}
-            className={`w-full ${section.bg}`}
+            className={`w-full ${section.bg} ${section.border}`}
           >
             <div className="max-w-5xl mx-auto px-8 py-20 flex items-center justify-between gap-12">
               <div className="flex-1">
