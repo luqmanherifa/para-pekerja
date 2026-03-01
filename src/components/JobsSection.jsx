@@ -34,13 +34,11 @@ const formatRelativeTime = (ts) => {
   if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
   if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
   if (diff < 2592000) return `${Math.floor(diff / 86400)} hari lalu`;
-  return ts
-    .toDate()
-    .toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+  return ts.toDate().toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 };
 
 function SkeletonCard() {

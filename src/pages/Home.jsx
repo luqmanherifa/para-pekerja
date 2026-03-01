@@ -5,25 +5,12 @@ import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
 import AttendanceSection from "../components/AttendanceSection";
 import JobsSection from "../components/JobsSection";
+import QuoteSection from "../components/QuoteSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { MessageSquareQuote, Scale, Star } from "lucide-react";
+import { Scale, Star } from "lucide-react";
 
 const COMING_SOON_SECTIONS = [
-  {
-    id: "quote-battle",
-    icon: MessageSquareQuote,
-    label: "Fitur 4",
-    title: "Quote Battle",
-    desc: "Pilih komedian, pilih episode, dan kirim quote terbaik versi kamu. Komunitas yang vote mana yang paling berkesan.",
-    bg: "bg-gradient-to-br from-green-600 to-green-700",
-    border: "border-t-4 border-green-500",
-    textMain: "text-white",
-    textSub: "text-green-100",
-    iconBg: "bg-green-800",
-    iconColor: "text-white",
-    badge: "bg-green-800 text-green-200",
-  },
   {
     id: "siapa-paling-benar",
     icon: Scale,
@@ -73,6 +60,8 @@ export default function Home() {
       </div>
 
       <JobsSection />
+
+      <QuoteSection />
 
       {COMING_SOON_SECTIONS.map((section) => {
         const Icon = section.icon;

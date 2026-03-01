@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  collection,
-  onSnapshot,
-  query,
-  where,
-  Timestamp,
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { Users, Zap, ClipboardCheck, Briefcase } from "lucide-react";
 
@@ -14,25 +8,18 @@ export default function HeroSection() {
   const [activeToday, setActiveToday] = useState(0);
 
   useEffect(() => {
-    const unsubTotal = onSnapshot(collection(db, "users"), (snap) => {
+    const unsubscribe = onSnapshot(collection(db, "users"), (snap) => {
       setTotalMembers(snap.size);
+
+      const since = Date.now() - 24 * 60 * 60 * 1000;
+      const active = snap.docs.filter((d) => {
+        const t = d.data().lastActiveAt;
+        return t && t.toMillis() >= since;
+      });
+      setActiveToday(active.length);
     });
 
-    const since = Timestamp.fromDate(
-      new Date(Date.now() - 24 * 60 * 60 * 1000),
-    );
-    const activeQuery = query(
-      collection(db, "users"),
-      where("lastActiveAt", ">=", since),
-    );
-    const unsubActive = onSnapshot(activeQuery, (snap) => {
-      setActiveToday(snap.size);
-    });
-
-    return () => {
-      unsubTotal();
-      unsubActive();
-    };
+    return () => unsubscribe();
   }, []);
 
   const scrollTo = (id) => {
