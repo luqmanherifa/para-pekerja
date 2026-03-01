@@ -9,22 +9,9 @@ import QuoteSection from "../components/QuoteSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Scale, Star } from "lucide-react";
+import BattleSection from "../components/BattleSection";
 
 const COMING_SOON_SECTIONS = [
-  {
-    id: "siapa-paling-benar",
-    icon: Scale,
-    label: "Fitur 5",
-    title: "Siapa Paling Benar?",
-    desc: "Rangkum opini masing-masing komedian dalam satu episode. Komunitas vote siapa yang paling masuk akal — atau paling chaos.",
-    bg: "bg-gradient-to-br from-yellow-400 to-yellow-500",
-    border: "border-t-4 border-yellow-300",
-    textMain: "text-gray-900",
-    textSub: "text-yellow-900",
-    iconBg: "bg-yellow-600",
-    iconColor: "text-white",
-    badge: "bg-yellow-600 text-yellow-100",
-  },
   {
     id: "guest-ranking",
     icon: Star,
@@ -62,6 +49,8 @@ export default function Home() {
       <JobsSection />
 
       <QuoteSection />
+
+      <BattleSection />
 
       {COMING_SOON_SECTIONS.map((section) => {
         const Icon = section.icon;
