@@ -12,6 +12,7 @@ import {
   Sparkles,
   X,
   ClipboardCheck,
+  LogIn,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAttendance } from "../hooks/useAttendance";
@@ -23,6 +24,7 @@ import {
   getMoodById,
   formatRupiah,
 } from "../data/moods";
+import { useState } from "react";
 
 const MOOD_ICONS = {
   Zap,
@@ -150,70 +152,6 @@ function PayslipModal({ payslip, moodId, onClose }) {
   );
 }
 
-function LoginNudgeModal({ moodId, onClose }) {
-  const mood = getMoodById(moodId);
-  const Icon = MOOD_ICONS[mood.icon];
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-sm bg-white rounded-2xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          animation: "nudgeIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both",
-        }}
-      >
-        <style>{`
-          @keyframes nudgeIn {
-            from { opacity: 0; transform: translateY(24px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
-        <div className="px-6 pt-6 pb-2">
-          <button
-            onClick={onClose}
-            className="float-right w-6 h-6 flex items-center justify-center rounded-lg bg-gray-100 text-gray-400 hover:bg-gray-200 transition-colors"
-          >
-            <X size={12} />
-          </button>
-          <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${mood.active}`}
-          >
-            <Icon size={18} strokeWidth={2} />
-          </div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Mood Kamu Hari Ini
-          </p>
-          <h3 className="text-base font-black text-gray-900 mb-1.5">
-            {mood.label}
-          </h3>
-          <p className="text-xs text-gray-500 leading-relaxed">
-            Masuk dulu untuk absen dengan mood ini dan dapatkan slip gaji
-            imajiner hari ini.
-          </p>
-        </div>
-        <div className="px-6 pb-6 pt-4 flex flex-col gap-2">
-          <Link
-            to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs py-3 rounded-xl transition-colors"
-          >
-            Masuk & Absen Sekarang
-          </Link>
-          <button
-            onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-xs py-2 rounded-xl transition-colors"
-          >
-            Nanti dulu
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function AttendanceSection() {
   const {
     user,
@@ -223,22 +161,27 @@ export default function AttendanceSection() {
     myPayslip,
     myMood,
     showPayslipModal,
-    loginNudgeMood,
     attendees,
     dailyStats,
     totalToday,
     featuredPayslips,
     dominantMood,
     setShowPayslipModal,
-    setLoginNudgeMood,
     submitAttendance,
     votePayslip,
     handleMoodClick,
   } = useAttendance();
 
+  const [showLoginGate, setShowLoginGate] = useState(false);
+
   const isGhost = attendees.length === 0;
   const displayAttendees = isGhost ? GHOST_ATTENDEES : attendees;
   const ambientText = AMBIENT_TEXT[dominantMood] ?? AMBIENT_TEXT.default;
+
+  const handleMoodClickWrapped = (moodId) => {
+    if (phase === "guest") setShowLoginGate(true);
+    else handleMoodClick(moodId);
+  };
 
   return (
     <>
@@ -249,11 +192,8 @@ export default function AttendanceSection() {
           onClose={() => setShowPayslipModal(false)}
         />
       )}
-      {loginNudgeMood && (
-        <LoginNudgeModal
-          moodId={loginNudgeMood}
-          onClose={() => setLoginNudgeMood(null)}
-        />
+      {showLoginGate && (
+        <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
       <div className="w-full h-1 bg-yellow-400" />
@@ -293,6 +233,27 @@ export default function AttendanceSection() {
                 </>
               )}
             </div>
+          </div>
+
+          <div className="flex items-end justify-between mb-8 gap-6">
+            <div>
+              <p className="text-base font-black text-gray-900 leading-tight">
+                Kondisi Kerja Hari Ini
+              </p>
+              <p className="text-[11px] text-gray-400 mt-0.5">
+                Pilih mood, absen, dan dapatkan slip gaji imajiner kamu hari
+                ini.
+              </p>
+            </div>
+            {phase === "done" && (
+              <button
+                onClick={() => setShowPayslipModal(true)}
+                className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0"
+              >
+                <FileText size={12} />
+                Lihat Slip Gaji
+              </button>
+            )}
           </div>
 
           <div
@@ -342,7 +303,7 @@ export default function AttendanceSection() {
                 )}
                 {(phase === "guest" || phase === "pick_mood") && (
                   <div>
-                    <p className="text-base font-black text-gray-900 leading-tight">
+                    <p className="text-xs font-black text-gray-900 leading-tight">
                       Kondisi kerja hari ini?
                     </p>
                     <p className="text-[11px] text-gray-400 mt-0.5">
@@ -367,7 +328,7 @@ export default function AttendanceSection() {
                           <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest">
                             Sudah Absen ✓
                           </p>
-                          <p className="text-sm font-black text-gray-900">
+                          <p className="text-xs font-black text-gray-900">
                             {mood.label}
                           </p>
                         </div>
@@ -375,7 +336,7 @@ export default function AttendanceSection() {
                           <p className="text-[10px] text-gray-400">
                             Gaji hari ini
                           </p>
-                          <p className="text-sm font-black text-green-600">
+                          <p className="text-xs font-black text-green-600">
                             {formatRupiah(myPayslip?.total)}
                           </p>
                         </div>
@@ -411,7 +372,9 @@ export default function AttendanceSection() {
                     return (
                       <button
                         key={mood.id}
-                        onClick={() => !isDone && handleMoodClick(mood.id)}
+                        onClick={() =>
+                          !isDone && handleMoodClickWrapped(mood.id)
+                        }
                         disabled={isDone}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all duration-150 ${cls}`}
                       >
@@ -448,15 +411,6 @@ export default function AttendanceSection() {
                       Absen & Lihat Slip Gaji
                     </>
                   )}
-                </button>
-              )}
-              {phase === "done" && (
-                <button
-                  onClick={() => setShowPayslipModal(true)}
-                  className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-bold text-xs px-5 py-2.5 rounded-xl transition-colors"
-                >
-                  <FileText size={12} />
-                  Lihat Slip Gaji Lengkap
                 </button>
               )}
             </div>
@@ -588,6 +542,19 @@ export default function AttendanceSection() {
               </div>
             </div>
           </div>
+
+          {phase === "guest" && (
+            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-gray-400">
+              <Link
+                to="/masuk"
+                className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
+              >
+                <LogIn size={11} />
+                Masuk
+              </Link>
+              <span>untuk absen dan dapatkan slip gaji imajiner.</span>
+            </div>
+          )}
         </div>
       </section>
     </>
