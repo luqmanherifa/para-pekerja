@@ -1,26 +1,21 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { useSelector } from "react-redux";
 import {
-  ClipboardCheck,
-  Briefcase,
-  MessageSquareQuote,
-  Scale,
-  Star,
   Radio,
+  Users,
+  ArrowRight,
+  ClipboardCheck,
+  Sparkles,
 } from "lucide-react";
-
-const QUICK_LINKS = [
-  { id: "attendance", label: "Absensi dan Gaji", icon: ClipboardCheck },
-  { id: "jobs", label: "Kerjaan 5 Juta", icon: Briefcase },
-  { id: "quote-battle", label: "Quote Battle", icon: MessageSquareQuote },
-  { id: "siapa-paling-benar", label: "Siapa Paling Benar", icon: Scale },
-  { id: "guest-ranking", label: "Peringkat Tamu", icon: Star },
-];
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
   const [totalMembers, setTotalMembers] = useState(0);
   const [activeToday, setActiveToday] = useState(0);
+  const user = useSelector((s) => s.auth.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "users"), (snap) => {
@@ -50,6 +45,7 @@ export default function HeroSection() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
+              <Users size={11} className="text-green-300" strokeWidth={2.5} />
               <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">
                 Pekerja
               </span>
@@ -72,55 +68,59 @@ export default function HeroSection() {
 
         <div className="mb-8">
           <p className="text-sm font-medium text-green-300 mb-1.5 italic">
-            Ruang pura-pura produktif sejak hari pertama.
+            Dibuat oleh pendengar, untuk pendengar.
           </p>
           <h1 className="text-5xl font-extrabold text-white leading-[1.05] tracking-tight">
-            Selamat datang,{" "}
+            Markas tidak resmi{" "}
             <span className="text-yellow-400">Para Pekerja.</span>
           </h1>
         </div>
 
         <div className="w-full h-px bg-green-500 mb-8" />
 
-        <div className="flex items-start justify-between gap-12">
-          <p className="text-green-200 text-sm leading-relaxed max-w-xs pt-1">
-            Absen tiap hari, kirim kerjaan absurd, vote siapa yang paling benar,
-            dan arsipkan quote terbaik dari setiap episode.
+        <div className="flex items-center justify-between gap-12">
+          <p className="text-green-200 text-sm leading-relaxed max-w-sm">
+            Siniar komedi{" "}
+            <span className="text-white font-bold">Arif Brata</span>,{" "}
+            <span className="text-white font-bold">Bintang Emon</span>, dan{" "}
+            <span className="text-white font-bold">Gilang Bhaskara</span>. Ruang
+            para pendengar untuk absen, berdebat, dan mengarsipkan momen
+            bersama.
           </p>
 
-          <div className="flex flex-col gap-2 shrink-0">
-            <div className="flex items-center gap-2">
-              {QUICK_LINKS.slice(0, 3).map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => scrollTo(id)}
-                  className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors duration-150"
-                >
-                  <Icon size={12} strokeWidth={2.5} />
-                  {label}
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-2">
-              {QUICK_LINKS.slice(3).map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => scrollTo(id)}
-                  className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors duration-150"
-                >
-                  <Icon size={12} strokeWidth={2.5} />
-                  {label}
-                </button>
-              ))}
+          {user ? (
+            <div className="flex flex-col items-end gap-4 shrink-0">
+              <p className="text-xs font-semibold text-green-300">
+                {user.displayName ?? "Pekerja"} · {user.jobTitle ?? "Pekerja"}
+              </p>
               <button
-                onClick={() => scrollTo("attendance")}
-                className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150 ml-1"
+                onClick={() => scrollTo("absen")}
+                className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150"
               >
                 <ClipboardCheck size={13} strokeWidth={2.5} />
-                Absen Sekarang ✦
+                Absen Sekarang
+                <Sparkles size={11} strokeWidth={2.5} />
               </button>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col items-end gap-4 shrink-0">
+              <p className="text-xs font-semibold text-green-300">
+                Bergabung bersama{" "}
+                <span className="text-white font-extrabold">
+                  {totalMembers.toLocaleString("id-ID")} pekerja
+                </span>{" "}
+                lainnya.
+              </p>
+              <button
+                onClick={() => navigate("/masuk")}
+                className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150"
+              >
+                <ArrowRight size={13} strokeWidth={2.5} />
+                Gabung Sekarang
+                <Sparkles size={11} strokeWidth={2.5} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
