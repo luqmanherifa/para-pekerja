@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Briefcase, Plus, X, Send, ThumbsUp, ThumbsDown } from "lucide-react";
+import {
+  Briefcase,
+  Plus,
+  X,
+  Send,
+  Star,
+  TrendingUp,
+  Clock3,
+} from "lucide-react";
 import {
   SeparatorBar,
   SectionHeader,
@@ -7,22 +15,60 @@ import {
   SectionTitle,
   LoginNudge,
   SectionButton,
-  EmptyState,
 } from "./SectionComponents";
 import { useJobs } from "../hooks/useJobs";
 import LoginGateModal from "./LoginGateModal";
 
+function timeAgo(timestamp) {
+  if (!timestamp) return "";
+  const now = Date.now();
+  const ts =
+    typeof timestamp.toMillis === "function"
+      ? timestamp.toMillis()
+      : typeof timestamp === "number"
+        ? timestamp
+        : now;
+  const diff = Math.floor((now - ts) / 1000);
+  if (diff < 60) return "baru saja";
+  if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)} hari lalu`;
+  return `${Math.floor(diff / 604800)} minggu lalu`;
+}
+
+function JobSortToggle({ value, onChange }) {
+  return (
+    <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+      <button
+        onClick={() => onChange("top")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "top"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <TrendingUp size={10} strokeWidth={2.5} />
+        Teratas
+      </button>
+      <button
+        onClick={() => onChange("new")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "new"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <Clock3 size={10} strokeWidth={2.5} />
+        Terbaru
+      </button>
+    </div>
+  );
+}
+
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const canSubmit = title.trim().length >= 3 && description.trim().length >= 10;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-    onSubmit({ title: title.trim(), description: description.trim() });
-  };
 
   return (
     <div
@@ -59,10 +105,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="px-6 py-5 flex flex-col gap-5 bg-white"
-        >
+        <div className="px-6 py-5 flex flex-col gap-5 bg-white">
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Judul Kerjaan
@@ -73,14 +116,12 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={80}
-              required
               className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors font-medium"
             />
             <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
               {title.length}/80
             </p>
           </div>
-
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
               Deskripsi
@@ -90,7 +131,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={300}
-              required
               rows={4}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
             />
@@ -98,9 +138,15 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               {description.length}/300
             </p>
           </div>
-
           <button
-            type="submit"
+            onClick={() =>
+              canSubmit &&
+              !submitting &&
+              onSubmit({
+                title: title.trim(),
+                description: description.trim(),
+              })
+            }
             disabled={!canSubmit || submitting}
             className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-xs py-3 rounded-xl transition-colors"
           >
@@ -116,94 +162,84 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </>
             )}
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );
 }
 
-function JobCard({ job, user, onVote, isNew }) {
-  const hasVotedApproved = job.voters_approved?.includes(user?.uid);
-  const hasVotedRejected = job.voters_rejected?.includes(user?.uid);
-  const totalVotes = (job.approved ?? 0) + (job.rejected ?? 0);
-  const approvedPct =
-    totalVotes > 0 ? Math.round((job.approved / totalVotes) * 100) : 50;
+function JobCard({ job, user, onVote, onLoginGate, isNew }) {
+  const hasVoted = job.voters_approved?.includes(user?.uid);
+  const voteCount = job.approved ?? 0;
+  const isOwn = job.uid === user?.uid;
+
+  const handleVote = () => {
+    if (!user) {
+      onLoginGate();
+      return;
+    }
+    if (isOwn) return;
+    onVote(job.id, hasVoted);
+  };
 
   return (
     <div
-      className={`bg-white border rounded-2xl px-6 py-5 transition-all duration-200 hover:border-gray-300 ${
+      className={`bg-white border rounded-2xl p-5 flex flex-col gap-3 transition-all duration-200 hover:border-gray-300 hover:shadow-sm ${
         isNew ? "border-green-400" : "border-gray-200"
       }`}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5">
-            <p className="text-xs font-extrabold text-gray-900">{job.title}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm font-extrabold text-gray-900 leading-snug">
+              {job.title}
+            </p>
             {isNew && (
-              <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full shrink-0">
                 baru!
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed mb-3">
-            {job.description}
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+        {job.description}
+      </p>
+
+      <div className="flex items-center justify-between gap-2 pt-1 border-t border-gray-100">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-gray-500 truncate">
+            {job.submittedBy}
           </p>
-          <p className="text-xs text-gray-300">oleh {job.submittedBy}</p>
-          {totalVotes > 0 && (
-            <div className="flex items-center gap-2 mt-3">
-              <span className="text-xs font-bold text-green-600 tabular-nums w-7 text-right">
-                {approvedPct}%
-              </span>
-              <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-green-500 transition-all duration-500"
-                  style={{ width: `${approvedPct}%` }}
-                />
-              </div>
-              <span className="text-xs font-bold text-red-400 tabular-nums w-7">
-                {100 - approvedPct}%
-              </span>
-            </div>
-          )}
+          <p className="text-xs text-gray-300">{timeAgo(job.createdAt)}</p>
         </div>
-        <div className="shrink-0 flex flex-col gap-1.5">
-          <button
-            onClick={() =>
-              user &&
-              onVote(job.id, "approved", hasVotedApproved, hasVotedRejected)
-            }
-            disabled={!user}
-            title={!user ? "Masuk untuk vote" : ""}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all duration-150 ${
-              hasVotedApproved
-                ? "bg-green-50 border-green-200 text-green-600"
-                : !user
-                  ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-400 hover:border-green-400 hover:text-green-600 hover:bg-green-50"
-            }`}
-          >
-            <ThumbsUp size={10} />
-            <span className="tabular-nums">{job.approved ?? 0}</span>
-          </button>
-          <button
-            onClick={() =>
-              user &&
-              onVote(job.id, "rejected", hasVotedApproved, hasVotedRejected)
-            }
-            disabled={!user}
-            title={!user ? "Masuk untuk vote" : ""}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all duration-150 ${
-              hasVotedRejected
-                ? "bg-red-50 border-red-200 text-red-500"
-                : !user
-                  ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50"
-            }`}
-          >
-            <ThumbsDown size={10} />
-            <span className="tabular-nums">{job.rejected ?? 0}</span>
-          </button>
-        </div>
+
+        <button
+          onClick={handleVote}
+          disabled={isOwn && !!user}
+          title={
+            isOwn && user
+              ? "Tidak bisa vote sendiri"
+              : hasVoted
+                ? "Batalkan vote"
+                : "Vote layak 5 juta"
+          }
+          className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+            hasVoted
+              ? "bg-yellow-50 border-yellow-300 text-yellow-500"
+              : isOwn && user
+                ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
+                : "border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer"
+          }`}
+        >
+          <Star
+            size={11}
+            strokeWidth={2}
+            className={hasVoted ? "fill-yellow-400" : ""}
+          />
+          <span className="tabular-nums">{voteCount}</span>
+        </button>
       </div>
     </div>
   );
@@ -221,8 +257,10 @@ export default function JobsSection() {
     hasMore,
     isEmpty,
     PREVIEW_COUNT,
+    jobSort,
     setShowSubmitModal,
     setShowLoginGate,
+    setJobSort,
     submitJob,
     voteJob,
     openSubmitModal,
@@ -263,59 +301,66 @@ export default function JobsSection() {
             </SectionButton>
           </SectionTitle>
 
-          <div className="flex flex-col gap-2.5">
-            {loading ? (
-              [...Array(3)].map((_, i) => (
+          {!isEmpty && (
+            <div className="flex justify-end mb-4">
+              <JobSortToggle value={jobSort} onChange={setJobSort} />
+            </div>
+          )}
+
+          {loading ? (
+            <div className="grid grid-cols-2 gap-3">
+              {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="border border-gray-100 rounded-2xl px-6 py-5 animate-pulse"
+                  className="border border-gray-100 rounded-2xl p-5 animate-pulse flex flex-col gap-3"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-1 space-y-2">
-                      <div className="h-3.5 bg-gray-100 rounded-full w-40" />
-                      <div className="h-3 bg-gray-100 rounded-full w-full" />
-                      <div className="h-3 bg-gray-100 rounded-full w-4/5" />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <div className="w-14 h-7 bg-gray-100 rounded-xl" />
-                      <div className="w-14 h-7 bg-gray-100 rounded-xl" />
-                    </div>
+                  <div className="h-3.5 bg-gray-100 rounded-full w-3/4" />
+                  <div className="space-y-1.5">
+                    <div className="h-2.5 bg-gray-100 rounded-full w-full" />
+                    <div className="h-2.5 bg-gray-100 rounded-full w-4/5" />
+                  </div>
+                  <div className="flex justify-between pt-1 border-t border-gray-100">
+                    <div className="h-2.5 bg-gray-100 rounded-full w-20" />
+                    <div className="w-14 h-7 bg-gray-100 rounded-xl" />
                   </div>
                 </div>
-              ))
-            ) : isEmpty ? (
-              <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
-                <Briefcase
-                  size={28}
-                  className="text-gray-200 mx-auto mb-3"
-                  strokeWidth={1.5}
-                />
-                <p className="text-xs font-extrabold text-gray-400 mb-1">
-                  Belum ada usul kerjaan.
-                </p>
-                <p className="text-xs text-gray-300 mb-5">
-                  Jadilah yang pertama usul kerjaan paling absurd.
-                </p>
-                <button
-                  onClick={openSubmitModal}
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
-                >
-                  <Plus size={12} />
-                  Usul Pertama
-                </button>
-              </div>
-            ) : (
-              jobs.map((job) => (
+              ))}
+            </div>
+          ) : isEmpty ? (
+            <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
+              <Briefcase
+                size={28}
+                className="text-gray-200 mx-auto mb-3"
+                strokeWidth={1.5}
+              />
+              <p className="text-xs font-extrabold text-gray-400 mb-1">
+                Belum ada usul kerjaan.
+              </p>
+              <p className="text-xs text-gray-300 mb-5">
+                Jadilah yang pertama usul kerjaan paling absurd.
+              </p>
+              <button
+                onClick={openSubmitModal}
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
+              >
+                <Plus size={12} />
+                Usul Pertama
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {jobs.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
                   user={user}
                   onVote={voteJob}
+                  onLoginGate={() => setShowLoginGate(true)}
                   isNew={job.id === newJobId}
                 />
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           {hasMore && !loading && (
             <p className="text-center text-xs text-gray-300 mt-4">

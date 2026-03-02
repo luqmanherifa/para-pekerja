@@ -27,18 +27,26 @@ export function useJobs() {
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [newJobId, setNewJobId] = useState(null);
+  const [jobSort, setJobSort] = useState("top");
 
   useEffect(() => {
-    const q = query(
-      collection(db, "jobs"),
-      orderBy("approved", "desc"),
-      limit(PREVIEW_COUNT + 1),
-    );
+    const q =
+      jobSort === "top"
+        ? query(
+            collection(db, "jobs"),
+            orderBy("approved", "desc"),
+            limit(PREVIEW_COUNT + 1),
+          )
+        : query(
+            collection(db, "jobs"),
+            orderBy("createdAt", "desc"),
+            limit(PREVIEW_COUNT + 1),
+          );
     return onSnapshot(q, (snap) => {
       setJobs(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
-  }, []);
+  }, [jobSort]);
 
   const submitJob = useCallback(
     async ({ title, description }) => {
@@ -52,9 +60,7 @@ export function useJobs() {
             user.displayName || user.email?.split("@")[0] || "Pekerja",
           uid: user.uid,
           approved: 0,
-          rejected: 0,
           voters_approved: [],
-          voters_rejected: [],
           createdAt: serverTimestamp(),
         });
         setNewJobId(ref.id);
@@ -70,36 +76,22 @@ export function useJobs() {
   );
 
   const voteJob = useCallback(
-    async (jobId, type, hasVotedApproved, hasVotedRejected) => {
+    async (jobId, hasVoted) => {
       if (!user) return;
-      const opposite = type === "approved" ? "rejected" : "approved";
-      const alreadyVotedThis =
-        type === "approved" ? hasVotedApproved : hasVotedRejected;
-      const alreadyVotedOpposite =
-        type === "approved" ? hasVotedRejected : hasVotedApproved;
-
       try {
         const jobRef = doc(db, "jobs", jobId);
         await runTransaction(db, async (tx) => {
           const snap = await tx.get(jobRef);
           if (!snap.exists()) return;
-
-          if (alreadyVotedThis) {
+          if (hasVoted) {
             tx.update(jobRef, {
-              [type]: increment(-1),
-              [`voters_${type}`]: arrayRemove(user.uid),
-            });
-          } else if (alreadyVotedOpposite) {
-            tx.update(jobRef, {
-              [type]: increment(1),
-              [`voters_${type}`]: arrayUnion(user.uid),
-              [opposite]: increment(-1),
-              [`voters_${opposite}`]: arrayRemove(user.uid),
+              approved: increment(-1),
+              voters_approved: arrayRemove(user.uid),
             });
           } else {
             tx.update(jobRef, {
-              [type]: increment(1),
-              [`voters_${type}`]: arrayUnion(user.uid),
+              approved: increment(1),
+              voters_approved: arrayUnion(user.uid),
             });
           }
         });
@@ -130,8 +122,10 @@ export function useJobs() {
     hasMore,
     isEmpty,
     PREVIEW_COUNT,
+    jobSort,
     setShowSubmitModal,
     setShowLoginGate,
+    setJobSort,
     submitJob,
     voteJob,
     openSubmitModal,
