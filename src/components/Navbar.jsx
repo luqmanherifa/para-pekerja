@@ -12,11 +12,11 @@ import {
 } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Absensi dan Gaji", href: "#attendance", icon: ClipboardCheck },
-  { label: "Kerjaan 5 Juta", href: "#jobs", icon: Briefcase },
-  { label: "Quote Battle", href: "#quote-battle", icon: MessageSquareQuote },
-  { label: "Siapa Paling Benar", href: "#siapa-paling-benar", icon: Scale },
-  { label: "Peringkat Tamu", href: "#guest-ranking", icon: Star },
+  { label: "Slip Gaji", href: "#absen", icon: ClipboardCheck },
+  { label: "Kerjaan Absurd", href: "#kerjaan", icon: Briefcase },
+  { label: "Kutipan Terbaik", href: "#kutipan", icon: MessageSquareQuote },
+  { label: "Siapa Benar", href: "#debat", icon: Scale },
+  { label: "Peringkat Tamu", href: "#tamu", icon: Star },
 ];
 
 const getInitials = (user) => {

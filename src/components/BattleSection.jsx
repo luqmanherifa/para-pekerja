@@ -490,7 +490,7 @@ export default function BattleSection() {
 
       <SeparatorBar />
 
-      <section id="siapa-paling-benar" className="w-full bg-white">
+      <section id="debat" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={Scale} label="Siapa Paling Benar?">
             {(totalBattles[activeEpisode.id] ?? 0) > 0 && (

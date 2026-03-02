@@ -97,7 +97,7 @@ export default function GuestSection() {
 
       <SeparatorBar />
 
-      <section id="guest-ranking" className="w-full bg-white">
+      <section id="tamu" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={Star} label="Peringkat Tamu">
             {totalVotes > 0 && (

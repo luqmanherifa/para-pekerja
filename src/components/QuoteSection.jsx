@@ -336,7 +336,7 @@ export default function QuoteSection() {
 
       <SeparatorBar />
 
-      <section id="quote-battle" className="w-full bg-white">
+      <section id="kutipan" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={MessageSquareQuote} label="Quote Battle">
             {totalQuotes[activeEpisode.id] > 0 && (

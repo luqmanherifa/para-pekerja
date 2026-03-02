@@ -243,7 +243,7 @@ export default function JobsSection() {
 
       <SeparatorBar />
 
-      <section id="jobs" className="w-full bg-white">
+      <section id="kerjaan" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={Briefcase} label="Kerjaan 5 Juta">
             {jobs.length > 0 && (

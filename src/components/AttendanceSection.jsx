@@ -203,7 +203,7 @@ export default function AttendanceSection() {
 
       <SeparatorBar />
 
-      <section id="attendance" className="w-full bg-white">
+      <section id="absen" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={ClipboardCheck} label="Absensi Harian">
             {totalToday > 0 && (
