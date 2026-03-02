@@ -11,14 +11,31 @@ import LoginGateModal from "./LoginGateModal";
 import { getSpeakerColor } from "../data/speakers";
 import { useState } from "react";
 
-function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
+function GuestCard({
+  guest,
+  voteCount,
+  voters,
+  rank,
+  user,
+  onVote,
+  onLoginGate,
+}) {
   const color = getSpeakerColor(guest.id);
   const hasVoted = voters?.includes(user?.uid);
-  const canVote = !!user && !hasVoted;
+  const isOwn = false;
+  const isTop = rank <= 3;
 
   const rankLabel =
     rank === 1 ? "①" : rank === 2 ? "②" : rank === 3 ? "③" : `#${rank}`;
-  const isTop = rank <= 3;
+
+  const handleVote = () => {
+    if (!user) {
+      onLoginGate();
+      return;
+    }
+    if (hasVoted) return;
+    onVote(guest.id);
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl px-6 py-4 hover:border-gray-300 transition-all duration-200">
@@ -52,15 +69,13 @@ function GuestCard({ guest, voteCount, voters, rank, user, onVote }) {
         </div>
         <div className="shrink-0">
           <button
-            onClick={() => canVote && onVote(guest.id)}
-            disabled={!canVote}
-            title={!user ? "Masuk untuk vote" : hasVoted ? "Sudah di-vote" : ""}
+            onClick={handleVote}
+            disabled={hasVoted}
+            title={hasVoted ? "Sudah di-vote" : "Vote guest ini"}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVoted
                 ? `${color.voteLight} border`
-                : !user
-                  ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : `${color.vote} text-white border-transparent`
+                : `border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer`
             }`}
           >
             <Star
@@ -137,6 +152,7 @@ export default function GuestSection() {
                     rank={index + 1}
                     user={user}
                     onVote={handleVote}
+                    onLoginGate={() => setShowLoginGate(true)}
                   />
                 ))}
           </div>
