@@ -7,12 +7,13 @@ import {
 import { auth, db } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
   User,
+  Briefcase,
   ArrowRight,
   ArrowLeft,
   AlertCircle,
@@ -20,7 +21,6 @@ import {
   EyeOff,
   Hammer,
   ClipboardCheck,
-  Briefcase,
   MessageSquareQuote,
   Scale,
   Star,
@@ -44,12 +44,25 @@ export default function Login() {
   const [registerName, setRegisterName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [registerJobTitle, setRegisterJobTitle] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const saveUserToFirestore = async (user) => {
+  const updateUserActivity = async (user) => {
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        email: user.email,
+        displayName: user.displayName ?? null,
+        lastActiveAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  };
+
+  const createUserInFirestore = async (user, extra = {}) => {
     await setDoc(
       doc(db, "users", user.uid),
       {
@@ -57,17 +70,23 @@ export default function Login() {
         displayName: user.displayName ?? null,
         lastActiveAt: serverTimestamp(),
         createdAt: serverTimestamp(),
+        role: "member",
+        ...extra,
       },
       { merge: true },
     );
   };
 
-  const dispatchUser = (user) => {
+  const dispatchUser = async (user) => {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const firestoreData = snap.exists() ? snap.data() : {};
     dispatch(
       setUser({
         uid: user.uid,
         email: user.email,
         displayName: user.displayName ?? null,
+        role: firestoreData.role ?? "member",
+        jobTitle: firestoreData.jobTitle ?? null,
       }),
     );
     navigate("/");
@@ -83,8 +102,8 @@ export default function Login() {
         loginEmail,
         loginPassword,
       );
-      await saveUserToFirestore(user);
-      dispatchUser(user);
+      await updateUserActivity(user);
+      await dispatchUser(user);
     } catch {
       setError("Email atau kata sandi salah. Coba lagi.");
     } finally {
@@ -107,8 +126,11 @@ export default function Login() {
         registerPassword,
       );
       await updateProfile(user, { displayName: registerName });
-      await saveUserToFirestore({ ...user, displayName: registerName });
-      dispatchUser({ ...user, displayName: registerName });
+      const enriched = { ...user, displayName: registerName };
+      await createUserInFirestore(enriched, {
+        jobTitle: registerJobTitle.trim() || null,
+      });
+      await dispatchUser(enriched);
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("Email ini sudah terdaftar. Coba masuk.");
@@ -350,6 +372,29 @@ export default function Login() {
                       value={registerName}
                       onChange={(e) => setRegisterName(e.target.value)}
                       required
+                      className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+                    Pekerjaan{" "}
+                    <span className="normal-case font-medium text-gray-300">
+                      (opsional)
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <Briefcase
+                      size={13}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Kerjaan sehari-hari kamu"
+                      value={registerJobTitle}
+                      onChange={(e) => setRegisterJobTitle(e.target.value)}
+                      maxLength={60}
                       className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-900 placeholder-gray-300 bg-white focus:outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
