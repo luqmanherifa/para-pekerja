@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 .env
+seeder.cjs
+serviceAccount.json
