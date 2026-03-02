@@ -521,7 +521,7 @@ export default function AttendanceSection() {
             </div>
           </div>
 
-          {phase === "guest" && (
+          {!user && (
             <LoginNudge text="untuk absen dan dapatkan slip gaji imajiner." />
           )}
         </div>

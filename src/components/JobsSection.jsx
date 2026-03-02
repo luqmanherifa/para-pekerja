@@ -323,9 +323,7 @@ export default function JobsSection() {
             </p>
           )}
 
-          {!user && !isEmpty && !loading && (
-            <LoginNudge text="untuk usul kerjaan dan ikut vote." />
-          )}
+          {!user && <LoginNudge text="untuk usul kerjaan dan ikut vote." />}
         </div>
       </section>
     </>

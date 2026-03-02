@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
 import { LogIn } from "lucide-react";
 
-export function SeparatorBar({ color = "yellow" }) {
-  return (
-    <div
-      className={`w-full h-1 ${color === "gray" ? "bg-gray-200" : "bg-yellow-400"}`}
-    />
-  );
+export function SeparatorBar() {
+  return <div className="w-full h-1 bg-yellow-400" />;
 }
 
 export function SectionHeader({ icon: Icon, label, children }) {
@@ -52,15 +48,21 @@ export function SectionTitle({ title, subtitle, children }) {
 
 export function LoginNudge({ text }) {
   return (
-    <div className="mt-5 flex items-center justify-center gap-2 text-xs text-gray-400">
+    <div className="mt-6 flex items-center justify-between gap-4 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-7 h-7 rounded-xl bg-green-600 flex items-center justify-center shrink-0">
+          <LogIn size={13} className="text-white" strokeWidth={2} />
+        </div>
+        <p className="text-xs text-gray-500 leading-snug">
+          <span className="font-bold text-gray-700">Masuk</span> {text}
+        </p>
+      </div>
       <Link
         to="/masuk"
-        className="inline-flex items-center gap-1.5 text-green-600 font-bold hover:underline"
+        className="shrink-0 flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors"
       >
-        <LogIn size={11} />
         Masuk
       </Link>
-      <span>{text}</span>
     </div>
   );
 }

@@ -581,7 +581,7 @@ export default function BattleSection() {
                 </p>
                 <button
                   onClick={openSubmitModal}
-                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
+                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
                 >
                   <Plus size={12} />
                   Buat Battle Pertama
@@ -599,9 +599,7 @@ export default function BattleSection() {
             )}
           </div>
 
-          {!user && !isEmpty && !loading && (
-            <LoginNudge text="untuk buat battle dan ikut vote." />
-          )}
+          {!user && <LoginNudge text="untuk buat battle dan ikut vote." />}
         </div>
       </section>
     </>

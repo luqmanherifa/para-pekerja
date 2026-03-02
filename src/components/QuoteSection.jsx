@@ -470,9 +470,7 @@ export default function QuoteSection() {
             )}
           </div>
 
-          {!user && !isEmpty && !loading && (
-            <LoginNudge text="untuk submit quote dan ikut vote." />
-          )}
+          {!user && <LoginNudge text="untuk submit quote dan ikut vote." />}
         </div>
       </section>
     </>

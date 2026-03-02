@@ -21,10 +21,10 @@ export const MOODS = [
     id: "low_energy",
     label: "Low Energy",
     icon: "BatteryLow",
-    pill: "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-400",
-    active: "bg-gray-600 text-white border-gray-600",
-    bar: "bg-gray-400",
-    badge: "bg-gray-100 text-gray-600",
+    pill: "bg-indigo-50 text-indigo-600 border-indigo-200 hover:border-indigo-400",
+    active: "bg-indigo-500 text-white border-indigo-500",
+    bar: "bg-indigo-400",
+    badge: "bg-indigo-100 text-indigo-600",
   },
   {
     id: "focus",
@@ -66,10 +66,10 @@ export const MOODS = [
     id: "autopilot",
     label: "Autopilot Mode",
     icon: "Ghost",
-    pill: "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400",
-    active: "bg-slate-600 text-white border-slate-600",
-    bar: "bg-slate-400",
-    badge: "bg-slate-100 text-slate-600",
+    pill: "bg-teal-50 text-teal-600 border-teal-200 hover:border-teal-400",
+    active: "bg-teal-500 text-white border-teal-500",
+    bar: "bg-teal-400",
+    badge: "bg-teal-100 text-teal-600",
   },
 ];
 
@@ -175,8 +175,6 @@ export const GHOST_ATTENDEES = [
   { id: "g4", displayName: "Adi Arkiang", mood: "watching" },
   { id: "g5", displayName: "Pandji Pragiwaksono", mood: "freelance" },
   { id: "g6", displayName: "Raditya Dika", mood: "survival" },
-  { id: "g7", displayName: "Arif Brata", mood: "low_energy" },
-  { id: "g8", displayName: "Bintang Emon", mood: "autopilot" },
 ];
 
 export const getMoodById = (id) => MOODS.find((m) => m.id === id) ?? MOODS[0];

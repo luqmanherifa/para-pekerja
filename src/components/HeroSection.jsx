@@ -1,7 +1,22 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { ClipboardCheck, Briefcase, Hammer } from "lucide-react";
+import {
+  ClipboardCheck,
+  Briefcase,
+  MessageSquareQuote,
+  Scale,
+  Star,
+  Radio,
+} from "lucide-react";
+
+const QUICK_LINKS = [
+  { id: "attendance", label: "Absensi dan Gaji", icon: ClipboardCheck },
+  { id: "jobs", label: "Kerjaan 5 Juta", icon: Briefcase },
+  { id: "quote-battle", label: "Quote Battle", icon: MessageSquareQuote },
+  { id: "siapa-paling-benar", label: "Siapa Paling Benar", icon: Scale },
+  { id: "guest-ranking", label: "Peringkat Tamu", icon: Star },
+];
 
 export default function HeroSection() {
   const [totalMembers, setTotalMembers] = useState(0);
@@ -28,7 +43,7 @@ export default function HeroSection() {
       <div className="max-w-5xl mx-auto px-8 py-16">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-2">
-            <Hammer size={13} className="text-green-300" strokeWidth={2.5} />
+            <Radio size={13} className="text-green-300" strokeWidth={2.5} />
             <span className="text-xs font-bold text-green-300 uppercase tracking-widest">
               Komunitas Pendengar · ABG Siniar
             </span>
@@ -54,6 +69,7 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
+
         <div className="mb-8">
           <p className="text-sm font-medium text-green-300 mb-1.5 italic">
             Ruang pura-pura produktif sejak hari pertama.
@@ -63,27 +79,47 @@ export default function HeroSection() {
             <span className="text-yellow-400">Para Pekerja.</span>
           </h1>
         </div>
+
         <div className="w-full h-px bg-green-500 mb-8" />
-        <div className="flex items-end justify-between gap-12">
-          <p className="text-green-200 text-sm leading-relaxed max-w-sm">
+
+        <div className="flex items-start justify-between gap-12">
+          <p className="text-green-200 text-sm leading-relaxed max-w-xs pt-1">
             Absen tiap hari, kirim kerjaan absurd, vote siapa yang paling benar,
             dan arsipkan quote terbaik dari setiap episode.
           </p>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => scrollTo("attendance")}
-              className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150"
-            >
-              <ClipboardCheck size={13} strokeWidth={2.5} />
-              Absen Sekarang
-            </button>
-            <button
-              onClick={() => scrollTo("jobs")}
-              className="flex items-center gap-2 border border-green-400 hover:border-green-300 hover:bg-green-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150"
-            >
-              <Briefcase size={13} strokeWidth={2.5} />
-              Kerjaan 5 Juta
-            </button>
+
+          <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex items-center gap-2">
+              {QUICK_LINKS.slice(0, 3).map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
+                  className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors duration-150"
+                >
+                  <Icon size={12} strokeWidth={2.5} />
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              {QUICK_LINKS.slice(3).map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
+                  className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors duration-150"
+                >
+                  <Icon size={12} strokeWidth={2.5} />
+                  {label}
+                </button>
+              ))}
+              <button
+                onClick={() => scrollTo("attendance")}
+                className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors duration-150 ml-1"
+              >
+                <ClipboardCheck size={13} strokeWidth={2.5} />
+                Absen Sekarang ✦
+              </button>
+            </div>
           </div>
         </div>
       </div>

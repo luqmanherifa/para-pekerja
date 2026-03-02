@@ -95,7 +95,7 @@ export default function GuestSection() {
         <LoginGateModal onClose={() => setShowLoginGate(false)} />
       )}
 
-      <SeparatorBar color="gray" />
+      <SeparatorBar />
 
       <section id="guest-ranking" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
