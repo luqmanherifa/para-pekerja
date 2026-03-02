@@ -12,6 +12,7 @@ import {
   serverTimestamp,
   increment,
   arrayUnion,
+  arrayRemove,
   runTransaction,
 } from "firebase/firestore";
 import { EPISODES } from "../data/episodes";
@@ -26,20 +27,28 @@ export function useQuotes() {
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [totalQuotes, setTotalQuotes] = useState({});
+  const [quoteSort, setQuoteSort] = useState("top");
 
   useEffect(() => {
     setLoading(true);
-    const q = query(
-      collection(db, "quotes"),
-      where("episodeId", "==", activeEpisode.id),
-      orderBy("voteCount", "desc"),
-      orderBy("createdAt", "desc"),
-    );
+    const q =
+      quoteSort === "top"
+        ? query(
+            collection(db, "quotes"),
+            where("episodeId", "==", activeEpisode.id),
+            orderBy("voteCount", "desc"),
+            orderBy("createdAt", "desc"),
+          )
+        : query(
+            collection(db, "quotes"),
+            where("episodeId", "==", activeEpisode.id),
+            orderBy("createdAt", "desc"),
+          );
     return onSnapshot(q, (snap) => {
       setQuotes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
-  }, [activeEpisode.id]);
+  }, [activeEpisode.id, quoteSort]);
 
   useEffect(() => {
     const unsubscribes = EPISODES.map((ep) => {
@@ -98,11 +107,18 @@ export function useQuotes() {
         await runTransaction(db, async (tx) => {
           const snap = await tx.get(quoteRef);
           if (!snap.exists()) return;
-          if (snap.data().voters?.includes(user.uid)) return;
-          tx.update(quoteRef, {
-            voteCount: increment(1),
-            voters: arrayUnion(user.uid),
-          });
+          const hasVoted = snap.data().voters?.includes(user.uid);
+          if (hasVoted) {
+            tx.update(quoteRef, {
+              voteCount: increment(-1),
+              voters: arrayRemove(user.uid),
+            });
+          } else {
+            tx.update(quoteRef, {
+              voteCount: increment(1),
+              voters: arrayUnion(user.uid),
+            });
+          }
         });
       } catch (err) {
         console.error(err);
@@ -125,10 +141,12 @@ export function useQuotes() {
     showLoginGate,
     submitting,
     totalQuotes,
+    quoteSort,
     isEmpty: !loading && quotes.length === 0,
     setActiveEpisode,
     setShowSubmitModal,
     setShowLoginGate,
+    setQuoteSort,
     submitQuote,
     voteQuote,
     openSubmitModal,

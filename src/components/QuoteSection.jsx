@@ -1,11 +1,13 @@
 import { useState } from "react";
 import {
   MessageSquareQuote,
-  ThumbsUp,
+  Star,
   Plus,
   X,
   Send,
   ChevronDown,
+  TrendingUp,
+  Clock3,
 } from "lucide-react";
 import {
   SeparatorBar,
@@ -14,12 +16,40 @@ import {
   SectionTitle,
   LoginNudge,
   SectionButton,
-  EmptyState,
 } from "./SectionComponents";
 import { useQuotes } from "../hooks/useQuotes";
 import LoginGateModal from "./LoginGateModal";
 import { EPISODES } from "../data/episodes";
 import { HOSTS, GUESTS, getSpeakerColor } from "../data/speakers";
+
+function QuoteSortToggle({ value, onChange }) {
+  return (
+    <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+      <button
+        onClick={() => onChange("top")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "top"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <TrendingUp size={10} strokeWidth={2.5} />
+        Teratas
+      </button>
+      <button
+        onClick={() => onChange("new")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "new"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <Clock3 size={10} strokeWidth={2.5} />
+        Terbaru
+      </button>
+    </div>
+  );
+}
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
@@ -234,24 +264,33 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
   );
 }
 
-function QuoteCard({ quote, user, onVote, rank }) {
+function QuoteCard({ quote, user, onVote, onLoginGate, rank }) {
   const color = getSpeakerColor(quote.speakerId);
   const hasVoted = quote.voters?.includes(user?.uid);
   const isOwn = user && quote.uid === user.uid;
-  const cannotVote = isOwn || hasVoted || !user;
+
+  const handleVote = () => {
+    if (!user) {
+      onLoginGate();
+      return;
+    }
+    if (isOwn) return;
+    onVote(quote.id);
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl px-6 py-5 hover:border-gray-300 transition-all duration-200">
       <div className="flex items-start gap-4">
-        <div className="shrink-0 w-5 text-center">
+        <div className="shrink-0 w-5 text-center pt-0.5">
           <span
             className={`text-xs font-extrabold tabular-nums ${rank <= 3 ? "text-yellow-500" : "text-gray-300"}`}
           >
             {rank <= 3 ? ["①", "②", "③"][rank - 1] : rank}
           </span>
         </div>
+
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span
               className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${color.light}`}
             >
@@ -267,33 +306,36 @@ function QuoteCard({ quote, user, onVote, rank }) {
               {quote.episodeLabel}
             </span>
           </div>
-          <p className="text-xs text-gray-800 leading-relaxed font-medium italic">
+          <p className="text-xs text-gray-800 leading-relaxed font-medium italic mb-2">
             "{quote.text}"
           </p>
-          <p className="text-xs text-gray-300 mt-2">oleh {quote.submittedBy}</p>
+          <p className="text-xs text-gray-300">oleh {quote.submittedBy}</p>
         </div>
+
         <div className="shrink-0">
           <button
-            onClick={() => !cannotVote && onVote(quote.id)}
-            disabled={cannotVote}
+            onClick={handleVote}
+            disabled={isOwn}
             title={
               isOwn
                 ? "Tidak bisa vote quote sendiri"
                 : hasVoted
-                  ? "Sudah di-vote"
-                  : !user
-                    ? "Masuk untuk vote"
-                    : ""
+                  ? "Batalkan vote"
+                  : "Vote quote ini"
             }
             className={`flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               hasVoted
-                ? "bg-green-50 border-green-200 text-green-600"
-                : cannotVote
+                ? "bg-yellow-50 border-yellow-300 text-yellow-500"
+                : isOwn
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-400 hover:border-green-400 hover:text-green-600 hover:bg-green-50"
+                  : "border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer"
             }`}
           >
-            <ThumbsUp size={11} />
+            <Star
+              size={11}
+              strokeWidth={2}
+              className={hasVoted ? "fill-yellow-400" : ""}
+            />
             <span className="tabular-nums">{quote.voteCount ?? 0}</span>
           </button>
         </div>
@@ -312,10 +354,12 @@ export default function QuoteSection() {
     showLoginGate,
     submitting,
     totalQuotes,
+    quoteSort,
     isEmpty,
     setActiveEpisode,
     setShowSubmitModal,
     setShowLoginGate,
+    setQuoteSort,
     submitQuote,
     voteQuote,
     openSubmitModal,
@@ -391,7 +435,7 @@ export default function QuoteSection() {
           </div>
 
           {!loading && !isEmpty && (
-            <div className="flex items-center gap-2 mb-6 flex-wrap">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <span className="text-xs text-gray-300 font-bold uppercase tracking-widest mr-1">
                 Dalam episode ini:
               </span>
@@ -415,6 +459,12 @@ export default function QuoteSection() {
                   </span>
                 );
               })}
+            </div>
+          )}
+
+          {!isEmpty && !loading && (
+            <div className="flex justify-end mb-4">
+              <QuoteSortToggle value={quoteSort} onChange={setQuoteSort} />
             </div>
           )}
 
@@ -464,6 +514,7 @@ export default function QuoteSection() {
                   quote={quote}
                   user={user}
                   onVote={voteQuote}
+                  onLoginGate={() => setShowLoginGate(true)}
                   rank={index + 1}
                 />
               ))
