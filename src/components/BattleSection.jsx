@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Scale, Plus, X, Send, ChevronDown, Swords } from "lucide-react";
+import {
+  Scale,
+  Plus,
+  X,
+  Send,
+  ChevronDown,
+  Swords,
+  TrendingUp,
+  Clock3,
+} from "lucide-react";
 import {
   SeparatorBar,
   SectionHeader,
@@ -7,13 +16,40 @@ import {
   SectionTitle,
   LoginNudge,
   SectionButton,
-  EmptyState,
 } from "./SectionComponents";
 import { useBattles } from "../hooks/useBattles";
 import LoginGateModal from "./LoginGateModal";
 import { EPISODES } from "../data/episodes";
 import { HOSTS, GUESTS, getSpeakerColor } from "../data/speakers";
-import { Link } from "react-router-dom";
+
+function BattleSortToggle({ value, onChange }) {
+  return (
+    <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+      <button
+        onClick={() => onChange("top")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "top"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <TrendingUp size={10} strokeWidth={2.5} />
+        Teratas
+      </button>
+      <button
+        onClick={() => onChange("new")}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+          value === "new"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-400 hover:text-gray-600"
+        }`}
+      >
+        <Clock3 size={10} strokeWidth={2.5} />
+        Terbaru
+      </button>
+    </div>
+  );
+}
 
 function SubmitModal({ onClose, onSubmit, submitting }) {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
@@ -216,7 +252,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   value={summaryA}
                   onChange={(e) => setSummaryA(e.target.value)}
                   maxLength={300}
-                  required
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
@@ -279,7 +314,6 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   value={summaryB}
                   onChange={(e) => setSummaryB(e.target.value)}
                   maxLength={300}
-                  required
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
@@ -313,7 +347,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
   );
 }
 
-function BattleCard({ battle, user, onVote }) {
+function BattleCard({ battle, user, onVote, onLoginGate }) {
   const colorA = getSpeakerColor(battle.speakerAId);
   const colorB = getSpeakerColor(battle.speakerBId);
 
@@ -327,6 +361,15 @@ function BattleCard({ battle, user, onVote }) {
   const votedA = battle.votersA?.includes(user?.uid);
   const votedB = battle.votersB?.includes(user?.uid);
   const hasVoted = votedA || votedB;
+
+  const handleVote = (side) => {
+    if (!user) {
+      onLoginGate();
+      return;
+    }
+    if (hasVoted) return;
+    onVote(battle.id, side);
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-all duration-200">
@@ -402,14 +445,14 @@ function BattleCard({ battle, user, onVote }) {
         )}
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={() => user && !hasVoted && onVote(battle.id, "A")}
-            disabled={!user || hasVoted}
+            onClick={() => handleVote("A")}
+            disabled={hasVoted && !votedA}
             className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               votedA
                 ? `${colorA.voteLight} border`
-                : hasVoted || !user
+                : hasVoted
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50"
+                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50 cursor-pointer"
             }`}
           >
             {votedA && (
@@ -421,14 +464,14 @@ function BattleCard({ battle, user, onVote }) {
             </span>
           </button>
           <button
-            onClick={() => user && !hasVoted && onVote(battle.id, "B")}
-            disabled={!user || hasVoted}
+            onClick={() => handleVote("B")}
+            disabled={hasVoted && !votedB}
             className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
               votedB
                 ? `${colorB.voteLight} border`
-                : hasVoted || !user
+                : hasVoted
                   ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50"
+                  : "border-gray-200 text-gray-600 hover:border-yellow-300 hover:text-yellow-700 hover:bg-yellow-50 cursor-pointer"
             }`}
           >
             {votedB && (
@@ -440,17 +483,6 @@ function BattleCard({ battle, user, onVote }) {
             </span>
           </button>
         </div>
-        {!user && (
-          <p className="text-center text-xs text-gray-300 mt-2">
-            <Link
-              to="/masuk"
-              className="text-yellow-600 font-bold hover:underline"
-            >
-              Masuk
-            </Link>{" "}
-            untuk vote
-          </p>
-        )}
       </div>
     </div>
   );
@@ -466,10 +498,12 @@ export default function BattleSection() {
     showLoginGate,
     submitting,
     totalBattles,
+    battleSort,
     isEmpty,
     setActiveEpisode,
     setShowSubmitModal,
     setShowLoginGate,
+    setBattleSort,
     submitBattle,
     voteBattle,
     openSubmitModal,
@@ -523,8 +557,8 @@ export default function BattleSection() {
                   onClick={() => setActiveEpisode(ep)}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
                     isActive
-                      ? "bg-yellow-400 text-gray-900 border-yellow-400"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-yellow-300 hover:text-yellow-600"
+                      ? "bg-green-600 text-white border-green-600"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-green-400 hover:text-green-600"
                   }`}
                 >
                   {ep.label}
@@ -532,7 +566,7 @@ export default function BattleSection() {
                     <span
                       className={`text-xs font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
                         isActive
-                          ? "bg-yellow-500 text-yellow-100"
+                          ? "bg-green-500 text-green-100"
                           : "bg-gray-100 text-gray-500"
                       }`}
                     >
@@ -543,6 +577,12 @@ export default function BattleSection() {
               );
             })}
           </div>
+
+          {!isEmpty && !loading && (
+            <div className="flex justify-end mb-4">
+              <BattleSortToggle value={battleSort} onChange={setBattleSort} />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-3">
             {loading ? (
@@ -594,6 +634,7 @@ export default function BattleSection() {
                   battle={battle}
                   user={user}
                   onVote={voteBattle}
+                  onLoginGate={() => setShowLoginGate(true)}
                 />
               ))
             )}

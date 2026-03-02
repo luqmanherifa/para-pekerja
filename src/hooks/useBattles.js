@@ -11,6 +11,7 @@ import {
   onSnapshot,
   serverTimestamp,
   increment,
+  arrayUnion,
   runTransaction,
 } from "firebase/firestore";
 import { EPISODES } from "../data/episodes";
@@ -25,20 +26,28 @@ export function useBattles() {
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [totalBattles, setTotalBattles] = useState({});
+  const [battleSort, setBattleSort] = useState("top");
 
   useEffect(() => {
     setLoading(true);
-    const q = query(
-      collection(db, "battles"),
-      where("episodeId", "==", activeEpisode.id),
-      orderBy("totalVotes", "desc"),
-      orderBy("createdAt", "desc"),
-    );
+    const q =
+      battleSort === "top"
+        ? query(
+            collection(db, "battles"),
+            where("episodeId", "==", activeEpisode.id),
+            orderBy("totalVotes", "desc"),
+            orderBy("createdAt", "desc"),
+          )
+        : query(
+            collection(db, "battles"),
+            where("episodeId", "==", activeEpisode.id),
+            orderBy("createdAt", "desc"),
+          );
     return onSnapshot(q, (snap) => {
       setBattles(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
-  }, [activeEpisode.id]);
+  }, [activeEpisode.id, battleSort]);
 
   useEffect(() => {
     const unsubscribes = EPISODES.map((ep) => {
@@ -114,18 +123,17 @@ export function useBattles() {
             data.votersB?.includes(user.uid)
           )
             return;
-
           if (side === "A") {
             tx.update(battleRef, {
               voteCountA: increment(1),
               totalVotes: increment(1),
-              votersA: [...(data.votersA ?? []), user.uid],
+              votersA: arrayUnion(user.uid),
             });
           } else {
             tx.update(battleRef, {
               voteCountB: increment(1),
               totalVotes: increment(1),
-              votersB: [...(data.votersB ?? []), user.uid],
+              votersB: arrayUnion(user.uid),
             });
           }
         });
@@ -150,10 +158,12 @@ export function useBattles() {
     showLoginGate,
     submitting,
     totalBattles,
+    battleSort,
     isEmpty: !loading && battles.length === 0,
     setActiveEpisode,
     setShowSubmitModal,
     setShowLoginGate,
+    setBattleSort,
     submitBattle,
     voteBattle,
     openSubmitModal,
