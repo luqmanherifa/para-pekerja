@@ -1,3 +1,17 @@
+import {
+  Zap,
+  Coffee,
+  BatteryLow,
+  Target,
+  Tv2,
+  Umbrella,
+  AlertTriangle,
+  Ghost,
+  Palmtree,
+  Clock,
+  ArrowLeftRight,
+} from "lucide-react";
+
 export const MOODS = [
   {
     id: "productive",
@@ -71,14 +85,41 @@ export const MOODS = [
     bar: "bg-teal-400",
     badge: "bg-teal-100 text-teal-600",
   },
+  {
+    id: "day_off",
+    label: "Libur Total",
+    icon: "Palmtree",
+    pill: "bg-lime-50 text-lime-700 border-lime-200 hover:border-lime-400",
+    active: "bg-lime-500 text-white border-lime-500",
+    bar: "bg-lime-400",
+    badge: "bg-lime-100 text-lime-700",
+  },
+  {
+    id: "standby",
+    label: "Standby Mode",
+    icon: "Clock",
+    pill: "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400",
+    active: "bg-slate-500 text-white border-slate-500",
+    bar: "bg-slate-400",
+    badge: "bg-slate-100 text-slate-600",
+  },
+  {
+    id: "in_between",
+    label: "Antara Dua Pekerjaan",
+    icon: "ArrowLeftRight",
+    pill: "bg-pink-50 text-pink-700 border-pink-200 hover:border-pink-400",
+    active: "bg-pink-500 text-white border-pink-500",
+    bar: "bg-pink-400",
+    badge: "bg-pink-100 text-pink-700",
+  },
 ];
 
 const PAYSLIP_DATA = {
   productive: {
     items: [
       { label: "Bonus Semangat Pagi", amount: 250000 },
-      { label: "Insentif Kamera Menyala saat Meeting", amount: 175000 },
-      { label: "Potongan Overthinking Deadline", amount: -75000 },
+      { label: "Insentif Kamera Menyala saat Rapat", amount: 175000 },
+      { label: "Potongan Overthinking Tenggat Waktu", amount: -75000 },
     ],
     hrNote:
       "Kinerja hari ini patut diapresiasi. Pertahankan — meski kita semua tahu besok mungkin berbeda.",
@@ -90,7 +131,7 @@ const PAYSLIP_DATA = {
       { label: "Potongan Terlalu Santai di Jam Sibuk", amount: -50000 },
     ],
     hrNote:
-      "Santai memang pilihan hidup. HR mencatat kehadiran, bukan kegelisahan kamu.",
+      "Santai memang pilihan hidup. HRD mencatat kehadiran, bukan kegelisahan kamu.",
   },
   low_energy: {
     items: [
@@ -100,7 +141,7 @@ const PAYSLIP_DATA = {
       { label: "Potongan Sering Lihat Jam", amount: -50000 },
     ],
     hrNote:
-      "HR memahami. Terkadang hadir secara fisik sudah merupakan prestasi tersendiri.",
+      "HRD memahami. Terkadang hadir secara fisik sudah merupakan prestasi tersendiri.",
   },
   focus: {
     items: [
@@ -109,23 +150,26 @@ const PAYSLIP_DATA = {
       { label: "Potongan Lupa Makan Siang", amount: -25000 },
     ],
     hrNote:
-      "HR menghormati ketenangan kamu hari ini. Pintu HR juga dikunci untuk kamu.",
+      "HRD menghormati ketenangan kamu hari ini. Pintu HRD juga dikunci untuk kamu.",
   },
   watching: {
     items: [
       { label: "Bonus Multitasking Profesional", amount: 200000 },
       { label: "Insentif Tidak Tertangkap Basah", amount: 150000 },
       { label: "Potongan Produktivitas Terbagi", amount: -200000 },
-      { label: "Potongan Rewind 3 Menit karena Tidak Fokus", amount: -75000 },
+      {
+        label: "Potongan Putar Ulang 3 Menit karena Tidak Fokus",
+        amount: -75000,
+      },
     ],
     hrNote:
-      "HR tidak bertanya. HR juga sedang menonton sesuatu saat menulis catatan ini.",
+      "HRD tidak bertanya. HRD juga sedang menonton sesuatu saat menulis catatan ini.",
   },
   freelance: {
     items: [
       { label: "Bonus Kebebasan Waktu", amount: 350000 },
       { label: "Insentif Tidak Ada yang Mengawasi", amount: 200000 },
-      { label: "Potongan Batas Waktu Ambigu", amount: -100000 },
+      { label: "Potongan Tenggat Waktu Ambigu", amount: -100000 },
       { label: "Potongan Tidak Ada BPJS", amount: -125000 },
     ],
     hrNote:
@@ -139,12 +183,12 @@ const PAYSLIP_DATA = {
       { label: "Potongan Energi Habis sejak Senin", amount: -150000 },
     ],
     hrNote:
-      "HR melihat kondisi kamu. HR ikut berdoa. Semoga hari ini segera selesai.",
+      "HRD melihat kondisi kamu. HRD ikut berdoa. Semoga hari ini segera selesai.",
   },
   autopilot: {
     items: [
       { label: "Bonus Tubuh Hadir, Pikiran Entah di Mana", amount: 200000 },
-      { label: "Insentif Menjawab Chat Tanpa Membaca", amount: 100000 },
+      { label: "Insentif Menjawab Pesan Tanpa Membaca", amount: 100000 },
       { label: "Potongan Tidak Ingat Apa yang Dikerjakan", amount: -125000 },
       {
         label: "Potongan Rapat Dihadiri tapi Tidak Didengarkan",
@@ -152,7 +196,35 @@ const PAYSLIP_DATA = {
       },
     ],
     hrNote:
-      "HR tidak tahu kamu hadir atau tidak. Kamu juga tidak tahu. Sama-sama.",
+      "HRD tidak tahu kamu hadir atau tidak. Kamu juga tidak tahu. Sama-sama.",
+  },
+  day_off: {
+    items: [
+      { label: "Tunjangan Hari Istirahat", amount: 300000 },
+      { label: "Bonus Tidak Membuka Laptop", amount: 200000 },
+      { label: "Potongan Notifikasi Kerja Tetap Masuk", amount: -50000 },
+    ],
+    hrNote:
+      "HRD menghargai hari liburmu. Tolong jangan balas pesan HRD hari ini.",
+  },
+  standby: {
+    items: [
+      { label: "Tunjangan Menunggu dengan Sabar", amount: 150000 },
+      { label: "Insentif Tetap Online", amount: 100000 },
+      { label: "Potongan Tidak Jelas Harus Ngapain", amount: -100000 },
+    ],
+    hrNote:
+      "Status kamu hari ini: tersedia. HRD belum tahu tersedia untuk apa.",
+  },
+  in_between: {
+    items: [
+      { label: "Tunjangan Masa Transisi", amount: 200000 },
+      { label: "Bonus Tetap Waras di Tengah Ketidakpastian", amount: 250000 },
+      { label: "Potongan Pertanyaan Keluarga", amount: -150000 },
+      { label: "Potongan Belum Punya Jawaban", amount: -100000 },
+    ],
+    hrNote:
+      "HRD tidak bisa menandatangani slip ini secara resmi. Tapi secara moral, kamu tetap pekerja.",
   },
 };
 
@@ -165,6 +237,9 @@ export const AMBIENT_TEXT = {
   freelance: "Hari ini mayoritas kerja dari mana saja.",
   survival: "Mode darurat. Bertahanlah.",
   autopilot: "Hari ini kantor berjalan sendiri. Entah siapa yang mengemudikan.",
+  day_off: "Kantor kosong. Semua sedang istirahat.",
+  standby: "Kantor sedang menunggu. Tidak jelas menunggu apa.",
+  in_between: "Beberapa pekerja sedang dalam perjalanan ke tempat berikutnya.",
   default: "Absen dulu sebelum pura-pura kerja.",
 };
 

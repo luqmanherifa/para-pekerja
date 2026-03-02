@@ -30,13 +30,13 @@ export function useAttendance() {
   const [myPayslip, setMyPayslip] = useState(null);
   const [myMood, setMyMood] = useState(null);
   const [showPayslipModal, setShowPayslipModal] = useState(false);
-  const [loginNudgeMood, setLoginNudgeMood] = useState(null);
 
   const [attendees, setAttendees] = useState([]);
   const [dailyStats, setDailyStats] = useState({});
   const [totalToday, setTotalToday] = useState(0);
   const [featuredPayslips, setFeaturedPayslips] = useState([]);
   const [dominantMood, setDominantMood] = useState(null);
+  const [slipSort, setSlipSort] = useState("top");
 
   useEffect(() => {
     if (!user) {
@@ -82,10 +82,24 @@ export function useAttendance() {
   }, [today]);
 
   useEffect(() => {
-    return onSnapshot(doc(db, "daily_featured", today), (snap) => {
-      if (snap.exists()) setFeaturedPayslips(snap.data().payslips ?? []);
-    });
-  }, [today]);
+    const q =
+      slipSort === "top"
+        ? query(
+            collection(db, "attendance"),
+            where("date", "==", today),
+            orderBy("voteCount", "desc"),
+            limit(5),
+          )
+        : query(
+            collection(db, "attendance"),
+            where("date", "==", today),
+            orderBy("createdAt", "desc"),
+            limit(5),
+          );
+    return onSnapshot(q, (snap) =>
+      setFeaturedPayslips(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
+    );
+  }, [today, slipSort]);
 
   const submitAttendance = useCallback(async () => {
     if (!user || !selectedMood || submitting) return;
@@ -94,13 +108,9 @@ export function useAttendance() {
       const payslip = buildPayslip(selectedMood);
       const attendanceRef = doc(db, "attendance", `${user.uid}_${today}`);
       const statsRef = doc(db, "daily_stats", today);
-      const featuredRef = doc(db, "daily_featured", today);
 
       await runTransaction(db, async (tx) => {
-        const [statsSnap, featuredSnap] = await Promise.all([
-          tx.get(statsRef),
-          tx.get(featuredRef),
-        ]);
+        const statsSnap = await tx.get(statsRef);
 
         tx.set(attendanceRef, {
           uid: user.uid,
@@ -124,25 +134,6 @@ export function useAttendance() {
               moods: { [selectedMood]: 1 },
               date: today,
             });
-
-        const entry = {
-          id: `${user.uid}_${today}`,
-          uid: user.uid,
-          displayName:
-            user.displayName || user.email?.split("@")[0] || "Pekerja",
-          mood: selectedMood,
-          hrNote: payslip.hrNote,
-          total: payslip.total,
-          voteCount: 0,
-          voters: [],
-        };
-        const existing = featuredSnap.exists()
-          ? (featuredSnap.data().payslips ?? [])
-          : [];
-        if (!featuredSnap.exists())
-          tx.set(featuredRef, { payslips: [entry], date: today });
-        else if (existing.length < 5)
-          tx.update(featuredRef, { payslips: [...existing, entry] });
       });
 
       setMyMood(selectedMood);
@@ -160,21 +151,11 @@ export function useAttendance() {
     async (slipId) => {
       if (!user) return;
       try {
+        const attendanceRef = doc(db, "attendance", slipId);
         await runTransaction(db, async (tx) => {
-          const featuredRef = doc(db, "daily_featured", today);
-          const attendanceRef = doc(db, "attendance", slipId);
-          const snap = await tx.get(featuredRef);
+          const snap = await tx.get(attendanceRef);
           if (!snap.exists()) return;
-          const updated = (snap.data().payslips ?? []).map((s) =>
-            s.id === slipId && !s.voters?.includes(user.uid)
-              ? {
-                  ...s,
-                  voteCount: (s.voteCount ?? 0) + 1,
-                  voters: [...(s.voters ?? []), user.uid],
-                }
-              : s,
-          );
-          tx.update(featuredRef, { payslips: updated });
+          if (snap.data().voters?.includes(user.uid)) return;
           tx.update(attendanceRef, {
             voteCount: increment(1),
             voters: arrayUnion(user.uid),
@@ -184,12 +165,11 @@ export function useAttendance() {
         console.error(err);
       }
     },
-    [user, today],
+    [user],
   );
 
   const handleMoodClick = (moodId) => {
-    if (phase === "guest") setLoginNudgeMood(moodId);
-    else if (phase === "pick_mood") setSelectedMood(moodId);
+    if (phase === "pick_mood") setSelectedMood(moodId);
   };
 
   return {
@@ -200,15 +180,15 @@ export function useAttendance() {
     myPayslip,
     myMood,
     showPayslipModal,
-    loginNudgeMood,
     attendees,
     dailyStats,
     totalToday,
     featuredPayslips,
     dominantMood,
+    slipSort,
     today,
     setShowPayslipModal,
-    setLoginNudgeMood,
+    setSlipSort,
     submitAttendance,
     votePayslip,
     handleMoodClick,
