@@ -31,16 +31,16 @@ export default function LoginGateModal({ onClose }) {
           >
             <X size={12} />
           </button>
-          <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center mb-4">
-            <LogIn size={18} className="text-white" strokeWidth={2} />
+          <div className="w-9 h-9 rounded-xl bg-green-600 flex items-center justify-center mb-4">
+            <LogIn size={16} className="text-white" strokeWidth={2} />
           </div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Diperlukan Login
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-1">
+            Perlu masuk dulu
           </p>
-          <h3 className="text-base font-extrabold text-gray-900 mb-1.5">
+          <h3 className="text-base font-bold text-gray-900 mb-1.5">
             Masuk dulu, Pekerja.
           </h3>
-          <p className="text-xs text-gray-500 leading-relaxed">
+          <p className="text-xs font-normal text-gray-500 leading-relaxed">
             Kamu perlu masuk untuk ikut berinteraksi bersama komunitas.
           </p>
         </div>
@@ -48,13 +48,13 @@ export default function LoginGateModal({ onClose }) {
         <div className="px-6 pb-6 pt-4 flex flex-col gap-2">
           <Link
             to="/masuk"
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs py-3 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-xs py-3 rounded-xl transition-colors"
           >
             Masuk Sekarang
           </Link>
           <button
             onClick={onClose}
-            className="w-full text-gray-400 hover:text-gray-600 font-semibold text-xs py-2 rounded-xl transition-colors"
+            className="w-full text-gray-400 hover:text-gray-600 font-medium text-xs py-2 rounded-xl transition-colors"
           >
             Nanti dulu
           </button>

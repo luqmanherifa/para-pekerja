@@ -7,10 +7,10 @@ export function SeparatorBar() {
 
 export function SectionHeader({ icon: Icon, label, children }) {
   return (
-    <div className="flex items-center justify-between mb-8">
-      <div className="flex items-center gap-2.5">
-        <Icon size={13} className="text-green-600" strokeWidth={2.5} />
-        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-2">
+        <Icon size={12} className="text-green-600" strokeWidth={2.5} />
+        <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">
           {label}
         </span>
       </div>
@@ -22,10 +22,10 @@ export function SectionHeader({ icon: Icon, label, children }) {
 export function SectionCounter({ label, value }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+      <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">
         {label}
       </span>
-      <span className="text-sm font-extrabold text-gray-900 tabular-nums">
+      <span className="text-sm font-bold text-gray-900 tabular-nums">
         {typeof value === "number" ? value.toLocaleString("id-ID") : value}
       </span>
     </div>
@@ -36,10 +36,14 @@ export function SectionTitle({ title, subtitle, children }) {
   return (
     <div className="flex items-end justify-between mb-8 gap-6">
       <div>
-        <p className="text-base font-extrabold text-gray-900 leading-tight">
+        <p className="text-base font-bold text-gray-900 leading-tight">
           {title}
         </p>
-        {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-xs font-normal text-gray-400 mt-1 leading-relaxed">
+            {subtitle}
+          </p>
+        )}
       </div>
       {children && <div className="shrink-0">{children}</div>}
     </div>
@@ -54,12 +58,12 @@ export function LoginNudge({ text }) {
           <LogIn size={13} className="text-white" strokeWidth={2} />
         </div>
         <p className="text-xs text-gray-500 leading-snug">
-          <span className="font-bold text-gray-700">Masuk</span> {text}
+          <span className="font-semibold text-gray-700">Masuk</span> {text}
         </p>
       </div>
       <Link
         to="/masuk"
-        className="shrink-0 flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors"
+        className="shrink-0 flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-semibold text-xs px-4 py-2 rounded-xl transition-colors"
       >
         Masuk
       </Link>
@@ -74,7 +78,7 @@ export function SectionButton({
   variant = "dark",
 }) {
   const base =
-    "flex items-center gap-2 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0";
+    "flex items-center gap-2 font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0";
   const styles = {
     dark: "bg-gray-900 hover:bg-gray-700 text-white",
     green: "bg-green-600 hover:bg-green-700 text-white",
@@ -95,12 +99,14 @@ export function EmptyState({ icon: Icon, title, subtitle, children }) {
   return (
     <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
       <Icon
-        size={28}
+        size={26}
         className="text-gray-200 mx-auto mb-3"
         strokeWidth={1.5}
       />
-      <p className="text-xs font-extrabold text-gray-400 mb-1">{title}</p>
-      {subtitle && <p className="text-xs text-gray-300 mb-5">{subtitle}</p>}
+      <p className="text-xs font-bold text-gray-400 mb-1">{title}</p>
+      {subtitle && (
+        <p className="text-xs font-normal text-gray-300 mb-5">{subtitle}</p>
+      )}
       {children}
     </div>
   );

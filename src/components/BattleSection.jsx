@@ -27,9 +27,9 @@ function BattleSortToggle({ value, onChange }) {
     <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
       <button
         onClick={() => onChange("top")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "top"
-            ? "bg-white text-gray-900 shadow-sm"
+            ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
@@ -38,9 +38,9 @@ function BattleSortToggle({ value, onChange }) {
       </button>
       <button
         onClick={() => onChange("new")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "new"
-            ? "bg-white text-gray-900 shadow-sm"
+            ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
@@ -102,7 +102,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
         type="button"
         onClick={() => !isDisabled && onSelect(speaker)}
         disabled={isDisabled}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all duration-150 ${
           isDisabled
             ? "opacity-30 cursor-not-allowed border-gray-200 text-gray-400 bg-white"
             : isSelected
@@ -116,7 +116,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
         {speaker.name}
         {speaker.type === "guest" && (
           <span
-            className={`${isSelected ? "opacity-60" : "opacity-40"} font-medium normal-case`}
+            className={`${isSelected ? "opacity-60" : "opacity-40"} font-normal normal-case`}
           >
             · tamu
           </span>
@@ -146,16 +146,16 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           >
             <X size={12} />
           </button>
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-2">
             <Scale size={12} className="text-yellow-800" strokeWidth={2.5} />
-            <span className="text-yellow-800 text-xs font-bold uppercase tracking-widest">
+            <span className="text-yellow-800 text-xs font-medium uppercase tracking-widest">
               Buat Battle
             </span>
           </div>
-          <p className="text-gray-900 font-extrabold text-lg leading-tight">
+          <p className="text-gray-900 font-bold text-lg leading-tight">
             Siapa Paling Benar?
           </p>
-          <p className="text-yellow-800 text-xs mt-1">
+          <p className="text-yellow-800 text-xs font-normal mt-1">
             Pilih episode, dua orang, lalu ringkas pendapat masing-masing.
           </p>
         </div>
@@ -165,14 +165,14 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           className="px-6 py-5 flex flex-col gap-5 bg-white"
         >
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
               Episode
             </label>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setEpisodeOpen((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-medium transition-colors ${
                   selectedEpisode
                     ? "border-yellow-400 text-gray-900"
                     : "border-gray-200 text-gray-400 hover:border-gray-300"
@@ -196,7 +196,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                         setSelectedEpisode(ep);
                         setEpisodeOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 text-xs font-semibold transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${
+                      className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors hover:bg-yellow-50 hover:text-yellow-700 ${
                         selectedEpisode?.id === ep.id
                           ? "bg-yellow-50 text-yellow-700"
                           : "text-gray-700"
@@ -211,7 +211,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
               Orang A
             </label>
             <div className="flex flex-col gap-2">
@@ -228,8 +228,8 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-gray-100" />
-                <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
-                  Guest
+                <span className="text-xs font-medium text-gray-300 uppercase tracking-widest">
+                  Tamu
                 </span>
                 <div className="h-px flex-1 bg-gray-100" />
               </div>
@@ -255,7 +255,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
-                <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
+                <p className="text-xs font-normal text-gray-300 mt-1.5 text-right tabular-nums">
                   {summaryA.length}/300
                 </p>
               </div>
@@ -265,7 +265,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-100" />
             <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
-              <span className="text-white text-xs font-extrabold tracking-widest">
+              <span className="text-white text-xs font-bold tracking-widest">
                 VS
               </span>
             </div>
@@ -273,7 +273,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
               Orang B
             </label>
             <div className="flex flex-col gap-2">
@@ -290,8 +290,8 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-px flex-1 bg-gray-100" />
-                <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
-                  Guest
+                <span className="text-xs font-medium text-gray-300 uppercase tracking-widest">
+                  Tamu
                 </span>
                 <div className="h-px flex-1 bg-gray-100" />
               </div>
@@ -317,7 +317,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
                   rows={3}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors resize-none leading-relaxed font-medium"
                 />
-                <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
+                <p className="text-xs font-normal text-gray-300 mt-1.5 text-right tabular-nums">
                   {summaryB.length}/300
                 </p>
               </div>
@@ -327,7 +327,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           <button
             type="submit"
             disabled={!canSubmit || submitting}
-            className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-xs py-3 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-gray-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-semibold text-xs py-3 rounded-xl transition-colors"
           >
             {submitting ? (
               <>
@@ -374,10 +374,10 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-all duration-200">
       <div className="flex items-center justify-between px-6 pt-4 pb-3">
-        <span className="text-xs text-gray-300 font-semibold uppercase tracking-widest">
+        <span className="text-xs font-medium text-gray-300 uppercase tracking-widest">
           {battle.episodeLabel}
         </span>
-        <span className="text-xs text-gray-300 font-medium">
+        <span className="text-xs font-normal text-gray-300">
           oleh {battle.submittedBy}
         </span>
       </div>
@@ -385,24 +385,24 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
       <div className="grid grid-cols-[1fr_auto_1fr] gap-0 px-6 pb-5">
         <div className="flex flex-col gap-3">
           <span
-            className={`inline-flex items-center gap-1.5 self-start text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorA.light}`}
+            className={`inline-flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorA.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorA.dot}`} />
             {battle.speakerAName}
             {battle.speakerAType === "guest" && (
-              <span className="opacity-50 font-medium normal-case tracking-normal">
+              <span className="opacity-50 font-normal normal-case tracking-normal">
                 · tamu
               </span>
             )}
           </span>
-          <p className="text-xs text-gray-700 leading-relaxed font-medium">
+          <p className="text-xs font-normal text-gray-600 leading-relaxed">
             {battle.summaryA}
           </p>
         </div>
 
         <div className="flex items-center justify-center px-4">
           <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-            <span className="text-gray-400 text-xs font-extrabold tracking-widest">
+            <span className="text-gray-400 text-xs font-bold tracking-widest">
               VS
             </span>
           </div>
@@ -410,17 +410,17 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
 
         <div className="flex flex-col gap-3 items-end text-right">
           <span
-            className={`inline-flex items-center gap-1.5 self-end text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorB.light}`}
+            className={`inline-flex items-center gap-1.5 self-end text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${colorB.light}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${colorB.dot}`} />
             {battle.speakerBName}
             {battle.speakerBType === "guest" && (
-              <span className="opacity-50 font-medium normal-case tracking-normal">
+              <span className="opacity-50 font-normal normal-case tracking-normal">
                 · tamu
               </span>
             )}
           </span>
-          <p className="text-xs text-gray-700 leading-relaxed font-medium">
+          <p className="text-xs font-normal text-gray-600 leading-relaxed">
             {battle.summaryB}
           </p>
         </div>
@@ -429,7 +429,7 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
       <div className="border-t border-gray-100 px-6 py-4">
         {totalVotes > 0 && (
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-gray-400 tabular-nums w-8 text-right">
+            <span className="text-xs font-medium text-gray-400 tabular-nums w-8 text-right">
               {pctA}%
             </span>
             <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden flex">
@@ -438,7 +438,7 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
                 style={{ width: `${pctA}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-gray-400 tabular-nums w-8">
+            <span className="text-xs font-medium text-gray-400 tabular-nums w-8">
               {pctB}%
             </span>
           </div>
@@ -447,7 +447,7 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
           <button
             onClick={() => handleVote("A")}
             disabled={hasVoted && !votedA}
-            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-medium transition-all duration-150 ${
               votedA
                 ? `${colorA.voteLight} border`
                 : hasVoted
@@ -466,7 +466,7 @@ function BattleCard({ battle, user, onVote, onLoginGate }) {
           <button
             onClick={() => handleVote("B")}
             disabled={hasVoted && !votedB}
-            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-xl border text-xs font-medium transition-all duration-150 ${
               votedB
                 ? `${colorB.voteLight} border`
                 : hasVoted
@@ -555,7 +555,7 @@ export default function BattleSection() {
                 <button
                   key={ep.id}
                   onClick={() => setActiveEpisode(ep)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all duration-150 shrink-0 ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-medium whitespace-nowrap transition-all duration-150 shrink-0 ${
                     isActive
                       ? "bg-green-600 text-white border-green-600"
                       : "bg-white text-gray-600 border-gray-200 hover:border-green-400 hover:text-green-600"
@@ -564,7 +564,7 @@ export default function BattleSection() {
                   {ep.label}
                   {count > 0 && (
                     <span
-                      className={`text-xs font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                      className={`text-xs font-medium px-1.5 py-0.5 rounded-full tabular-nums ${
                         isActive
                           ? "bg-green-500 text-green-100"
                           : "bg-gray-100 text-gray-500"
@@ -584,7 +584,7 @@ export default function BattleSection() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-4">
             {loading ? (
               [...Array(2)].map((_, i) => (
                 <div
@@ -609,19 +609,19 @@ export default function BattleSection() {
             ) : isEmpty ? (
               <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
                 <Swords
-                  size={28}
+                  size={26}
                   className="text-gray-200 mx-auto mb-3"
                   strokeWidth={1.5}
                 />
-                <p className="text-xs font-extrabold text-gray-400 mb-1">
+                <p className="text-xs font-bold text-gray-400 mb-1">
                   Belum ada battle untuk episode ini.
                 </p>
-                <p className="text-xs text-gray-300 mb-5">
+                <p className="text-xs font-normal text-gray-300 mb-5">
                   Jadilah yang pertama merangkum duel pendapat.
                 </p>
                 <button
                   onClick={openSubmitModal}
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
+                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"
                 >
                   <Plus size={12} />
                   Buat Battle Pertama

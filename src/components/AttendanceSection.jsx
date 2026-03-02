@@ -55,7 +55,7 @@ function SlipSortToggle({ value, onChange }) {
     <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
       <button
         onClick={() => onChange("top")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "top"
             ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
@@ -66,7 +66,7 @@ function SlipSortToggle({ value, onChange }) {
       </button>
       <button
         onClick={() => onChange("new")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "new"
             ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
@@ -109,18 +109,18 @@ function PayslipModal({ payslip, moodId, onClose }) {
           >
             <X size={12} />
           </button>
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-2">
             <div className="w-5 h-5 rounded-md bg-yellow-400 flex items-center justify-center">
               <Icon size={11} className="text-gray-900" strokeWidth={2.5} />
             </div>
-            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-xs font-medium uppercase tracking-widest">
               Slip Gaji Imajiner
             </span>
           </div>
-          <p className="text-white font-extrabold text-lg leading-tight">
+          <p className="text-white font-bold text-lg leading-tight">
             PT. Para Pekerja Indonesia
           </p>
-          <p className="text-green-300 text-xs mt-1">
+          <p className="text-green-300 text-xs font-normal mt-1">
             {new Date().toLocaleDateString("id-ID", {
               weekday: "long",
               year: "numeric",
@@ -142,7 +142,9 @@ function PayslipModal({ payslip, moodId, onClose }) {
 
         <div className="px-6 py-4 bg-gray-50">
           <div className="flex justify-between items-center py-3 border-b border-dashed border-gray-200">
-            <span className="text-xs text-gray-500">Gaji Pokok</span>
+            <span className="text-xs font-medium text-gray-500">
+              Gaji Pokok
+            </span>
             <span className="text-xs font-bold text-gray-900">
               {formatRupiah(payslip.base)}
             </span>
@@ -152,11 +154,11 @@ function PayslipModal({ payslip, moodId, onClose }) {
               key={i}
               className="flex justify-between items-start py-2.5 border-b border-dashed border-gray-100 gap-4"
             >
-              <span className="text-xs text-gray-500 leading-snug flex-1">
+              <span className="text-xs font-normal text-gray-500 leading-snug flex-1">
                 {item.label}
               </span>
               <span
-                className={`text-xs font-bold shrink-0 ${item.amount >= 0 ? "text-green-600" : "text-red-500"}`}
+                className={`text-xs font-semibold shrink-0 ${item.amount >= 0 ? "text-green-600" : "text-red-500"}`}
               >
                 {item.amount >= 0 ? "+" : ""}Rp{" "}
                 {Math.abs(item.amount).toLocaleString("id-ID")}
@@ -164,18 +166,18 @@ function PayslipModal({ payslip, moodId, onClose }) {
             </div>
           ))}
           <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3">
-            <p className="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-1">
+            <p className="text-xs font-medium text-yellow-600 uppercase tracking-widest mb-1">
               Catatan HRD
             </p>
-            <p className="text-xs text-yellow-800 leading-relaxed italic">
+            <p className="text-xs font-normal text-yellow-800 leading-relaxed italic">
               "{payslip.hrNote}"
             </p>
           </div>
           <div className="flex justify-between items-center pt-4 mt-2 border-t-2 border-dashed border-gray-300">
-            <span className="text-xs font-bold text-gray-900">
+            <span className="text-xs font-semibold text-gray-900">
               Total Diterima
             </span>
-            <span className="text-xl font-extrabold text-green-600">
+            <span className="text-xl font-bold text-green-600">
               {formatRupiah(payslip.total)}
             </span>
           </div>
@@ -184,7 +186,7 @@ function PayslipModal({ payslip, moodId, onClose }) {
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
           <button
             onClick={onClose}
-            className="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs py-2.5 rounded-xl transition-colors"
+            className="w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold text-xs py-2.5 rounded-xl transition-colors"
           >
             Tutup Slip
           </button>
@@ -261,15 +263,13 @@ export default function AttendanceSection() {
             subtitle="Pilih kondisi kerja, absen, dan dapatkan slip gaji imajiner kamu hari ini."
           >
             {phase === "done" && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowPayslipModal(true)}
-                  className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
-                >
-                  <FileText size={12} />
-                  Lihat Slip Gaji
-                </button>
-              </div>
+              <button
+                onClick={() => setShowPayslipModal(true)}
+                className="flex items-center gap-2 border border-gray-200 hover:border-green-500 hover:text-green-600 text-gray-400 font-medium text-xs px-4 py-2.5 rounded-xl transition-colors"
+              >
+                <FileText size={12} />
+                Lihat Slip Gaji
+              </button>
             )}
           </SectionTitle>
 
@@ -295,7 +295,7 @@ export default function AttendanceSection() {
                     >
                       <Icon size={9} strokeWidth={2.5} />
                     </div>
-                    <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">
+                    <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
                       {a.displayName}
                     </span>
                   </div>
@@ -312,17 +312,17 @@ export default function AttendanceSection() {
               {phase === "loading" && (
                 <div className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs font-normal text-gray-400">
                     Memeriksa absensi...
                   </span>
                 </div>
               )}
               {(phase === "guest" || phase === "pick_mood") && (
                 <div>
-                  <p className="text-xs font-extrabold text-gray-900 leading-tight">
+                  <p className="text-xs font-bold text-gray-900 leading-tight">
                     Kondisi kerja hari ini?
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs font-normal text-gray-400 mt-0.5">
                     {phase === "guest"
                       ? "Klik kondisi untuk masuk dan absen."
                       : "Pilih satu, tidak bisa diubah setelah absen."}
@@ -347,17 +347,19 @@ export default function AttendanceSection() {
                             className="text-green-600"
                             strokeWidth={2.5}
                           />
-                          <p className="text-xs font-bold text-green-600 uppercase tracking-widest">
+                          <p className="text-xs font-medium text-green-600 uppercase tracking-widest">
                             Sudah Absen
                           </p>
                         </div>
-                        <p className="text-xs font-extrabold text-gray-900">
+                        <p className="text-xs font-bold text-gray-900">
                           {mood.label}
                         </p>
                       </div>
                       <div className="ml-auto text-right">
-                        <p className="text-xs text-gray-400">Gaji hari ini</p>
-                        <p className="text-xs font-extrabold text-green-600">
+                        <p className="text-xs font-normal text-gray-400">
+                          Gaji hari ini
+                        </p>
+                        <p className="text-xs font-bold text-green-600">
                           {formatRupiah(myPayslip?.total)}
                         </p>
                       </div>
@@ -395,7 +397,7 @@ export default function AttendanceSection() {
                       key={mood.id}
                       onClick={() => !isDone && handleMoodClickWrapped(mood.id)}
                       disabled={isDone}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all duration-150 ${cls}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-150 ${cls}`}
                     >
                       <Icon size={12} strokeWidth={2} className="shrink-0" />
                       {mood.label}
@@ -408,7 +410,7 @@ export default function AttendanceSection() {
             {phase === "guest" && (
               <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shrink-0" />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs font-normal text-gray-500">
                   Klik salah satu kondisi di atas untuk masuk dan absen.
                 </p>
               </div>
@@ -417,7 +419,7 @@ export default function AttendanceSection() {
               <button
                 onClick={submitAttendance}
                 disabled={!selectedMood || submitting}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-colors"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-colors"
               >
                 {submitting ? (
                   <>
@@ -436,7 +438,7 @@ export default function AttendanceSection() {
 
           <div className="grid grid-cols-5 gap-10">
             <div className="col-span-3">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">
                 Suasana Kantor
               </p>
               <div className="space-y-2.5">
@@ -461,7 +463,7 @@ export default function AttendanceSection() {
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-xs font-bold text-gray-400 w-4 text-right tabular-nums">
+                      <span className="text-xs font-medium text-gray-400 w-4 text-right tabular-nums">
                         {count > 0 ? count : ""}
                       </span>
                     </div>
@@ -469,15 +471,15 @@ export default function AttendanceSection() {
                 })}
               </div>
               {totalToday === 0 && (
-                <p className="text-xs text-gray-300 mt-3 italic">
+                <p className="text-xs font-normal text-gray-300 mt-3 italic">
                   Belum ada yang absen hari ini.
                 </p>
               )}
             </div>
 
             <div className="col-span-2">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">
                   Slip Paling Relate
                 </p>
                 <SlipSortToggle value={slipSort} onChange={setSlipSort} />
@@ -497,7 +499,7 @@ export default function AttendanceSection() {
                       <div className="w-9 h-7 rounded-lg bg-gray-100" />
                     </div>
                   ))}
-                  <p className="text-xs text-gray-300 italic mt-1">
+                  <p className="text-xs font-normal text-gray-300 italic mt-1">
                     Belum ada slip hari ini.
                   </p>
                 </div>
@@ -517,10 +519,10 @@ export default function AttendanceSection() {
                           <Icon size={11} strokeWidth={2} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-gray-800 truncate">
+                          <p className="text-xs font-semibold text-gray-800 truncate">
                             {slip.displayName}
                           </p>
-                          <p className="text-xs font-semibold text-green-600">
+                          <p className="text-xs font-medium text-green-600">
                             {formatRupiah(slip.payslip?.total)}
                           </p>
                         </div>
@@ -536,7 +538,7 @@ export default function AttendanceSection() {
                                 ? "Sudah diberi bintang"
                                 : "Beri bintang"
                           }
-                          className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-bold transition-all shrink-0 ${
+                          className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-medium transition-all shrink-0 ${
                             hasVoted
                               ? "bg-yellow-50 border-yellow-200 text-yellow-500"
                               : cannotVote

@@ -22,7 +22,6 @@ function GuestCard({
 }) {
   const color = getSpeakerColor(guest.id);
   const hasVoted = voters?.includes(user?.uid);
-  const isOwn = false;
   const isTop = rank <= 3;
 
   const rankLabel =
@@ -42,40 +41,43 @@ function GuestCard({
       <div className="flex items-center gap-4">
         <div className="shrink-0 w-6 text-center">
           <span
-            className={`text-xs font-extrabold tabular-nums ${isTop ? color.rank : "text-gray-200"}`}
+            className={`text-xs font-bold tabular-nums ${isTop ? color.rank : "text-gray-200"}`}
           >
             {rankLabel}
           </span>
         </div>
+
         <div
           className={`shrink-0 w-9 h-9 rounded-xl ${color.accent} flex items-center justify-center`}
         >
-          <span className="text-white font-extrabold text-sm leading-none">
+          <span className="text-white font-bold text-sm leading-none">
             {guest.name.charAt(0)}
           </span>
         </div>
+
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-extrabold text-gray-900">{guest.name}</p>
-          <div className="flex flex-wrap gap-1 mt-1">
+          <p className="text-xs font-bold text-gray-900">{guest.name}</p>
+          <div className="flex flex-wrap gap-1 mt-1.5">
             {guest.episodes.map((ep) => (
               <span
                 key={ep}
-                className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
+                className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
               >
                 {ep}
               </span>
             ))}
           </div>
         </div>
+
         <div className="shrink-0">
           <button
             onClick={handleVote}
             disabled={hasVoted}
             title={hasVoted ? "Sudah di-vote" : "Vote guest ini"}
-            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-xs font-medium transition-all duration-150 ${
               hasVoted
                 ? `${color.voteLight} border`
-                : `border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer`
+                : "border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer"
             }`}
           >
             <Star

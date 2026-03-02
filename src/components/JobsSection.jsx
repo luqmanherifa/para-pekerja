@@ -41,9 +41,9 @@ function JobSortToggle({ value, onChange }) {
     <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
       <button
         onClick={() => onChange("top")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "top"
-            ? "bg-white text-gray-900 shadow-sm"
+            ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
@@ -52,9 +52,9 @@ function JobSortToggle({ value, onChange }) {
       </button>
       <button
         onClick={() => onChange("new")}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold transition-all duration-150 ${
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 ${
           value === "new"
-            ? "bg-white text-gray-900 shadow-sm"
+            ? "bg-white text-gray-900"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
@@ -91,23 +91,23 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
           >
             <X size={12} />
           </button>
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-2">
             <Briefcase size={12} className="text-green-200" strokeWidth={2.5} />
-            <span className="text-green-200 text-xs font-bold uppercase tracking-widest">
+            <span className="text-green-200 text-xs font-medium uppercase tracking-widest">
               Usul Kerjaan
             </span>
           </div>
-          <p className="text-white font-extrabold text-lg leading-tight">
+          <p className="text-white font-bold text-lg leading-tight">
             Kerjaan 5 Juta
           </p>
-          <p className="text-green-300 text-xs mt-1">
+          <p className="text-green-300 text-xs font-normal mt-1">
             Kasih judul dan deskripsi kerjaan absurd gajinya 5 juta.
           </p>
         </div>
 
         <div className="px-6 py-5 flex flex-col gap-5 bg-white">
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
               Judul Kerjaan
             </label>
             <input
@@ -118,12 +118,12 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               maxLength={80}
               className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors font-medium"
             />
-            <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
+            <p className="text-xs font-normal text-gray-300 mt-1.5 text-right tabular-nums">
               {title.length}/80
             </p>
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
               Deskripsi
             </label>
             <textarea
@@ -134,7 +134,7 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
               rows={4}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs text-gray-800 placeholder-gray-300 focus:outline-none focus:border-green-400 transition-colors resize-none leading-relaxed font-medium"
             />
-            <p className="text-xs text-gray-300 mt-1 text-right tabular-nums">
+            <p className="text-xs font-normal text-gray-300 mt-1.5 text-right tabular-nums">
               {description.length}/300
             </p>
           </div>
@@ -142,13 +142,10 @@ function SubmitModal({ onClose, onSubmit, submitting }) {
             onClick={() =>
               canSubmit &&
               !submitting &&
-              onSubmit({
-                title: title.trim(),
-                description: description.trim(),
-              })
+              onSubmit({ title: title.trim(), description: description.trim() })
             }
             disabled={!canSubmit || submitting}
-            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-bold text-xs py-3 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-300 text-white font-semibold text-xs py-3 rounded-xl transition-colors"
           >
             {submitting ? (
               <>
@@ -184,35 +181,33 @@ function JobCard({ job, user, onVote, onLoginGate, isNew }) {
 
   return (
     <div
-      className={`bg-white border rounded-2xl p-5 flex flex-col gap-3 transition-all duration-200 hover:border-gray-300 hover:shadow-sm ${
+      className={`bg-white border rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm ${
         isNew ? "border-green-400" : "border-gray-200"
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-sm font-extrabold text-gray-900 leading-snug">
-              {job.title}
-            </p>
-            {isNew && (
-              <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full shrink-0">
-                baru!
-              </span>
-            )}
-          </div>
-        </div>
+      <div className="flex items-start gap-2 flex-wrap">
+        <p className="text-sm font-bold text-gray-900 leading-snug flex-1">
+          {job.title}
+        </p>
+        {isNew && (
+          <span className="text-xs font-medium text-green-600 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full shrink-0">
+            baru!
+          </span>
+        )}
       </div>
 
-      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+      <p className="text-xs font-normal text-gray-500 leading-relaxed line-clamp-2 flex-1">
         {job.description}
       </p>
 
-      <div className="flex items-center justify-between gap-2 pt-1 border-t border-gray-100">
+      <div className="flex items-center justify-between gap-2 pt-3 border-t border-gray-100">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-gray-500 truncate">
+          <p className="text-xs font-medium text-gray-500 truncate">
             {job.submittedBy}
           </p>
-          <p className="text-xs text-gray-300">{timeAgo(job.createdAt)}</p>
+          <p className="text-xs font-normal text-gray-300 mt-0.5">
+            {timeAgo(job.createdAt)}
+          </p>
         </div>
 
         <button
@@ -225,7 +220,7 @@ function JobCard({ job, user, onVote, onLoginGate, isNew }) {
                 ? "Batalkan vote"
                 : "Vote layak 5 juta"
           }
-          className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all duration-150 ${
+          className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-medium transition-all duration-150 ${
             hasVoted
               ? "bg-yellow-50 border-yellow-300 text-yellow-500"
               : isOwn && user
@@ -308,18 +303,18 @@ export default function JobsSection() {
           )}
 
           {loading ? (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="border border-gray-100 rounded-2xl p-5 animate-pulse flex flex-col gap-3"
+                  className="border border-gray-100 rounded-2xl p-5 animate-pulse flex flex-col gap-4"
                 >
                   <div className="h-3.5 bg-gray-100 rounded-full w-3/4" />
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <div className="h-2.5 bg-gray-100 rounded-full w-full" />
                     <div className="h-2.5 bg-gray-100 rounded-full w-4/5" />
                   </div>
-                  <div className="flex justify-between pt-1 border-t border-gray-100">
+                  <div className="flex justify-between pt-3 border-t border-gray-100">
                     <div className="h-2.5 bg-gray-100 rounded-full w-20" />
                     <div className="w-14 h-7 bg-gray-100 rounded-xl" />
                   </div>
@@ -329,26 +324,26 @@ export default function JobsSection() {
           ) : isEmpty ? (
             <div className="border border-dashed border-gray-200 rounded-2xl px-8 py-14 text-center">
               <Briefcase
-                size={28}
+                size={26}
                 className="text-gray-200 mx-auto mb-3"
                 strokeWidth={1.5}
               />
-              <p className="text-xs font-extrabold text-gray-400 mb-1">
+              <p className="text-xs font-bold text-gray-400 mb-1">
                 Belum ada usul kerjaan.
               </p>
-              <p className="text-xs text-gray-300 mb-5">
+              <p className="text-xs font-normal text-gray-300 mb-5">
                 Jadilah yang pertama usul kerjaan paling absurd.
               </p>
               <button
                 onClick={openSubmitModal}
-                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors"
               >
                 <Plus size={12} />
                 Usul Pertama
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               {jobs.map((job) => (
                 <JobCard
                   key={job.id}
@@ -363,7 +358,7 @@ export default function JobsSection() {
           )}
 
           {hasMore && !loading && (
-            <p className="text-center text-xs text-gray-300 mt-4">
+            <p className="text-center text-xs font-normal text-gray-300 mt-5">
               Menampilkan {PREVIEW_COUNT} usul terbaru.
             </p>
           )}
