@@ -4,7 +4,7 @@ const seedAttendance = require("./seedAttendance.cjs");
 const seedJobs = require("./seedJobs.cjs");
 const seedQuotes = require("./seedQuotes.cjs");
 const seedBattles = require("./seedBattles.cjs");
-const seedGuestRankings = require("./seedGuestRankings.cjs");
+const seedGuests = require("./seedGuests.cjs");
 
 async function main() {
   console.log("\nPara Pekerja — Seeder");
@@ -17,7 +17,7 @@ async function main() {
     await seedJobs();
     await seedQuotes();
     await seedBattles();
-    await seedGuestRankings();
+    await seedGuests();
 
     console.log("\n─────────────────────");
     console.log("✓ Semua data berhasil diisi.");

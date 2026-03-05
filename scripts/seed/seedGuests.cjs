@@ -1,10 +1,10 @@
 const { db, now, GUESTS } = require("./config.cjs");
 
-async function seedGuestRankings() {
-  console.log("Seeding guest rankings...");
+async function seedGuests() {
+  console.log("Seeding guests...");
   const batch = db.batch();
   GUESTS.forEach((g) => {
-    batch.set(db.collection("guest_rankings").doc(g.id), {
+    batch.set(db.collection("guests").doc(g.id), {
       guestId: g.id,
       voteCount: Math.floor(Math.random() * 40) + 5,
       voters: [],
@@ -12,7 +12,7 @@ async function seedGuestRankings() {
     });
   });
   await batch.commit();
-  console.log("  ✓ guest_rankings");
+  console.log("  ✓ guests");
 }
 
-module.exports = seedGuestRankings;
+module.exports = seedGuests;

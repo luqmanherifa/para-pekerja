@@ -18,7 +18,7 @@ export function useGuest() {
 
   useEffect(() => {
     const unsubscribes = GUESTS.map((g) => {
-      const ref = doc(db, "guest_rankings", g.id);
+      const ref = doc(db, "guests", g.id);
       return onSnapshot(ref, (snap) => {
         setGuestData((prev) => ({
           ...prev,
@@ -34,7 +34,7 @@ export function useGuest() {
     async (guestId) => {
       if (!user) return;
       try {
-        const ref = doc(db, "guest_rankings", guestId);
+        const ref = doc(db, "guests", guestId);
         await runTransaction(db, async (tx) => {
           const snap = await tx.get(ref);
           if (snap.exists() && snap.data().voters?.includes(user.uid)) return;

@@ -7,7 +7,6 @@ import {
   getDoc,
   increment,
   query,
-  where,
   orderBy,
   limit,
   onSnapshot,
@@ -16,6 +15,7 @@ import {
   runTransaction,
 } from "firebase/firestore";
 import { buildPayslip } from "../data/moods";
+import { MOODS } from "../data/moods";
 
 const getTodayDate = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
@@ -32,10 +32,9 @@ export function useAttendance() {
   const [showPayslipModal, setShowPayslipModal] = useState(false);
 
   const [attendees, setAttendees] = useState([]);
-  const [dailyStats, setDailyStats] = useState({});
-  const [totalToday, setTotalToday] = useState(0);
+  const [globalStats, setGlobalStats] = useState({});
+  const [globalTotal, setGlobalTotal] = useState(0);
   const [featuredPayslips, setFeaturedPayslips] = useState([]);
-  const [dominantMood, setDominantMood] = useState(null);
   const [slipSort, setSlipSort] = useState("top");
 
   useEffect(() => {
@@ -59,47 +58,40 @@ export function useAttendance() {
   useEffect(() => {
     const q = query(
       collection(db, "attendance"),
-      where("date", "==", today),
       orderBy("createdAt", "desc"),
       limit(40),
     );
     return onSnapshot(q, (snap) =>
       setAttendees(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
     );
-  }, [today]);
+  }, []);
 
   useEffect(() => {
-    return onSnapshot(doc(db, "daily_stats", today), (snap) => {
+    return onSnapshot(doc(db, "attendance_stats", "global"), (snap) => {
       if (!snap.exists()) return;
       const data = snap.data();
-      setDailyStats(data.moods ?? {});
-      setTotalToday(data.total ?? 0);
-      const top = Object.entries(data.moods ?? {}).sort(
-        (a, b) => b[1] - a[1],
-      )[0];
-      if (top) setDominantMood(top[0]);
+      setGlobalStats(data.moods ?? {});
+      setGlobalTotal(data.total ?? 0);
     });
-  }, [today]);
+  }, []);
 
   useEffect(() => {
     const q =
       slipSort === "top"
         ? query(
             collection(db, "attendance"),
-            where("date", "==", today),
             orderBy("voteCount", "desc"),
             limit(5),
           )
         : query(
             collection(db, "attendance"),
-            where("date", "==", today),
             orderBy("createdAt", "desc"),
             limit(5),
           );
     return onSnapshot(q, (snap) =>
       setFeaturedPayslips(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
     );
-  }, [today, slipSort]);
+  }, [slipSort]);
 
   const submitAttendance = useCallback(async () => {
     if (!user || !selectedMood || submitting) return;
@@ -107,7 +99,7 @@ export function useAttendance() {
     try {
       const payslip = buildPayslip(selectedMood);
       const attendanceRef = doc(db, "attendance", `${user.uid}_${today}`);
-      const statsRef = doc(db, "daily_stats", today);
+      const statsRef = doc(db, "attendance_stats", "global");
 
       await runTransaction(db, async (tx) => {
         const statsSnap = await tx.get(statsRef);
@@ -132,7 +124,6 @@ export function useAttendance() {
           : tx.set(statsRef, {
               total: 1,
               moods: { [selectedMood]: 1 },
-              date: today,
             });
       });
 
@@ -181,10 +172,9 @@ export function useAttendance() {
     myMood,
     showPayslipModal,
     attendees,
-    dailyStats,
-    totalToday,
+    globalStats,
+    globalTotal,
     featuredPayslips,
-    dominantMood,
     slipSort,
     today,
     setShowPayslipModal,
