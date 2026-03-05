@@ -4,7 +4,7 @@ import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
 import AttendanceSection from "../sections/attendance";
-import JobsSection from "../components/JobsSection";
+import JobsSection from "../sections/jobs";
 import QuoteSection from "../components/QuoteSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
