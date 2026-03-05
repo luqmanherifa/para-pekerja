@@ -7,7 +7,7 @@ import HeroSection from "../components/HeroSection";
 import AttendanceSection from "../sections/attendance";
 import JobsSection from "../sections/jobs";
 import QuoteSection from "../sections/quote";
-import BattleSection from "../components/BattleSection";
+import BattleSection from "../sections/battle";
 import GuestSection from "../components/GuestSection";
 
 import Navbar from "../components/Navbar";
