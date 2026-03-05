@@ -2,15 +2,16 @@ import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { logoutUser } from "../store/authSlice";
+
 import HeroSection from "../components/HeroSection";
 import AttendanceSection from "../sections/attendance";
 import JobsSection from "../sections/jobs";
-import QuoteSection from "../components/QuoteSection";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { Scale, Star } from "lucide-react";
+import QuoteSection from "../sections/quotes";
 import BattleSection from "../components/BattleSection";
 import GuestSection from "../components/GuestSection";
+
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const dispatch = useDispatch();
