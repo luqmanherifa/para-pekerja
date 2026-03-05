@@ -52,8 +52,8 @@ export default function AttendanceSection() {
     myMood,
     showPayslipModal,
     attendees,
-    dailyStats,
-    totalToday,
+    globalStats,
+    globalTotal,
     featuredPayslips,
     slipSort,
     setShowPayslipModal,
@@ -97,8 +97,8 @@ export default function AttendanceSection() {
       <section id="absen" className="w-full bg-white">
         <div className="max-w-5xl mx-auto px-8 py-14">
           <SectionHeader icon={ClipboardCheck} label="Absensi Harian">
-            {totalToday > 0 && (
-              <SectionCounter label="Sudah absen" value={totalToday} />
+            {globalTotal > 0 && (
+              <SectionCounter label="Sudah absen" value={globalTotal} />
             )}
           </SectionHeader>
 
@@ -124,8 +124,8 @@ export default function AttendanceSection() {
           <div className="grid grid-cols-5 gap-10">
             <div className="col-span-3">
               <MoodStats
-                dailyStats={dailyStats}
-                totalToday={totalToday}
+                globalStats={globalStats}
+                globalTotal={globalTotal}
                 moodIcons={MOOD_ICONS}
               />
             </div>

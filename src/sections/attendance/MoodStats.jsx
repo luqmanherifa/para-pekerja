@@ -1,6 +1,6 @@
 import { MOODS } from "../../data/moods";
 
-export default function MoodStats({ dailyStats, totalToday, moodIcons }) {
+export default function MoodStats({ globalStats, globalTotal, moodIcons }) {
   return (
     <div>
       <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">
@@ -8,9 +8,9 @@ export default function MoodStats({ dailyStats, totalToday, moodIcons }) {
       </p>
       <div className="space-y-2.5">
         {MOODS.map((m) => {
-          const count = dailyStats[m.id] ?? 0;
+          const count = globalStats[m.id] ?? 0;
           const pct =
-            totalToday > 0 ? Math.round((count / totalToday) * 100) : 0;
+            globalTotal > 0 ? Math.round((count / globalTotal) * 100) : 0;
           const Icon = moodIcons[m.icon];
           return (
             <div
@@ -35,9 +35,9 @@ export default function MoodStats({ dailyStats, totalToday, moodIcons }) {
           );
         })}
       </div>
-      {totalToday === 0 && (
+      {globalTotal === 0 && (
         <p className="text-xs font-normal text-gray-300 mt-3 italic">
-          Belum ada yang absen hari ini.
+          Belum ada yang absen.
         </p>
       )}
     </div>
