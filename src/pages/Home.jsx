@@ -6,7 +6,7 @@ import { logoutUser } from "../store/authSlice";
 import HeroSection from "../components/HeroSection";
 import AttendanceSection from "../sections/attendance";
 import JobsSection from "../sections/jobs";
-import QuoteSection from "../sections/quotes";
+import QuoteSection from "../sections/quote";
 import BattleSection from "../components/BattleSection";
 import GuestSection from "../components/GuestSection";
 
