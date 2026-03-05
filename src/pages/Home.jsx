@@ -8,7 +8,7 @@ import AttendanceSection from "../sections/attendance";
 import JobsSection from "../sections/jobs";
 import QuoteSection from "../sections/quote";
 import BattleSection from "../sections/battle";
-import GuestSection from "../components/GuestSection";
+import GuestSection from "../sections/guest";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
